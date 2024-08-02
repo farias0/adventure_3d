@@ -16,9 +16,10 @@ public class PlayerMovement : MonoBehaviour
     public float SpeedStanding;
     public float SpeedCrouched;
     public float HeightCrouched;
-    public float IdleToWalkThreshold; // Used for animation only
+    public float IdleToWalkThreshold;
     public float WalkToRunThreshold;
     public float RotationSpeed;
+    public float FallSpeed;
 
     Animator mAnimator;
     CharacterController mController;
@@ -83,6 +84,14 @@ public class PlayerMovement : MonoBehaviour
                 animationMoveState = AnimationMoveState.Walk;
             else
                 animationMoveState = AnimationMoveState.Run;
+        }
+
+
+        // Apply gravity
+        if (!mController.isGrounded)
+        {
+            Vector3 fall = new(0, FallSpeed * -1, 0);
+            mController.Move(fall * Time.deltaTime);
         }
 
        
