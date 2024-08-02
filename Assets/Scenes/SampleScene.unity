@@ -729,9 +729,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f7c096ece8b8b54b92692e1f1b1103e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpeedWalking: 8.5
-  SpeedCrouched: 2.5
+  SpeedStanding: 3.5
+  SpeedCrouched: 1.5
   HeightCrouched: 0.5
+  IdleToWalkThreshold: 0.2
   WalkToRunThreshold: 0.5
   RotationSpeed: 10
 --- !u!143 &1945059817

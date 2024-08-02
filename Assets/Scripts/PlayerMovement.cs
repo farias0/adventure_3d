@@ -3,11 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+enum AnimationMoveState
+{
+    Idle = 0,
+    Walk = 1,
+    Run = 2
+}
+
 public class PlayerMovement : MonoBehaviour
 {
-    public float SpeedWalking;
+    // TODO consider making some of these constants to clear up the component in the inspector
+    public float SpeedStanding;
     public float SpeedCrouched;
     public float HeightCrouched;
+    public float IdleToWalkThreshold; // Used for animation only
     public float WalkToRunThreshold;
     public float RotationSpeed;
 
@@ -25,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
         mController = GetComponent<CharacterController>();
 
         mHeightStanding = transform.localScale.y;
-        mSpeed = SpeedWalking;
+        mSpeed = SpeedStanding;
     }
 
     // Update is called once per frame
@@ -37,24 +46,24 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonDown("Fire1")) Attack();
         if (Input.GetButtonDown("Fire2")) CrouchToggle();
 
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        float moveX = Input.GetAxis("Horizontal");
+        float moveZ = Input.GetAxis("Vertical");
 
 
 
         // For keyboards
-        if ((horizontal == 1 || horizontal == -1) && (vertical == 1 || vertical == -1))
+        if ((Math.Abs(moveX) == 1) && (Math.Abs(moveZ) == 1))
         {
-            horizontal *= 0.7071f;
-            vertical *= 0.7071f;
+            moveX *= 0.7071f;
+            moveZ *= 0.7071f;
         }
 
 
-        Vector3 move = new(horizontal, 0, vertical);
-        int animationMoveState = 0;
+        Vector3 move = new(moveX, 0, moveZ);
+        AnimationMoveState animationMoveState = AnimationMoveState.Idle;
 
 
-        if (move != Vector3.zero)
+        if (move.magnitude > IdleToWalkThreshold)
         {
 
             if (!IsAttacking())
@@ -70,20 +79,20 @@ public class PlayerMovement : MonoBehaviour
 
 
             // Set movement animation
-            if (mIsCrouched || Mathf.Abs(horizontal) + Mathf.Abs(vertical) < WalkToRunThreshold)
-                animationMoveState = 1;
+            if (mIsCrouched || Mathf.Abs(moveX) + Mathf.Abs(moveZ) < WalkToRunThreshold)
+                animationMoveState = AnimationMoveState.Walk;
             else
-                animationMoveState = 2;
+                animationMoveState = AnimationMoveState.Run;
         }
 
        
-        mAnimator.SetInteger("MovementState", animationMoveState);
+        mAnimator.SetInteger("MovementState", animationMoveState.GetHashCode());
     }
 
     void CrouchToggle()
     {
         mIsCrouched = !mIsCrouched;
-        mSpeed = mIsCrouched ? SpeedCrouched : SpeedWalking;
+        mSpeed = mIsCrouched ? SpeedCrouched : SpeedStanding;
 
         Vector3 scale = transform.localScale;
         scale.y = mIsCrouched ? HeightCrouched : mHeightStanding;
