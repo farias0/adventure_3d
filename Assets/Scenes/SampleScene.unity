@@ -340,12 +340,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 1945059814}
-  SpeedWalking: 15
-  SpeedRunning: 35
+  SpeedWalking: 5
+  SpeedRunning: 17
   RotationSpeed: 10
-  DistanceChaseWalk: 10
-  DistanceChaseRun: 5
-  DistanceChaseStop: 3
+  DistanceChaseRun: 8
+  DistanceChaseWalk: 4
+  DistanceChaseStop: 1
 --- !u!136 &1275889475
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -895,7 +895,7 @@ MonoBehaviour:
   IdleToWalkThreshold: 0.2
   WalkToRunThreshold: 0.5
   RotationSpeed: 10
-  FallSpeed: 1
+  FallSpeed: 10
 --- !u!143 &1945059817
 CharacterController:
   m_ObjectHideFlags: 0
