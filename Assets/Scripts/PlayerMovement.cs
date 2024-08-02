@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO this enum is global. Where should I put it?
 enum AnimationMoveState
 {
     Idle = 0,
