@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour
 
     private Animator mAnimator;
     private Rigidbody mRigidbody;
+    private Collider mCollider;
 
 
     public void GetHit()
@@ -32,6 +33,10 @@ public class Enemy : MonoBehaviour
     {
         mAnimator = GetComponent<Animator>();
         mRigidbody = GetComponent<Rigidbody>();
+        mCollider = GetComponent<Collider>();
+
+        // We don't want the player pushing the enemy around
+        Physics.IgnoreCollision(GetComponent<Collider>(), Player.GetComponent<Collider>());
     }
 
     // Update is called once per frame
@@ -66,13 +71,20 @@ public class Enemy : MonoBehaviour
         }
 
 
+        // Manually check for collision with the player
+        if (mCollider.bounds.Intersects(Player.GetComponent<Collider>().bounds))
+        {
+            HitPlayer();
+        }
+
+
         mAnimator.SetInteger("MovementState", animationMoveState.GetHashCode());
     }
 
     void MoveTowardsPlayer(float speed)
     {
-        // WARNING: It's moving vertically too. It shouldn't.
-        Vector3 moveDirection = (Player.transform.position - transform.position).normalized;
+        Vector3 playerDirection = new(Player.transform.position.x, 0, Player.transform.position.z);
+        Vector3 moveDirection = (playerDirection - transform.position).normalized;
         mRigidbody.MovePosition(transform.position + speed * Time.deltaTime * moveDirection);
     }
 
@@ -87,4 +99,10 @@ public class Enemy : MonoBehaviour
     {
         return mAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "GetHit";
     }
+
+    void HitPlayer()
+    {
+        Player.GetComponent<PlayerMovement>().GetHit();
+    }
+
 }

@@ -29,6 +29,12 @@ public class PlayerMovement : MonoBehaviour
     bool mIsCrouched = false;
 
 
+    public void GetHit()
+    {
+        mAnimator.SetTrigger("GetHit");
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -116,6 +122,6 @@ public class PlayerMovement : MonoBehaviour
 
     bool IsAttacking()
     {
-        return mAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
+        return mAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Attack";
     }
 }
