@@ -9,9 +9,10 @@ public class PlayerMovement : MonoBehaviour
     public float SpeedCrouched;
     public float HeightCrouched;
     public float WalkToRunThreshold;
-
+    public float RotationSpeed;
 
     Animator mAnimator;
+    CharacterController mController;
     float mHeightStanding = 0; // WARNING! Should be const. Defined at Start().
     float mSpeed = 0;
     bool mIsCrouched = false;
@@ -21,6 +22,8 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         mAnimator = GetComponent<Animator>();
+        mController = GetComponent<CharacterController>();
+
         mHeightStanding = transform.localScale.y;
         mSpeed = SpeedWalking;
     }
@@ -38,6 +41,7 @@ public class PlayerMovement : MonoBehaviour
         float vertical = Input.GetAxis("Vertical");
 
 
+
         // For keyboards
         if ((horizontal == 1 || horizontal == -1) && (vertical == 1 || vertical == -1))
         {
@@ -45,34 +49,35 @@ public class PlayerMovement : MonoBehaviour
             vertical *= 0.7071f;
         }
 
-        if (!IsAttacking())
-        {
-            // Move player
-            Vector3 pos = transform.position;
-            pos.x += horizontal * mSpeed * Time.deltaTime;
-            pos.z += vertical * mSpeed * Time.deltaTime;
-            transform.position = pos;
-        }
+
+        Vector3 move = new(horizontal, 0, vertical);
+        int animationMoveState = 0;
 
 
-        // Rotate player
-        if (horizontal != 0 || vertical != 0)
+        if (move != Vector3.zero)
         {
-            Vector3 rot = transform.eulerAngles;
-            rot.y = Mathf.Atan2(horizontal, vertical) * Mathf.Rad2Deg;
-            transform.eulerAngles = rot;
-        }
 
-        // Set movement animation
-        int movementState = 0;
-        if (horizontal != 0 || vertical != 0)
-        {
+            if (!IsAttacking())
+            {
+                // Move player
+                mController.Move(mSpeed * Time.deltaTime * move);
+            }
+
+
+            // Rotate player
+            Quaternion targetRotation = Quaternion.LookRotation(move);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
+
+
+            // Set movement animation
             if (mIsCrouched || Mathf.Abs(horizontal) + Mathf.Abs(vertical) < WalkToRunThreshold)
-                movementState = 1;
+                animationMoveState = 1;
             else
-                movementState = 2;
+                animationMoveState = 2;
         }
-        mAnimator.SetInteger("MovementState", movementState);
+
+       
+        mAnimator.SetInteger("MovementState", animationMoveState);
     }
 
     void CrouchToggle()
