@@ -21,17 +21,22 @@ public class PlayerMovement : MonoBehaviour
     public float WalkToRunThreshold;
     public float RotationSpeed;
     public float FallSpeed;
+    public float InvincibleTime;
 
     Animator mAnimator;
     CharacterController mController;
     float mHeightStanding = 0; // WARNING! Should be const. Defined at Start().
     float mSpeed = 0;
     bool mIsCrouched = false;
+    float mInvincibleCountdown = 0; // Controls if the player is invincible
 
 
     public void GetHit()
     {
+        if (mInvincibleCountdown > 0) return;
+
         mAnimator.SetTrigger("GetHit");
+        mInvincibleCountdown = InvincibleTime;
     }
 
 
@@ -74,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
         if (move.magnitude > IdleToWalkThreshold)
         {
 
-            if (!IsAttacking())
+            if (!IsAttacking() && !IsGettingHit())
             {
                 // Move player
                 mController.Move(mSpeed * Time.deltaTime * move);
@@ -102,6 +107,12 @@ public class PlayerMovement : MonoBehaviour
         }
 
        
+        if (mInvincibleCountdown > 0) {
+            mInvincibleCountdown -= Time.deltaTime;
+            if (mInvincibleCountdown <= 0) SetVisibility(true);
+            else BlinkThisFrame();
+        }
+
         mAnimator.SetInteger("MovementState", animationMoveState.GetHashCode());
     }
 
@@ -123,5 +134,21 @@ public class PlayerMovement : MonoBehaviour
     bool IsAttacking()
     {
         return mAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Attack";
+    }
+
+    bool IsGettingHit()
+    {
+        return mAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "GetHit";
+    }
+
+    void BlinkThisFrame()
+    {
+        SetVisibility(Time.timeSinceLevelLoad % 0.1 < 0.05);
+    }
+
+    void SetVisibility(bool visible)
+    {
+        Renderer rend = transform.Find("polySurface1").gameObject.GetComponent<Renderer>();
+        rend.enabled = visible;
     }
 }

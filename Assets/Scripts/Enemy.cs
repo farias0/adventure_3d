@@ -13,9 +13,6 @@ public class Enemy : MonoBehaviour
     public float SpeedWalking;
     public float SpeedRunning;
     public float RotationSpeed;
-    public float DistanceChaseRun;
-    public float DistanceChaseWalk;
-    public float DistanceChaseStop;
 
     private Animator mAnimator;
     private Rigidbody mRigidbody;
@@ -47,18 +44,7 @@ public class Enemy : MonoBehaviour
 
         
         if (!IsHit()) {
-            if (distanceFromPlayer < DistanceChaseStop)
-            {
-                RotateTowardsPlayer();
-                animationMoveState = AnimationMoveState.Idle;
-            }
-            else if (distanceFromPlayer < DistanceChaseWalk)
-            {
-                RotateTowardsPlayer();
-                MoveTowardsPlayer(SpeedWalking);
-                animationMoveState = AnimationMoveState.Walk;
-            }
-            else if (distanceFromPlayer < DistanceChaseRun)
+            if (distanceFromPlayer > 1)
             {
                 RotateTowardsPlayer();
                 MoveTowardsPlayer(SpeedRunning);
