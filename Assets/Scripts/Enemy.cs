@@ -7,7 +7,7 @@ enum EnemyMode {
     Chasing
 }
 
-public class Enemy1Movement : MonoBehaviour
+public class Enemy : MonoBehaviour
 {
     public GameObject Player;
     public float SpeedWalking;

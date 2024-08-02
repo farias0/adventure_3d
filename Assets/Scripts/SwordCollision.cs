@@ -20,7 +20,7 @@ public class SwordCollision : MonoBehaviour
     {
         if (collision.collider.CompareTag("Enemy"))
         {
-            Enemy1Movement enemy = collision.collider.GetComponent<Enemy1Movement>();
+            Enemy enemy = collision.collider.GetComponent<Enemy>();
             enemy.GetHit();
         }
     }
