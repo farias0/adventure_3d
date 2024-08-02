@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "adventure_3d.sln"
+    "dotnet.defaultSolution": "adventure_3d.sln",
+    "FSharp.suggestGitignore": false
 }
