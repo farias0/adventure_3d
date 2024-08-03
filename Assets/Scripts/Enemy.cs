@@ -45,6 +45,7 @@ public class Enemy : MonoBehaviour
         
         mLives--;
         mBlinkCountdown = InvincibleTime;
+        RotateTowardsPlayerImmediately();
         
         if (IsDead())
         {
@@ -142,6 +143,14 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    void RotateTowardsPlayerImmediately()
+    {
+        Vector3 direction = Player.transform.position - transform.position;
+        direction.y = 0;
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = lookRotation;
+    }
+
     void HitPlayer()
     {
         Player.GetComponent<PlayerMovement>().GetHit();
@@ -161,7 +170,7 @@ public class Enemy : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, direction, out hit))
             if (hit.collider.gameObject != Player) return false;
-            
+
 
         return true;
     }
