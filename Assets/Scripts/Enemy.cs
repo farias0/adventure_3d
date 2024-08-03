@@ -17,8 +17,8 @@ public class Enemy : MonoBehaviour
     public float InvincibleTime;
 
     private Animator mAnimator;
-    private Rigidbody mRigidbody;
     private Collider mCollider;
+    private UnityEngine.AI.NavMeshAgent mNavMeshAgent;
     private int mLives;
     private float mBlinkCountdown = 0;
 
@@ -58,8 +58,8 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         mAnimator = GetComponent<Animator>();
-        mRigidbody = GetComponent<Rigidbody>();
         mCollider = GetComponent<Collider>();
+        mNavMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 
         if (Lives < 0)
         {
@@ -94,27 +94,16 @@ public class Enemy : MonoBehaviour
 
 
         AnimationMoveState animationMoveState = (AnimationMoveState) mAnimator.GetInteger("MovementState");
-        // float distanceFromPlayer = Vector3.Distance(transform.position, Player.transform.position);
 
-        
-        // if (!IsHit()) {
-        //     if (distanceFromPlayer > 1)
-        //     {
-        //         RotateTowardsPlayer();
-        //         MoveTowardsPlayer(SpeedWalking);
-        //         animationMoveState = AnimationMoveState.Walk;
-        //     }
-        //     else
-        //     {
-        //         animationMoveState = AnimationMoveState.Idle;
-        //     }
-        // }
+
+        MoveTowardsPlayer();
+        animationMoveState = AnimationMoveState.Walk;
 
 
         // Manually check for collision with the player
         if (mCollider.bounds.Intersects(Player.GetComponent<Collider>().bounds))
         {
-
+            Debug.Log("Player hit by enemy");
             HitPlayer();
         }
 
@@ -128,23 +117,17 @@ public class Enemy : MonoBehaviour
         mAnimator.SetTrigger("Ressurrect");
     }
 
-    void MoveTowardsPlayer(float speed)
+    void MoveTowardsPlayer()
     {
-        Vector3 playerDirection = new(Player.transform.position.x, 0, Player.transform.position.z);
-        Vector3 moveDirection = (playerDirection - transform.position).normalized;
-        mRigidbody.MovePosition(transform.position + speed * Time.deltaTime * moveDirection);
-    }
+        mNavMeshAgent.SetDestination(Player.transform.position);
 
-    void RotateTowardsPlayer()
-    {
-        Vector3 rotateDirection = new(Player.transform.position.x, 0, Player.transform.position.z);
-        Quaternion targetRotation = Quaternion.LookRotation(rotateDirection - transform.position);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-    }
-
-    bool IsHit()
-    {
-        return mAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "GetHit";
+        // Rotate while walks
+        Vector3 direction = mNavMeshAgent.velocity.normalized;
+        if (direction != Vector3.zero)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * mNavMeshAgent.angularSpeed);
+        }
     }
 
     void HitPlayer()
