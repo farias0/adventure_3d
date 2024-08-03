@@ -102,7 +102,14 @@ public class Enemy : MonoBehaviour
 
         mAnimator.SetInteger("MovementState", animationMoveState.GetHashCode());
     }
-    
+
+    void OnTriggerStay(Collider other)
+    {
+        if (IsDead()) return;
+
+        if (other.CompareTag("Player")) HitPlayer();
+    }
+
     void Ressurect()
     {
         mLives = Lives;
