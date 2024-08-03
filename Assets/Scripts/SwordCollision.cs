@@ -16,11 +16,11 @@ public class SwordCollision : MonoBehaviour
         
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider collider)
     {
-        if (collision.collider.CompareTag("Enemy"))
+        if (collider.CompareTag("Enemy"))
         {
-            Enemy enemy = collision.collider.GetComponent<Enemy>();
+            Enemy enemy = collider.GetComponent<Enemy>();
             enemy.GetHit();
         }
     }

@@ -343,6 +343,7 @@ MonoBehaviour:
   SpeedWalking: 5
   SpeedRunning: 0
   RotationSpeed: 10
+  Lives: 2
 --- !u!136 &1275889475
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -363,9 +364,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2
+  m_Height: 1.5
   m_Direction: 1
-  m_Center: {x: 0, y: 0.7, z: 0}
+  m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!54 &1275889476
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -417,7 +418,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.06, y: 0.6, z: 0.08}
+  m_Size: {x: 0.2, y: 0.7, z: 0.15}
   m_Center: {x: 0, y: -0.6, z: 0}
 --- !u!114 &1407468618
 MonoBehaviour:

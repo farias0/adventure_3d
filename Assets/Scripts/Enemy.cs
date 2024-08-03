@@ -13,15 +13,43 @@ public class Enemy : MonoBehaviour
     public float SpeedWalking;
     public float SpeedRunning;
     public float RotationSpeed;
+    public int Lives;
 
     private Animator mAnimator;
     private Rigidbody mRigidbody;
     private Collider mCollider;
+    private int mLives;
+    private float mBlinkCountdown = 0;
 
+
+    public bool IsDead()
+    {
+        return mLives == 0;
+    }
 
     public void GetHit()
     {
-        mAnimator.SetTrigger("GetHit");
+        if (mLives < 0)
+        {
+            Debug.LogError("Enemy with negative lives! Lives: " + mLives);
+            return;
+        }
+
+        if (IsDead()) return;
+        
+        mLives--;
+        
+        if (IsDead())
+        {
+            mAnimator.SetTrigger("Die");
+            Debug.Log("Enemy dead");
+        }
+        else
+        {
+            mAnimator.SetTrigger("GetHit");
+            mBlinkCountdown = 0.5f;
+            Debug.Log("Enemy hit. Lives left: " + mLives);
+        }
     }
 
 
@@ -32,6 +60,17 @@ public class Enemy : MonoBehaviour
         mRigidbody = GetComponent<Rigidbody>();
         mCollider = GetComponent<Collider>();
 
+        if (Lives < 0)
+        {
+            Debug.LogError("Enemy with negative lives");
+            mLives = 0;
+        }
+        else
+        {
+            mLives = Lives;
+        }
+
+
         // We don't want the player pushing the enemy around
         Physics.IgnoreCollision(GetComponent<Collider>(), Player.GetComponent<Collider>());
     }
@@ -39,22 +78,25 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (mLives == 0) return; // Dead :(
+
+
         AnimationMoveState animationMoveState = (AnimationMoveState) mAnimator.GetInteger("MovementState");
-        float distanceFromPlayer = Vector3.Distance(transform.position, Player.transform.position);
+        // float distanceFromPlayer = Vector3.Distance(transform.position, Player.transform.position);
 
         
-        if (!IsHit()) {
-            if (distanceFromPlayer > 1)
-            {
-                RotateTowardsPlayer();
-                MoveTowardsPlayer(SpeedWalking);
-                animationMoveState = AnimationMoveState.Walk;
-            }
-            else
-            {
-                animationMoveState = AnimationMoveState.Idle;
-            }
-        }
+        // if (!IsHit()) {
+        //     if (distanceFromPlayer > 1)
+        //     {
+        //         RotateTowardsPlayer();
+        //         MoveTowardsPlayer(SpeedWalking);
+        //         animationMoveState = AnimationMoveState.Walk;
+        //     }
+        //     else
+        //     {
+        //         animationMoveState = AnimationMoveState.Idle;
+        //     }
+        // }
 
 
         // Manually check for collision with the player
@@ -62,6 +104,14 @@ public class Enemy : MonoBehaviour
         {
 
             HitPlayer();
+        }
+
+
+        // Blink if hit recently
+        if (mBlinkCountdown > 0) {
+            mBlinkCountdown -= Time.deltaTime;
+            if (mBlinkCountdown <= 0) SetVisibility(true);
+            else BlinkThisFrame();
         }
 
 
@@ -92,4 +142,21 @@ public class Enemy : MonoBehaviour
         Player.GetComponent<PlayerMovement>().GetHit();
     }
 
+    void BlinkThisFrame()
+    {
+        SetVisibility(Time.timeSinceLevelLoad % 0.1 < 0.05);
+    }
+
+    void SetVisibility(bool visible)
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            // This checks if the child has a renderer component.
+            // The linter suggested this to avoid needlesly
+            // allocating the component if it doesn't have one.
+            if (!transform.GetChild(i).gameObject.TryGetComponent<Renderer>(out var rend)) continue;
+
+            rend.enabled = visible;
+        }
+    }
 }
