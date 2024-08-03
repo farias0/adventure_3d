@@ -87,6 +87,8 @@ public class Enemy : MonoBehaviour
             mBlinkCountdown -= Time.deltaTime;
             if (mBlinkCountdown <= 0) SetVisibility(true);
             else BlinkThisFrame();
+            mNavMeshAgent.SetDestination(transform.position); // stop in place
+            return;
         }
 
 
