@@ -125,6 +125,14 @@ public class PlayerMovement : MonoBehaviour
         mAnimator.SetInteger("MovementState", animationMoveState.GetHashCode());
     }
 
+    void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            GetHit();
+        }
+    }
+
     void CrouchToggle()
     {
         mIsCrouched = !mIsCrouched;

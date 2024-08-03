@@ -90,7 +90,7 @@ public class Enemy : MonoBehaviour
         }
 
 
-        if (mLives == 0) return; // Dead :(
+        if (IsDead()) return;
 
 
         AnimationMoveState animationMoveState = (AnimationMoveState) mAnimator.GetInteger("MovementState");
@@ -100,17 +100,9 @@ public class Enemy : MonoBehaviour
         animationMoveState = AnimationMoveState.Walk;
 
 
-        // Manually check for collision with the player
-        if (mCollider.bounds.Intersects(Player.GetComponent<Collider>().bounds))
-        {
-            Debug.Log("Player hit by enemy");
-            HitPlayer();
-        }
-
-
         mAnimator.SetInteger("MovementState", animationMoveState.GetHashCode());
     }
-
+    
     void Ressurect()
     {
         mLives = Lives;
