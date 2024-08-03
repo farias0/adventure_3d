@@ -513,6 +513,8 @@ MonoBehaviour:
   RotationSpeed: 10
   Lives: 2
   InvincibleTime: 0.5
+  VisionConeRadius: 10
+  VisionConeAngle: 60
 --- !u!136 &1275889475
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -641,7 +643,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1696834749189059949, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_Name
-      value: Enemy1
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 1696834749189059949, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_TagString
@@ -1303,9 +1305,9 @@ SceneRoots:
   - {fileID: 705507995}
   - {fileID: 1778959975}
   - {fileID: 1728005495}
+  - {fileID: 1508859925}
+  - {fileID: 644498526}
   - {fileID: 1779959024}
   - {fileID: 1534033591}
-  - {fileID: 1508859925}
   - {fileID: 256553330}
   - {fileID: 1801312536}
-  - {fileID: 644498526}

@@ -15,6 +15,9 @@ public class Enemy : MonoBehaviour
     public float RotationSpeed;
     public int Lives;
     public float InvincibleTime;
+    public float VisionConeRadius;
+    [Range(0,360)]
+    public float VisionConeAngle;
 
     private Animator mAnimator;
     private Collider mCollider;
@@ -87,7 +90,7 @@ public class Enemy : MonoBehaviour
             mBlinkCountdown -= Time.deltaTime;
             if (mBlinkCountdown <= 0) SetVisibility(true);
             else BlinkThisFrame();
-            mNavMeshAgent.SetDestination(transform.position); // stop in place
+            StopInPlace();
             return;
         }
 
@@ -98,8 +101,16 @@ public class Enemy : MonoBehaviour
         AnimationMoveState animationMoveState = (AnimationMoveState) mAnimator.GetInteger("MovementState");
 
 
-        MoveTowardsPlayer();
-        animationMoveState = AnimationMoveState.Walk;
+        if (SeesPlayer())
+        {
+            MoveTowardsPlayer();
+            animationMoveState = AnimationMoveState.Walk;
+        }
+        else
+        {
+            StopInPlace();    
+            animationMoveState = AnimationMoveState.Idle;
+        }
 
 
         mAnimator.SetInteger("MovementState", animationMoveState.GetHashCode());
@@ -134,6 +145,31 @@ public class Enemy : MonoBehaviour
     void HitPlayer()
     {
         Player.GetComponent<PlayerMovement>().GetHit();
+    }
+
+    bool SeesPlayer()
+    {
+        Vector3 direction = Player.transform.position - transform.position;
+        
+        float distance = direction.magnitude;
+        if (distance > VisionConeRadius) return false;
+
+        float angle = Vector3.Angle(transform.forward, direction);
+        if (angle > VisionConeAngle) return false;
+
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, direction, out hit))
+            if (hit.collider.gameObject != Player) return false;
+            
+
+        return true;
+    }
+
+    // Necessary because the NavMeshAgent aparently doesn't stop immediately
+    void StopInPlace()
+    {
+        mNavMeshAgent.SetDestination(transform.position);
     }
 
     void BlinkThisFrame()
