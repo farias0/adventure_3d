@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour
     public float SpeedRunning;
     public float RotationSpeed;
     public int Lives;
+    public float InvincibleTime;
 
     private Animator mAnimator;
     private Rigidbody mRigidbody;
@@ -36,19 +37,19 @@ public class Enemy : MonoBehaviour
         }
 
         if (IsDead()) return;
+
+        if (mBlinkCountdown > 0) return;
         
         mLives--;
+        mBlinkCountdown = InvincibleTime;
         
         if (IsDead())
         {
             mAnimator.SetTrigger("Die");
-            Debug.Log("Enemy dead");
         }
         else
         {
             mAnimator.SetTrigger("GetHit");
-            mBlinkCountdown = 0.5f;
-            Debug.Log("Enemy hit. Lives left: " + mLives);
         }
     }
 
@@ -78,6 +79,14 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Blink if hit recently
+        if (mBlinkCountdown > 0) {
+            mBlinkCountdown -= Time.deltaTime;
+            if (mBlinkCountdown <= 0) SetVisibility(true);
+            else BlinkThisFrame();
+        }
+
+
         if (mLives == 0) return; // Dead :(
 
 
@@ -104,14 +113,6 @@ public class Enemy : MonoBehaviour
         {
 
             HitPlayer();
-        }
-
-
-        // Blink if hit recently
-        if (mBlinkCountdown > 0) {
-            mBlinkCountdown -= Time.deltaTime;
-            if (mBlinkCountdown <= 0) SetVisibility(true);
-            else BlinkThisFrame();
         }
 
 

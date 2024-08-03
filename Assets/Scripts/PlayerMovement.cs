@@ -14,6 +14,7 @@ enum AnimationMoveState
 public class PlayerMovement : MonoBehaviour
 {
     // TODO consider making some of these constants to clear up the component in the inspector
+    public GameObject Weapon;
     public float SpeedStanding;
     public float SpeedCrouched;
     public float HeightCrouched;
@@ -106,12 +107,20 @@ public class PlayerMovement : MonoBehaviour
             mController.Move(fall * Time.deltaTime);
         }
 
-       
+
+        // Blink if hit recently
         if (mInvincibleCountdown > 0) {
             mInvincibleCountdown -= Time.deltaTime;
             if (mInvincibleCountdown <= 0) SetVisibility(true);
             else BlinkThisFrame();
         }
+
+
+        // Activates weapon during attack
+        // TODO maybe don't run this every frame
+        if (IsAttacking()) SetWeaponActive(true);
+        else SetWeaponActive(false);
+
 
         mAnimator.SetInteger("MovementState", animationMoveState.GetHashCode());
     }
@@ -133,7 +142,7 @@ public class PlayerMovement : MonoBehaviour
 
     bool IsAttacking()
     {
-        return mAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Attack";
+        return mAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
     }
 
     bool IsGettingHit()
@@ -150,5 +159,11 @@ public class PlayerMovement : MonoBehaviour
     {
         Renderer rend = transform.Find("polySurface1").gameObject.GetComponent<Renderer>();
         rend.enabled = visible;
+    }
+
+    void SetWeaponActive(bool active)
+    {
+        Collider collider = Weapon.GetComponent<Collider>();
+        collider.enabled = active;
     }
 }
