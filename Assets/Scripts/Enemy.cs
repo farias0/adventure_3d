@@ -2,10 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-enum EnemyState {
-    Idle,
-    Chasing
-}
 
 public class Enemy : MonoBehaviour
 {
@@ -20,7 +16,8 @@ public class Enemy : MonoBehaviour
     private UnityEngine.AI.NavMeshAgent mNavMeshAgent;
     private int mLives;
     private float mBlinkCountdown = 0;
-    private EnemyState mState = EnemyState.Idle;
+    private Vector3 mIdleDestination; // The destination the enemy will walk to when idle
+    private float mIdleStopCountdown; // The time the enemy will stay in place when it arrives at the idle destination
 
 
     public bool IsDead()
@@ -96,7 +93,7 @@ public class Enemy : MonoBehaviour
 
 
         if (SeesPlayer()) ChasePlayer();
-        else GoIdle();
+        else WalkAroundIdly();
     }
 
     void OnTriggerStay(Collider other)
@@ -112,22 +109,54 @@ public class Enemy : MonoBehaviour
         mAnimator.SetTrigger("Ressurrect");
     }
 
-    void GoIdle()
-    {
-        AnimationSetIdle();
-        mState = EnemyState.Idle;
-    }
-
     void ChasePlayer()
     {
         AnimationSetWalk();
-        MoveTowardsPlayer();
-        mState = EnemyState.Chasing;
+        MoveTowards(Player.transform.position);
+        // TODO run instead 
     }
 
-    void MoveTowardsPlayer()
+    // Takes a little stroll around while doing nothing
+    void WalkAroundIdly()
     {
-        mNavMeshAgent.SetDestination(Player.transform.position);
+        if (mIdleStopCountdown == -1)
+        {
+            AnimationSetWalk();
+            MoveTowards(mIdleDestination);
+            
+            if (Vector3.Distance(transform.position, mIdleDestination) < 1)
+            {
+                // Go idle
+                StopInPlace();
+                mIdleStopCountdown = 3; // TODO random time maybe?
+            }
+
+        }
+        else
+        {
+            AnimationSetIdle();
+            mIdleStopCountdown -= Time.deltaTime;
+
+            if (mIdleStopCountdown <= 0)
+            {
+                // Go towards a new destination
+                mIdleDestination = transform.position + Random.insideUnitSphere * 5;
+                mIdleDestination.y = 0;
+                mIdleStopCountdown = -1;
+                /*
+                    TODO
+                    - make the sphere around the starting point
+                    - within the navmesh
+                    - or with a raycast to it maybe? only goes to where it can see?
+                    - with min distance
+                */
+            }
+        }
+    }
+
+    void MoveTowards(Vector3 destination)
+    {
+        mNavMeshAgent.SetDestination(destination);
 
         // Rotate while walks
         Vector3 direction = mNavMeshAgent.velocity.normalized;
