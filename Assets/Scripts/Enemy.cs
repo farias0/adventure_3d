@@ -47,8 +47,8 @@ public class Enemy : MonoBehaviour
             if (distanceFromPlayer > 1)
             {
                 RotateTowardsPlayer();
-                MoveTowardsPlayer(SpeedRunning);
-                animationMoveState = AnimationMoveState.Run;
+                MoveTowardsPlayer(SpeedWalking);
+                animationMoveState = AnimationMoveState.Walk;
             }
             else
             {
@@ -60,6 +60,7 @@ public class Enemy : MonoBehaviour
         // Manually check for collision with the player
         if (mCollider.bounds.Intersects(Player.GetComponent<Collider>().bounds))
         {
+
             HitPlayer();
         }
 
