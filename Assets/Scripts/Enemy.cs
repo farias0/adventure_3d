@@ -79,6 +79,9 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.M)) Ressurect(); // FOR DEBUGGING
+
+
         // Blink if hit recently
         if (mBlinkCountdown > 0) {
             mBlinkCountdown -= Time.deltaTime;
@@ -117,6 +120,12 @@ public class Enemy : MonoBehaviour
 
 
         mAnimator.SetInteger("MovementState", animationMoveState.GetHashCode());
+    }
+
+    void Ressurect()
+    {
+        mLives = Lives;
+        mAnimator.SetTrigger("Ressurrect");
     }
 
     void MoveTowardsPlayer(float speed)
