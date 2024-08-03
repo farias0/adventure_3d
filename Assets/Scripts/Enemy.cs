@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-enum EnemyMode {
+enum EnemyState {
     Idle,
     Chasing
 }
@@ -10,9 +10,6 @@ enum EnemyMode {
 public class Enemy : MonoBehaviour
 {
     public GameObject Player;
-    public float SpeedWalking;
-    public float SpeedRunning;
-    public float RotationSpeed;
     public int Lives;
     public float InvincibleTime;
     public float VisionConeRadius;
@@ -20,10 +17,10 @@ public class Enemy : MonoBehaviour
     public float VisionConeAngle;
 
     private Animator mAnimator;
-    private Collider mCollider;
     private UnityEngine.AI.NavMeshAgent mNavMeshAgent;
     private int mLives;
     private float mBlinkCountdown = 0;
+    private EnemyState mState = EnemyState.Idle;
 
 
     public bool IsDead()
@@ -62,7 +59,6 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         mAnimator = GetComponent<Animator>();
-        mCollider = GetComponent<Collider>();
         mNavMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 
         if (Lives < 0)
@@ -99,22 +95,8 @@ public class Enemy : MonoBehaviour
         if (IsDead()) return;
 
 
-        AnimationMoveState animationMoveState = (AnimationMoveState) mAnimator.GetInteger("MovementState");
-
-
-        if (SeesPlayer())
-        {
-            MoveTowardsPlayer();
-            animationMoveState = AnimationMoveState.Walk;
-        }
-        else
-        {
-            StopInPlace();    
-            animationMoveState = AnimationMoveState.Idle;
-        }
-
-
-        mAnimator.SetInteger("MovementState", animationMoveState.GetHashCode());
+        if (SeesPlayer()) ChasePlayer();
+        else GoIdle();
     }
 
     void OnTriggerStay(Collider other)
@@ -130,6 +112,19 @@ public class Enemy : MonoBehaviour
         mAnimator.SetTrigger("Ressurrect");
     }
 
+    void GoIdle()
+    {
+        AnimationSetIdle();
+        mState = EnemyState.Idle;
+    }
+
+    void ChasePlayer()
+    {
+        AnimationSetWalk();
+        MoveTowardsPlayer();
+        mState = EnemyState.Chasing;
+    }
+
     void MoveTowardsPlayer()
     {
         mNavMeshAgent.SetDestination(Player.transform.position);
@@ -141,6 +136,16 @@ public class Enemy : MonoBehaviour
             Quaternion lookRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * mNavMeshAgent.angularSpeed);
         }
+    }
+
+    private void AnimationSetIdle()
+    {
+        mAnimator.SetInteger("MovementState", AnimationMoveState.Idle.GetHashCode());
+    }
+
+    private void AnimationSetWalk()
+    {
+        mAnimator.SetInteger("MovementState", AnimationMoveState.Walk.GetHashCode());
     }
 
     void RotateTowardsPlayerImmediately()
