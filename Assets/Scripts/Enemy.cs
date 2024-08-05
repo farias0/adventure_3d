@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 public class Enemy : MonoBehaviour
@@ -13,13 +14,13 @@ public class Enemy : MonoBehaviour
     public float VisionConeAngle;
     public float WalkSpeed; // Overrides the NavMeshAgent speed
     public float RunSpeed;
+    public Transform[] PatrolPoints;
 
     private Animator mAnimator;
-    private UnityEngine.AI.NavMeshAgent mNavMeshAgent;
+    private NavMeshAgent mNavMeshAgent;
     private int mLives;
     private float mBlinkCountdown = 0;
-    private Vector3 mIdleDestination; // The destination the enemy will walk to when idle
-    private float mIdleStopCountdown; // The time the enemy will stay in place when it arrives at the idle destination
+    private int mCurrentPatrolPoint = 0;
 
 
     public bool IsDead()
@@ -73,6 +74,11 @@ public class Enemy : MonoBehaviour
 
         // We don't want the player pushing the enemy around
         Physics.IgnoreCollision(GetComponent<Collider>(), Player.GetComponent<Collider>());
+
+        // Disabling auto-braking allows for continuous movement
+        // between points (ie, the agent doesn't slow down as it
+        // approaches a destination point).
+        mNavMeshAgent.autoBraking = false;
     }
 
     // Update is called once per frame
@@ -95,7 +101,7 @@ public class Enemy : MonoBehaviour
 
 
         if (SeesPlayer()) ChasePlayer();
-        else WalkAroundIdly();
+        else PatrolArea();
     }
 
     void OnTriggerStay(Collider other)
@@ -118,44 +124,20 @@ public class Enemy : MonoBehaviour
         MoveTowards(Player.transform.position);
     }
 
-    // Takes a little stroll around while doing nothing
-    void WalkAroundIdly()
+    // Follows the patrol points in order
+    void PatrolArea()
     {
-        if (mIdleStopCountdown == -1)
-        {
-            AnimationSetWalk();
-            mNavMeshAgent.speed = WalkSpeed;
-            MoveTowards(mIdleDestination);
-            
-            if (Vector3.Distance(transform.position, mIdleDestination) < 1)
-            {
-                // Go idle
-                StopInPlace();
-                mIdleStopCountdown = 3; // TODO random time maybe?
-            }
+        if (PatrolPoints.Length == 0) return;
 
-        }
-        else
-        {
-            StopInPlace();
-            AnimationSetIdle();
-            mIdleStopCountdown -= Time.deltaTime;
+        if (mNavMeshAgent.remainingDistance < 0.5f)
+            // Attention: This means the first patrol point to be visited is the second one
+            mCurrentPatrolPoint = (mCurrentPatrolPoint + 1) % PatrolPoints.Length;
 
-            if (mIdleStopCountdown <= 0)
-            {
-                // Go towards a new destination
-                mIdleDestination = transform.position + Random.insideUnitSphere * 5;
-                mIdleDestination.y = 0;
-                mIdleStopCountdown = -1;
-                /*
-                    TODO
-                    - make the sphere around the starting point
-                    - within the navmesh
-                    - or with a raycast to it maybe? only goes to where it can see?
-                    - with min distance
-                */
-            }
-        }
+        // By setting these every frame, we avoid having to control
+        // is we're transitioning into patrolling the area
+        AnimationSetWalk();
+        mNavMeshAgent.speed = WalkSpeed;
+        MoveTowards(PatrolPoints[mCurrentPatrolPoint].position);
     }
 
     void MoveTowards(Vector3 destination)
