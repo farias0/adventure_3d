@@ -11,6 +11,8 @@ public class Enemy : MonoBehaviour
     public float VisionConeRadius;
     [Range(0,360)]
     public float VisionConeAngle;
+    public float WalkSpeed; // Overrides the NavMeshAgent speed
+    public float RunSpeed;
 
     private Animator mAnimator;
     private UnityEngine.AI.NavMeshAgent mNavMeshAgent;
@@ -111,9 +113,9 @@ public class Enemy : MonoBehaviour
 
     void ChasePlayer()
     {
-        AnimationSetWalk();
+        AnimationSetRun();
+        mNavMeshAgent.speed = RunSpeed;
         MoveTowards(Player.transform.position);
-        // TODO run instead 
     }
 
     // Takes a little stroll around while doing nothing
@@ -122,6 +124,7 @@ public class Enemy : MonoBehaviour
         if (mIdleStopCountdown == -1)
         {
             AnimationSetWalk();
+            mNavMeshAgent.speed = WalkSpeed;
             MoveTowards(mIdleDestination);
             
             if (Vector3.Distance(transform.position, mIdleDestination) < 1)
@@ -134,6 +137,7 @@ public class Enemy : MonoBehaviour
         }
         else
         {
+            StopInPlace();
             AnimationSetIdle();
             mIdleStopCountdown -= Time.deltaTime;
 
@@ -175,6 +179,11 @@ public class Enemy : MonoBehaviour
     private void AnimationSetWalk()
     {
         mAnimator.SetInteger("MovementState", AnimationMoveState.Walk.GetHashCode());
+    }
+
+    private void AnimationSetRun()
+    {
+        mAnimator.SetInteger("MovementState", AnimationMoveState.Run.GetHashCode());
     }
 
     void RotateTowardsPlayerImmediately()

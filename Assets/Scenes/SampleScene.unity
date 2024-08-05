@@ -508,13 +508,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 1945059814}
-  SpeedWalking: 5
-  SpeedRunning: 0
-  RotationSpeed: 10
   Lives: 2
   InvincibleTime: 0.5
   VisionConeRadius: 10
   VisionConeAngle: 60
+  WalkSpeed: 1.5
+  RunSpeed: 2.3
 --- !u!136 &1275889475
 CapsuleCollider:
   m_ObjectHideFlags: 0
