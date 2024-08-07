@@ -6,8 +6,8 @@ TerrainLayer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: NewLayer 3
-  m_DiffuseTexture: {fileID: 2800000, guid: 6476f27117d1c0d46912f8ceafdfb976, type: 3}
+  m_Name: forestpack_moss_light_terrainlayer
+  m_DiffuseTexture: {fileID: 2800000, guid: 6ef7d22155515994d942e19bb82700d4, type: 3}
   m_NormalMapTexture: {fileID: 0}
   m_MaskMapTexture: {fileID: 0}
   m_TileSize: {x: 2, y: 2}
