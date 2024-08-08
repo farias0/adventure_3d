@@ -54,6 +54,14 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void HitPlayer()
+    {
+        
+        if (IsDead()) return;
+
+        Player.GetComponent<PlayerMovement>().GetHit();
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -88,6 +96,7 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.M)) Ressurect(); // FOR DEBUGGING
+        if (Input.GetKeyDown(KeyCode.N)) Attack(); // FOR DEBUGGING
 
 
         // Blink if hit recently
@@ -109,8 +118,6 @@ public class Enemy : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if (IsDead()) return;
-
         if (other.CompareTag("Player")) HitPlayer();
     }
 
@@ -122,9 +129,12 @@ public class Enemy : MonoBehaviour
 
     void ChasePlayer()
     {
-        AnimationSetRun();
-        mNavMeshAgent.speed = RunSpeed;
-        MoveTowards(Player.transform.position);
+        if (!IsAttacking())
+        {
+            AnimationSetRun();
+            mNavMeshAgent.speed = RunSpeed;
+            MoveTowards(Player.transform.position);
+        }
     }
 
     // Follows the patrol points in order
@@ -135,11 +145,14 @@ public class Enemy : MonoBehaviour
         if (mNavMeshAgent.remainingDistance < 0.5f)
             mCurrentPatrolPoint = (mCurrentPatrolPoint + 1) % PatrolPoints.Length;
 
-        // By setting these every frame, we avoid having to control
-        // is we're transitioning into patrolling the area
-        AnimationSetWalk();
-        mNavMeshAgent.speed = WalkSpeed;
-        MoveTowards(PatrolPoints[mCurrentPatrolPoint].position);
+        if (!IsAttacking())
+        {
+            // By setting these every frame, we avoid having to control
+            // is we're transitioning into patrolling the area
+            AnimationSetWalk();
+            mNavMeshAgent.speed = WalkSpeed;
+            MoveTowards(PatrolPoints[mCurrentPatrolPoint].position);
+        }
     }
 
     void MoveTowards(Vector3 destination)
@@ -153,6 +166,11 @@ public class Enemy : MonoBehaviour
             Quaternion lookRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * mNavMeshAgent.angularSpeed);
         }
+    }
+
+    private void Attack()
+    {
+        mAnimator.SetTrigger("Attack");
     }
 
     private void AnimationSetIdle()
@@ -170,17 +188,17 @@ public class Enemy : MonoBehaviour
         mAnimator.SetInteger("MovementState", AnimationMoveState.Run.GetHashCode());
     }
 
+    bool IsAttacking()
+    {
+        return mAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Attack");
+    }
+
     void RotateTowardsPlayerImmediately()
     {
         Vector3 direction = Player.transform.position - transform.position;
         direction.y = 0;
         Quaternion lookRotation = Quaternion.LookRotation(direction);
         transform.rotation = lookRotation;
-    }
-
-    void HitPlayer()
-    {
-        Player.GetComponent<PlayerMovement>().GetHit();
     }
 
     bool SeesPlayer()
