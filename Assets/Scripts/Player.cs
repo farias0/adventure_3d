@@ -68,9 +68,9 @@ public class PlayerMovement : MonoBehaviour
         //if (Input.GetKeyDown(KeyCode.M)) Debug.Log("Is crouched: " + mIsCrouched.ToString()); // FOR DEBUGGING
 
 
-        if (Input.GetButtonDown("Fire1")) Attack();
-        if (Input.GetButtonDown("Fire2")) CrouchToggle();
-        mInteractedThisFrame = Input.GetButtonDown("Jump");
+        if (Input.GetButtonDown("Attack")) Attack();
+        if (Input.GetButtonDown("Crouch")) CrouchToggle();
+        mInteractedThisFrame = Input.GetButtonDown("Interact");
 
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
