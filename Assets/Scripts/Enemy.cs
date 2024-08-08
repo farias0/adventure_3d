@@ -72,6 +72,9 @@ public class Enemy : MonoBehaviour
         }
 
 
+        // Otherwise the first patrol point would be the second one in the list
+        mCurrentPatrolPoint = PatrolPoints.Length - 1;
+
         // We don't want the player pushing the enemy around
         Physics.IgnoreCollision(GetComponent<Collider>(), Player.GetComponent<Collider>());
 
@@ -130,7 +133,6 @@ public class Enemy : MonoBehaviour
         if (PatrolPoints.Length == 0) return;
 
         if (mNavMeshAgent.remainingDistance < 0.5f)
-            // Attention: This means the first patrol point to be visited is the second one
             mCurrentPatrolPoint = (mCurrentPatrolPoint + 1) % PatrolPoints.Length;
 
         // By setting these every frame, we avoid having to control
