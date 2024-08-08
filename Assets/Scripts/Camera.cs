@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,22 +34,22 @@ public class CameraFollow : MonoBehaviour
 
         if (playerMovement.x > 0) // Player moving to the right
         {
-            mOffsetHor = Mathf.Min(mOffsetHor + playerMovement.x * Speed, MinVisibilityHor);
+            mOffsetHor = Mathf.Min(mOffsetHor + Mathf.Pow(playerMovement.x, 1/Speed), MinVisibilityHor);
         }
         else if (playerMovement.x < 0) // Player moving to the left
         {
-            mOffsetHor = Mathf.Max(mOffsetHor + playerMovement.x * Speed, -MinVisibilityHor);
+            mOffsetHor = Mathf.Max(mOffsetHor + Mathf.Pow(Mathf.Abs(playerMovement.x), 1/Speed) * Mathf.Sign(playerMovement.x), -MinVisibilityHor);
         }
 
         if (playerMovement.z > 0) // Player moving forward
         {
-            mOffsetVer = Mathf.Min(mOffsetVer + playerMovement.z * Speed, MinVisibilityVer);
+            mOffsetVer = Mathf.Min(mOffsetVer + Mathf.Pow(playerMovement.z, 1/Speed), MinVisibilityVer);
         }
         else if (playerMovement.z < 0) // Player moving backward
         {
-            mOffsetVer = Mathf.Max(mOffsetVer + playerMovement.z * Speed, -MinVisibilityVer);
+            mOffsetVer = Mathf.Max(mOffsetVer + Mathf.Pow(Math.Abs(playerMovement.z), 1/Speed) * Mathf.Sign(playerMovement.z), -MinVisibilityVer);
         }
-
+        
         Vector3 pos = transform.position;
         pos.x = Player.transform.position.x + mOffsetHor;
         pos.y = Player.transform.position.y + mDistancePlayersHead;
