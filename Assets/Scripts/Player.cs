@@ -70,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetButtonDown("Attack1")) Attack1();
         if (Input.GetButtonDown("Attack2")) Attack2();
+        //if (Input.GetButtonDown("Attack3")) Attack3();
         if (Input.GetButtonDown("Crouch")) CrouchToggle();
         mInteractedThisFrame = Input.GetButtonDown("Interact");
 
@@ -158,6 +159,11 @@ public class PlayerMovement : MonoBehaviour
     void Attack2()
     {
         mAnimator.SetTrigger("Attack2");
+    }
+
+    void Attack3()
+    {
+        mAnimator.SetTrigger("Attack3");
     }
 
     bool IsAttacking()
