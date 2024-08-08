@@ -1267,8 +1267,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 1578291719}
-  MinVisibilityHor: 6
-  MinVisibilityVer: 3
+  MinVisibilityHor: 3.5
+  MinVisibilityVer: 2
   Speed: 1.2
 --- !u!1001 &1024133946
 PrefabInstance:
@@ -1743,6 +1743,10 @@ PrefabInstance:
       propertyPath: Player
       value: 
       objectReference: {fileID: 1578291719}
+    - target: {fileID: 2016087936195835928, guid: e303d5b4301d4a441a8c3ea3b4780346, type: 3}
+      propertyPath: InvincibleTime
+      value: 0.35
+      objectReference: {fileID: 0}
     - target: {fileID: 5501295356707062959, guid: e303d5b4301d4a441a8c3ea3b4780346, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7.12
