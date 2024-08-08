@@ -68,7 +68,8 @@ public class PlayerMovement : MonoBehaviour
         //if (Input.GetKeyDown(KeyCode.M)) Debug.Log("Is crouched: " + mIsCrouched.ToString()); // FOR DEBUGGING
 
 
-        if (Input.GetButtonDown("Attack")) Attack();
+        if (Input.GetButtonDown("Attack1")) Attack1();
+        if (Input.GetButtonDown("Attack2")) Attack2();
         if (Input.GetButtonDown("Crouch")) CrouchToggle();
         mInteractedThisFrame = Input.GetButtonDown("Interact");
 
@@ -149,9 +150,14 @@ public class PlayerMovement : MonoBehaviour
         mController.radius = mIsCrouched ? mCharacterRadiusCrouched : mCharacterRadiusDefault;
     }
 
-    void Attack()
+    void Attack1()
     {
-        mAnimator.SetTrigger("Attack");
+        mAnimator.SetTrigger("Attack1");
+    }
+
+    void Attack2()
+    {
+        mAnimator.SetTrigger("Attack2");
     }
 
     bool IsAttacking()
