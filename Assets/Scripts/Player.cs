@@ -78,6 +78,8 @@ public class PlayerMovement : MonoBehaviour
         float moveZ = Input.GetAxis("Vertical");
 
 
+        bool isAttacking = IsAttacking();
+
 
         // For keyboards
         if ((Math.Abs(moveX) == 1) && (Math.Abs(moveZ) == 1))
@@ -94,7 +96,7 @@ public class PlayerMovement : MonoBehaviour
         if (move.magnitude > IdleToWalkThreshold)
         {
 
-            if (!IsAttacking() && !IsGettingHit())
+            if (!isAttacking && !IsGettingHit())
             {
                 // Move player
                 mController.Move(mSpeed * Time.deltaTime * move);
@@ -131,8 +133,7 @@ public class PlayerMovement : MonoBehaviour
 
 
         // Activates weapon during attack
-        // TODO maybe don't run this every frame
-        if (IsAttacking()) SetWeaponActive(true);
+        if (isAttacking) SetWeaponActive(true);
         else SetWeaponActive(false);
 
 
