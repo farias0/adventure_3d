@@ -32,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
     bool mIsCrouched = false;
     float mInvincibleCountdown = 0; // Controls if the player is invincible
     bool mInteractedThisFrame = false;
+    float mCharacterRadiusDefault;
+    float mCharacterRadiusCrouched; // So the player doesn't float when its squished
 
 
     public void GetHit()
@@ -55,6 +57,9 @@ public class PlayerMovement : MonoBehaviour
 
         mHeightStanding = transform.localScale.y;
         mSpeed = SpeedStanding;
+        
+        mCharacterRadiusDefault = mController.radius;
+        mCharacterRadiusCrouched = mCharacterRadiusDefault * (HeightCrouched / mHeightStanding);
     }
 
     // Update is called once per frame
@@ -140,6 +145,8 @@ public class PlayerMovement : MonoBehaviour
         Vector3 scale = transform.localScale;
         scale.y = mIsCrouched ? HeightCrouched : mHeightStanding;
         transform.localScale = scale;
+
+        mController.radius = mIsCrouched ? mCharacterRadiusCrouched : mCharacterRadiusDefault;
     }
 
     void Attack()
