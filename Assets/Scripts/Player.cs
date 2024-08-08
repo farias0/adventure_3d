@@ -168,7 +168,7 @@ public class PlayerMovement : MonoBehaviour
 
     bool IsAttacking()
     {
-        return mAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
+        return mAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Attack");
     }
 
     bool IsGettingHit()
