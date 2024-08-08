@@ -1269,6 +1269,7 @@ MonoBehaviour:
   Player: {fileID: 1578291719}
   MinVisibilityX: 100
   MinVisibilityY: 50
+  Speed: 0
 --- !u!1001 &1024133946
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1856,9 +1857,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1236722228488703227, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
+      propertyPath: m_SkinWidth
+      value: 0.0001
+      objectReference: {fileID: 0}
     - target: {fileID: 1426381783355051311, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
       propertyPath: InteractionRadius
       value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2247828490562785023, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
+      propertyPath: m_Center.y
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2670275071614443411, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
       propertyPath: m_LocalPosition.x
