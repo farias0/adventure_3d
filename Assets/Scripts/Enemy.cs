@@ -18,9 +18,11 @@ public class Enemy : MonoBehaviour
 
     private Animator mAnimator;
     private NavMeshAgent mNavMeshAgent;
+    private Collider mAttackCollider;
     private int mLives;
     private float mBlinkCountdown = 0;
     private int mCurrentPatrolPoint = 0;
+    private bool mIsAttacking;
 
 
     public bool IsDead()
@@ -56,7 +58,7 @@ public class Enemy : MonoBehaviour
 
     public void HitPlayer()
     {
-        
+
         if (IsDead()) return;
 
         Player.GetComponent<PlayerMovement>().GetHit();
@@ -90,6 +92,8 @@ public class Enemy : MonoBehaviour
         // between points (ie, the agent doesn't slow down as it
         // approaches a destination point).
         mNavMeshAgent.autoBraking = false;
+
+        mAttackCollider = transform.Find("AttackCollider").GetComponent<Collider>();
     }
 
     // Update is called once per frame
@@ -97,6 +101,9 @@ public class Enemy : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.M)) Ressurect(); // FOR DEBUGGING
         if (Input.GetKeyDown(KeyCode.N)) Attack(); // FOR DEBUGGING
+
+
+        mIsAttacking = IsAttacking();
 
 
         // Blink if hit recently
@@ -114,6 +121,10 @@ public class Enemy : MonoBehaviour
 
         if (SeesPlayer()) ChasePlayer();
         else PatrolArea();
+
+
+        if (mIsAttacking) SetAttackColliderActive(true);
+        else SetAttackColliderActive(false);
     }
 
     void OnTriggerStay(Collider other)
@@ -129,7 +140,7 @@ public class Enemy : MonoBehaviour
 
     void ChasePlayer()
     {
-        if (!IsAttacking())
+        if (!mIsAttacking)
         {
             AnimationSetRun();
             mNavMeshAgent.speed = RunSpeed;
@@ -145,7 +156,7 @@ public class Enemy : MonoBehaviour
         if (mNavMeshAgent.remainingDistance < 0.5f)
             mCurrentPatrolPoint = (mCurrentPatrolPoint + 1) % PatrolPoints.Length;
 
-        if (!IsAttacking())
+        if (!mIsAttacking)
         {
             // By setting these every frame, we avoid having to control
             // is we're transitioning into patrolling the area
@@ -253,6 +264,14 @@ public class Enemy : MonoBehaviour
             if (!transform.GetChild(i).gameObject.TryGetComponent<Renderer>(out var rend)) continue;
 
             rend.enabled = visible;
+        }
+    }
+
+    void SetAttackColliderActive(bool active)
+    {
+        if (mAttackCollider)
+        {
+            mAttackCollider.enabled = active;
         }
     }
 }
