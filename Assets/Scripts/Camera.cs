@@ -28,7 +28,7 @@ public class CameraFollow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
         Vector3 playerMovement = Player.transform.position - mPlayerPositionLastFrame;
 
         if (playerMovement.x > 0) // Player moving to the right
@@ -38,6 +38,15 @@ public class CameraFollow : MonoBehaviour
         else if (playerMovement.x < 0) // Player moving to the left
         {
             mOffsetHor = Mathf.Max(mOffsetHor + playerMovement.x * Speed, -MinVisibilityHor);
+        }
+
+        if (playerMovement.z > 0) // Player moving forward
+        {
+            mOffsetVer = Mathf.Min(mOffsetVer + playerMovement.z * Speed, MinVisibilityVer);
+        }
+        else if (playerMovement.z < 0) // Player moving backward
+        {
+            mOffsetVer = Mathf.Max(mOffsetVer + playerMovement.z * Speed, -MinVisibilityVer);
         }
 
         Vector3 pos = transform.position;
