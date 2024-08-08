@@ -194,9 +194,21 @@ public class Enemy : MonoBehaviour
         if (angle > VisionConeAngle) return false;
 
 
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, direction, out hit))
-            if (hit.collider.gameObject != Player) return false;
+        bool raycastFront =
+            Physics.Raycast(transform.position, direction, out RaycastHit hit) &&
+            (hit.collider.gameObject != Player);
+
+
+        // If we don't fire a raycast to the player's feet,
+        // if they're crouched we might miss them
+        Vector3 directionFeet = Player.transform.position -
+            new Vector3(0, (float)(Player.transform.localScale.y + 0.05), 0) - transform.position;
+        bool raycastFeet =
+            Physics.Raycast(transform.position, directionFeet, out RaycastHit hitFeet) &&
+            (hitFeet.collider.gameObject != Player);
+
+
+        if (!raycastFront && !raycastFeet) return false;
 
 
         return true;
