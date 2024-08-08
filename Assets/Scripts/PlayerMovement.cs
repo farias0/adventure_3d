@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     public float RotationSpeed;
     public float FallSpeed;
     public float InvincibleTime;
+    public float InteractionRadius;
 
     Animator mAnimator;
     CharacterController mController;
@@ -30,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     float mSpeed = 0;
     bool mIsCrouched = false;
     float mInvincibleCountdown = 0; // Controls if the player is invincible
+    bool mInteractedThisFrame = false;
 
 
     public void GetHit()
@@ -40,6 +42,10 @@ public class PlayerMovement : MonoBehaviour
         mInvincibleCountdown = InvincibleTime;
     }
 
+    public bool InteractedWithMeThisFrame(Vector3 position)
+    {
+        return mInteractedThisFrame && Vector3.Distance(position, transform.position) < InteractionRadius;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -59,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1")) Attack();
         if (Input.GetButtonDown("Fire2")) CrouchToggle();
+        mInteractedThisFrame = Input.GetButtonDown("Jump");
 
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
