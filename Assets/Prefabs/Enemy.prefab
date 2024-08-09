@@ -389,6 +389,7 @@ MonoBehaviour:
   - {fileID: 8314579934430615360}
   - {fileID: 6507067840517468240}
   - {fileID: 8441347373152129077}
+  AttackRange: 1.15
 --- !u!54 &1297139929015394148
 Rigidbody:
   m_ObjectHideFlags: 0

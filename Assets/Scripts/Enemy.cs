@@ -15,6 +15,7 @@ public class Enemy : MonoBehaviour
     public float WalkSpeed; // Overrides the NavMeshAgent speed
     public float RunSpeed;
     public Transform[] PatrolPoints;
+    public float AttackRange;
 
     private Animator mAnimator;
     private NavMeshAgent mNavMeshAgent;
@@ -142,9 +143,19 @@ public class Enemy : MonoBehaviour
     {
         if (!mIsAttacking)
         {
-            AnimationSetRun();
-            mNavMeshAgent.speed = RunSpeed;
-            MoveTowards(Player.transform.position);
+            float distanceToPlayer = (Player.transform.position - transform.position).magnitude;
+
+            if (distanceToPlayer < AttackRange)
+            {
+                StopInPlace();
+                Attack();
+            }
+            else
+            {
+                AnimationSetRun();
+                mNavMeshAgent.speed = RunSpeed;
+                MoveTowards(Player.transform.position);
+            }
         }
     }
 
