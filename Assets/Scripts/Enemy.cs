@@ -29,6 +29,7 @@ public class Enemy : MonoBehaviour
 
     private Animator mAnimator;
     private NavMeshAgent mNavMeshAgent;
+    private Rigidbody mRigidbody;
     private Collider mAttackCollider;
     private State mState = State.Patrolling;
     private int mLives;
@@ -39,17 +40,11 @@ public class Enemy : MonoBehaviour
 
     public bool IsDead()
     {
-        return mLives <= 0; // Should be == 0, but we got some bugs
+        return mAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Dead");
     }
 
     public void GetHit()
     {
-        if (mLives < 0)
-        {
-            Debug.LogError("Enemy with negative lives! Lives: " + mLives);
-            return;
-        }
-
         if (IsDead()) return;
 
         if (mBlinkCountdown > 0) return;
@@ -58,13 +53,16 @@ public class Enemy : MonoBehaviour
         mBlinkCountdown = InvincibleTime;
         RotateTowardsPlayerImmediately();
         
-        if (IsDead())
+        if (mLives <= 0)
         {
             mAnimator.SetTrigger("Die");
+            Debug.Log("Enemy died");
+            if (mLives < 0) Debug.LogError("Enemy with negative lives! Lives: " + mLives);
         }
         else
         {
             mAnimator.SetTrigger("GetHit");
+            Debug.Log("Enemy hit but not dead");
         }
     }
 
@@ -82,6 +80,9 @@ public class Enemy : MonoBehaviour
     {
         mAnimator = GetComponent<Animator>();
         mNavMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        mRigidbody = GetComponent<Rigidbody>();
+        mAttackCollider = transform.Find("AttackCollider").GetComponent<Collider>();
+
 
         if (Lives < 0)
         {
@@ -104,8 +105,6 @@ public class Enemy : MonoBehaviour
         // between points (ie, the agent doesn't slow down as it
         // approaches a destination point).
         mNavMeshAgent.autoBraking = false;
-
-        mAttackCollider = transform.Find("AttackCollider").GetComponent<Collider>();
     }
 
     // Update is called once per frame
@@ -160,6 +159,7 @@ public class Enemy : MonoBehaviour
     {
         mLives = Lives;
         mAnimator.SetTrigger("Ressurrect");
+        mRigidbody.constraints = RigidbodyConstraints.None;
     }
 
     void ChasePlayer()
@@ -303,6 +303,7 @@ public class Enemy : MonoBehaviour
     void StopInPlace()
     {
         mNavMeshAgent.SetDestination(transform.position);
+        mRigidbody.constraints = RigidbodyConstraints.FreezeAll;
     }
 
     void BlinkThisFrame()
