@@ -201,7 +201,14 @@ public class Enemy : MonoBehaviour
 
         if (mIsAttacking) return;
 
-        
+
+        if (Vector3.Distance(mNavMeshAgent.destination, PatrolPoints[mCurrentPatrolPoint].position) < 0.2f)
+        {
+            // Already going there
+            UpdateRotationWhileWalking();
+            return;
+        }
+
         // By setting these every frame, we avoid having to control
         // is we're transitioning into patrolling the area
         AnimationSetWalk();
@@ -212,8 +219,11 @@ public class Enemy : MonoBehaviour
     void MoveTowards(Vector3 destination)
     {
         mNavMeshAgent.SetDestination(destination);
+        UpdateRotationWhileWalking();
+    }
 
-        // Rotate while walks
+    void UpdateRotationWhileWalking()
+    {
         Vector3 direction = mNavMeshAgent.velocity.normalized;
         if (direction != Vector3.zero)
         {
