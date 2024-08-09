@@ -28,7 +28,7 @@ public class Enemy : MonoBehaviour
 
     public bool IsDead()
     {
-        return mLives == 0;
+        return mLives <= 0; // Should be == 0, but we got some bugs
     }
 
     public void GetHit()
@@ -101,7 +101,6 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.M)) Ressurect(); // FOR DEBUGGING
-        if (Input.GetKeyDown(KeyCode.N)) Attack(); // FOR DEBUGGING
 
 
         mIsAttacking = IsAttacking();
