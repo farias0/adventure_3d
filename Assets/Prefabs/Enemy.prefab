@@ -380,7 +380,8 @@ MonoBehaviour:
   Player: {fileID: 0}
   Lives: 2
   InvincibleTime: 0.35
-  VisionConeRadius: 10
+  VisionConeRadiusSearch: 13
+  VisionConeRadiusChase: 6
   VisionConeAngle: 60
   WalkSpeed: 1.5
   RunSpeed: 2.3

@@ -6,10 +6,20 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+    private enum State
+    {
+        Patrolling,
+        Alert,
+        Searching,
+        Chasing
+    }
+
+
     public GameObject Player;
     public int Lives;
     public float InvincibleTime;
-    public float VisionConeRadius;
+    public float VisionConeRadiusSearch;
+    public float VisionConeRadiusChase;
     [Range(0,360)]
     public float VisionConeAngle;
     public float WalkSpeed; // Overrides the NavMeshAgent speed
@@ -20,6 +30,7 @@ public class Enemy : MonoBehaviour
     private Animator mAnimator;
     private NavMeshAgent mNavMeshAgent;
     private Collider mAttackCollider;
+    private State mState = State.Patrolling;
     private int mLives;
     private float mBlinkCountdown = 0;
     private int mCurrentPatrolPoint = 0;
@@ -119,8 +130,21 @@ public class Enemy : MonoBehaviour
         if (IsDead()) return;
 
 
-        if (SeesPlayer()) ChasePlayer();
-        else PatrolArea();
+        UpdateState();
+
+        
+        switch (mState)
+        {
+            case State.Patrolling:
+                PatrolArea();
+                break;
+            case State.Searching:
+                SearchPlayer();
+                break;
+            case State.Chasing:
+                ChasePlayer();
+                break;
+        }
 
 
         if (mIsAttacking) SetAttackColliderActive(true);
@@ -140,22 +164,31 @@ public class Enemy : MonoBehaviour
 
     void ChasePlayer()
     {
-        if (!mIsAttacking)
-        {
-            float distanceToPlayer = (Player.transform.position - transform.position).magnitude;
+        if (mIsAttacking) return;
 
-            if (distanceToPlayer < AttackRange)
-            {
-                StopInPlace();
-                Attack();
-            }
-            else
-            {
-                AnimationSetRun();
-                mNavMeshAgent.speed = RunSpeed;
-                MoveTowards(Player.transform.position);
-            }
+        
+        float distanceToPlayer = (Player.transform.position - transform.position).magnitude;
+
+        if (distanceToPlayer < AttackRange)
+        {
+            StopInPlace();
+            Attack();
         }
+        else
+        {
+            AnimationSetRun();
+            mNavMeshAgent.speed = RunSpeed;
+            MoveTowards(Player.transform.position);
+        }
+    }
+
+    void SearchPlayer()
+    {
+        if (mIsAttacking) return;
+        
+        AnimationSetWalk();
+        mNavMeshAgent.speed = WalkSpeed;
+        MoveTowards(Player.transform.position);
     }
 
     // Follows the patrol points in order
@@ -166,14 +199,14 @@ public class Enemy : MonoBehaviour
         if (mNavMeshAgent.remainingDistance < 0.5f)
             mCurrentPatrolPoint = (mCurrentPatrolPoint + 1) % PatrolPoints.Length;
 
-        if (!mIsAttacking)
-        {
-            // By setting these every frame, we avoid having to control
-            // is we're transitioning into patrolling the area
-            AnimationSetWalk();
-            mNavMeshAgent.speed = WalkSpeed;
-            MoveTowards(PatrolPoints[mCurrentPatrolPoint].position);
-        }
+        if (mIsAttacking) return;
+
+        
+        // By setting these every frame, we avoid having to control
+        // is we're transitioning into patrolling the area
+        AnimationSetWalk();
+        mNavMeshAgent.speed = WalkSpeed;
+        MoveTowards(PatrolPoints[mCurrentPatrolPoint].position);
     }
 
     void MoveTowards(Vector3 destination)
@@ -222,15 +255,19 @@ public class Enemy : MonoBehaviour
         transform.rotation = lookRotation;
     }
 
-    bool SeesPlayer()
+    // Updates the enemy state based on what its seeing
+    private void UpdateState()
     {
+        mState = State.Patrolling; // Default state
+
+
         Vector3 direction = Player.transform.position - transform.position;
         
         float distance = direction.magnitude;
-        if (distance > VisionConeRadius) return false;
+        if (distance > VisionConeRadiusSearch) return;
 
         float angle = Vector3.Angle(transform.forward, direction);
-        if (angle > VisionConeAngle) return false;
+        if (angle > VisionConeAngle) return;
 
 
         bool raycastFront =
@@ -247,10 +284,19 @@ public class Enemy : MonoBehaviour
             (hitFeet.collider.gameObject != Player);
 
 
-        if (!raycastFront && !raycastFeet) return false;
+        if (!raycastFront && !raycastFeet) return;
 
 
-        return true;
+
+        // * Update state *
+        if (distance < VisionConeRadiusChase)
+        {
+            mState = State.Chasing;
+        }
+        else
+        {
+            mState = State.Searching;
+        }
     }
 
     // Necessary because the NavMeshAgent aparently doesn't stop immediately
