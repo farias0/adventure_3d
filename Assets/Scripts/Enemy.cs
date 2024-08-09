@@ -282,7 +282,7 @@ public class Enemy : MonoBehaviour
 
         bool raycastFront =
             Physics.Raycast(transform.position, direction, out RaycastHit hit) &&
-            (hit.collider.gameObject != Player);
+            (hit.collider.gameObject == Player);
 
 
         // If we don't fire a raycast to the player's feet,
@@ -291,10 +291,10 @@ public class Enemy : MonoBehaviour
             new Vector3(0, (float)(Player.transform.localScale.y + 0.05), 0) - transform.position;
         bool raycastFeet =
             Physics.Raycast(transform.position, directionFeet, out RaycastHit hitFeet) &&
-            (hitFeet.collider.gameObject != Player);
+            (hitFeet.collider.gameObject == Player);
 
 
-        if (!raycastFront && !raycastFeet) return;
+        if (!(raycastFront || raycastFeet)) return;
 
 
 
