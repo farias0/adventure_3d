@@ -210,6 +210,7 @@ public class Enemy : MonoBehaviour
 
     private void StopInPlace()
     {
+        AnimationSetIdle();
         mNavMeshAgent.SetDestination(transform.position);
         mNavMeshAgent.speed = 0;
     }
@@ -321,7 +322,8 @@ public class Enemy : MonoBehaviour
     private void AIRoutinePatrol()
     {
         if (mSeesPlayer)
-        {
+        {   
+            // Alert
             AIStartAlert();
             return;
         }
@@ -330,6 +332,7 @@ public class Enemy : MonoBehaviour
 
         if (mNavMeshAgent.remainingDistance < 0.5f)
         {
+            // Next point
             mCurrentPatrolPoint = (mCurrentPatrolPoint + 1) % PatrolPoints.Length;
             MoveTowards(PatrolPoints[mCurrentPatrolPoint].position, WalkSpeed);
         }
@@ -355,14 +358,13 @@ public class Enemy : MonoBehaviour
 
             if (Vector3.Distance(Player.transform.position, transform.position) < ConfirmedSightDistance)
             {
-                // Player is right in front of the enemy
+                // Saw player clearly
                 AIStartChase();
                 mAlertToSearchingCountdown = -1;
                 return;
             }
 
             mAlertToSearchingCountdown -= Time.deltaTime;
-            mCurrentPhaseCountdown = AlertPhaseDuration;
 
             if (mAlertToSearchingCountdown <= 0)
             {
@@ -371,6 +373,8 @@ public class Enemy : MonoBehaviour
                 mAlertToSearchingCountdown = -1;
                 return;
             }
+
+            mCurrentPhaseCountdown = AlertPhaseDuration;
         }
         else
         {
@@ -403,7 +407,7 @@ public class Enemy : MonoBehaviour
         {
             if (Vector3.Distance(Player.transform.position, transform.position) < ConfirmedSightDistance)
             {
-                // Player is right in front of the enemy
+                // Found player
                 AIStartChase();
                 return;
             }
@@ -417,8 +421,15 @@ public class Enemy : MonoBehaviour
         else if (Vector3.Distance(mPlayerLastSeenPosition, transform.position) < 0.5f)
         {
             
-            AIStartPatrol();
-            return;
+            mCurrentPhaseCountdown -= Time.deltaTime;
+            StopInPlace();
+
+            if (mCurrentPhaseCountdown <= 0)
+            {
+                // Back to patrolling
+                AIStartPatrol();
+                return;
+            }
         }
     }
 
@@ -435,11 +446,13 @@ public class Enemy : MonoBehaviour
             float distanceToPlayer = (Player.transform.position - transform.position).magnitude;
             if (distanceToPlayer < AttackRange)
             {
+                // Attack player
                 StopInPlace();
                 Attack();
             }
             else
             {
+                // Chase player
                 MoveTowards(Player.transform.position, RunSpeed);
             }
         }
