@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16da95d597d3e4347bb36a76a2984426, type: 3}
+  m_Name: OwlCamp
+  m_EditorClassIdentifier: 
+  lines:
+  - speaker: Coruja
+    text: Ei! Por que me acordou?
+  - speaker: Coruja
+    text: "Ningu\xE9m te avisou que as corujas dormem durante o dia?"
+  - speaker: Coruja
+    text: ...
+  - speaker: Coruja
+    text: "Mas mudando de assunto, voc\xEA viu aquele labirinto ao leste do acampamento?\n\xC9
+      de arrepiar as penas da nuca... brrrr"
