@@ -11,7 +11,7 @@ enum AnimationMoveState
     Run = 2
 }
 
-public class PlayerMovement : MonoBehaviour
+public class Player : MonoBehaviour
 {
     // TODO consider making some of these constants to clear up the component in the inspector
     public GameObject Weapon;

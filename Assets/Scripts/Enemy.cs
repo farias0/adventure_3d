@@ -82,7 +82,7 @@ public class Enemy : MonoBehaviour
 
         if (IsDead()) return;
 
-        Player.GetComponent<PlayerMovement>().GetHit();
+        Player.GetComponent<Player>().GetHit();
     }
 
 

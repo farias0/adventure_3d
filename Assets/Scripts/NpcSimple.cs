@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NpcSimple : MonoBehaviour
 {
-    public PlayerMovement Player;
+    public Player Player;
     public float TimeBeforingFallingAsleep;
 
     Animator mAnimator;
