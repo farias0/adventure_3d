@@ -129,6 +129,9 @@ public class Enemy : MonoBehaviour
         mSeesPlayer = SeesPlayer();
 
 
+        if (mSeesPlayer) mPlayerLastSeenPosition = Player.transform.position;
+
+
         // Enemy hit recently
         if (mInvincibleCountdown > 0) {
             mInvincibleCountdown -= Time.deltaTime;
@@ -141,12 +144,6 @@ public class Enemy : MonoBehaviour
             }
         }
 
-
-        if (mState == State.Patrol && mSeesPlayer)
-        {
-            AIStartAlert();
-            mPlayerLastSeenPosition = Player.transform.position;
-        }
 
         switch (mState)
         {
@@ -323,6 +320,12 @@ public class Enemy : MonoBehaviour
 
     private void AIRoutinePatrol()
     {
+        if (mSeesPlayer)
+        {
+            AIStartAlert();
+            return;
+        }
+
         if (PatrolPoints.Length == 0) return;
 
         if (mNavMeshAgent.remainingDistance < 0.5f)
