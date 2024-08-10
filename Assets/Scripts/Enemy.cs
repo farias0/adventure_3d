@@ -9,10 +9,10 @@ public class Enemy : MonoBehaviour
 {
     private enum State
     {
-        Patrolling,
+        Patrol,
         Alert,
-        Searching,
-        Chasing
+        Search,
+        Chase
     }
 
 
@@ -37,9 +37,9 @@ public class Enemy : MonoBehaviour
     private NavMeshAgent mNavMeshAgent;
     private Rigidbody mRigidbody;
     private Collider mAttackCollider;
-    private State mState = State.Patrolling;
+    private State mState = State.Patrol;
     private int mLives;
-    private float mBlinkCountdown = 0;
+    private float mInvincibleCountdown = 0;
     private int mCurrentPatrolPoint = 0;
     private bool mIsAttacking;
     private Vector3 mPlayerLastSeenPosition;
@@ -57,11 +57,11 @@ public class Enemy : MonoBehaviour
     {
         if (IsDead()) return;
 
-        if (mBlinkCountdown > 0) return;
+        if (mInvincibleCountdown > 0) return;
         
         mLives--;
-        mBlinkCountdown = InvincibleTime;
-        RotateTowardsPlayerImmediately();
+        mInvincibleCountdown = InvincibleTime;
+        FacePosition(Player.transform.position);
         
         if (mLives <= 0)
         {
@@ -131,16 +131,20 @@ public class Enemy : MonoBehaviour
         mSeesPlayer = SeesPlayer();
 
 
-        // Blink if hit recently
-        if (mBlinkCountdown > 0) {
-            mBlinkCountdown -= Time.deltaTime;
-            if (mBlinkCountdown <= 0) SetVisibility(true);
-            else BlinkThisFrame();
-            StopInPlace();
-            return;
+        // Enemy hit recently
+        if (mInvincibleCountdown > 0) {
+            mInvincibleCountdown -= Time.deltaTime;
+            if (mInvincibleCountdown <= 0) SetModelVisibility(true);
+            else
+            {
+                StopInPlace();
+                BlinkThisFrame();
+                return;
+            }
         }
 
-        if (mState == State.Patrolling && mSeesPlayer)
+
+        if (mState == State.Patrol && mSeesPlayer)
         {
             AIStartAlert();
             mPlayerLastSeenPosition = Player.transform.position;
@@ -148,16 +152,16 @@ public class Enemy : MonoBehaviour
 
         switch (mState)
         {
-            case State.Patrolling:
-                PatrolArea();
+            case State.Patrol:
+                AIRoutinePatrol();
                 break;
             case State.Alert:
                 AIRoutineAlert();
                 break;
-            case State.Searching:
+            case State.Search:
                 AIRoutineSearch();
                 break;
-            case State.Chasing:
+            case State.Chase:
                 AIRoutineChase();
                 break;
         }
@@ -172,45 +176,51 @@ public class Enemy : MonoBehaviour
         if (other.CompareTag("Player")) HitPlayer();
     }
 
-    void Ressurect()
+    private bool IsAttacking()
+    {
+        return mAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Attack");
+    }
+
+    private void Attack()
+    {
+        mAnimator.SetTrigger("Attack");
+    }
+
+    private void Die()
+    {
+        StopInPlace();
+        mRigidbody.constraints = RigidbodyConstraints.FreezeAll;
+        mAnimator.SetTrigger("Die");
+    }
+
+    private void Ressurect()
     {
         mLives = Lives;
         mAnimator.SetTrigger("Ressurrect");
         mRigidbody.constraints = RigidbodyConstraints.None;
     }
 
-    // Follows the patrol points in order
-    void PatrolArea()
-    {
-        if (PatrolPoints.Length == 0) return;
-
-        if (mNavMeshAgent.remainingDistance < 0.5f)
-            mCurrentPatrolPoint = (mCurrentPatrolPoint + 1) % PatrolPoints.Length;
-
-        if (mIsAttacking) return;
-
-
-        if (Vector3.Distance(mNavMeshAgent.destination, PatrolPoints[mCurrentPatrolPoint].position) < 0.2f)
-        {
-            // Already going there
-            UpdateRotationWhileWalking();
-            return;
-        }
-
-        // By setting these every frame, we avoid having to control
-        // is we're transitioning into patrolling the area
-        AnimationSetWalk();
-        mNavMeshAgent.speed = WalkSpeed;
-        MoveTowards(PatrolPoints[mCurrentPatrolPoint].position);
-    }
-
-    void MoveTowards(Vector3 destination)
+    private void MoveTowards(Vector3 destination)
     {
         mNavMeshAgent.SetDestination(destination);
         UpdateRotationWhileWalking();
     }
 
-    void UpdateRotationWhileWalking()
+    // Necessary because the NavMeshAgent aparently doesn't stop immediately
+    private void StopInPlace()
+    {
+        mNavMeshAgent.SetDestination(transform.position);
+    }
+
+    private void FacePosition(Vector3 position)
+    {
+        Vector3 direction = position - transform.position;
+        direction.y = 0;
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = lookRotation;
+    }
+
+    private void UpdateRotationWhileWalking()
     {
         Vector3 direction = mNavMeshAgent.velocity.normalized;
         if (direction != Vector3.zero)
@@ -220,9 +230,30 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void Attack()
+    private void BlinkThisFrame()
     {
-        mAnimator.SetTrigger("Attack");
+        SetModelVisibility(Time.timeSinceLevelLoad % 0.1 < 0.05);
+    }
+
+    private void SetModelVisibility(bool visible)
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            // This checks if the child has a renderer component.
+            // The linter suggested this to avoid needlesly
+            // allocating the component if it doesn't have one.
+            if (!transform.GetChild(i).gameObject.TryGetComponent<Renderer>(out var rend)) continue;
+
+            rend.enabled = visible;
+        }
+    }
+
+    private void SetAttackColliderActive(bool active)
+    {
+        if (mAttackCollider)
+        {
+            mAttackCollider.enabled = active;
+        }
     }
 
     private void AnimationSetIdle()
@@ -246,19 +277,6 @@ public class Enemy : MonoBehaviour
         // TODO get an actual alert animation
         mAnimator.SetTrigger("GetHit");
         mAnimator.SetInteger("MovementState", AnimationMoveState.Idle.GetHashCode());
-    }
-
-    bool IsAttacking()
-    {
-        return mAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Attack");
-    }
-
-    void RotateTowardsPlayerImmediately()
-    {
-        Vector3 direction = Player.transform.position - transform.position;
-        direction.y = 0;
-        Quaternion lookRotation = Quaternion.LookRotation(direction);
-        transform.rotation = lookRotation;
     }
 
     // Updates the enemy state based on what its seeing
@@ -293,10 +311,33 @@ public class Enemy : MonoBehaviour
         return true;
     }
 
-    void AIStartAlert()
+    // Follows the patrol points in order
+    private void AIRoutinePatrol()
     {
-        Debug.Log("Alert");
+        if (PatrolPoints.Length == 0) return;
 
+        if (mNavMeshAgent.remainingDistance < 0.5f)
+            mCurrentPatrolPoint = (mCurrentPatrolPoint + 1) % PatrolPoints.Length;
+
+        if (mIsAttacking) return;
+
+
+        if (Vector3.Distance(mNavMeshAgent.destination, PatrolPoints[mCurrentPatrolPoint].position) < 0.2f)
+        {
+            // Already going there
+            UpdateRotationWhileWalking();
+            return;
+        }
+
+        // By setting these every frame, we avoid having to control
+        // is we're transitioning into patrolling the area
+        AnimationSetWalk();
+        mNavMeshAgent.speed = WalkSpeed;
+        MoveTowards(PatrolPoints[mCurrentPatrolPoint].position);
+    }
+
+    private void AIStartAlert()
+    {
         mState = State.Alert;
         AnimationSetAlert();
         mNavMeshAgent.speed = 0;
@@ -306,7 +347,7 @@ public class Enemy : MonoBehaviour
         mAlertToSearchingCountdown = AlertToSearchingDuration;
     }
 
-    void AIRoutineAlert()
+    private void AIRoutineAlert()
     {
         if (mSeesPlayer)
         {
@@ -338,7 +379,7 @@ public class Enemy : MonoBehaviour
             if (mCurrentPhaseCountdown <= 0)
             {
                 // Back to patrolling
-                mState = State.Patrolling;
+                mState = State.Patrol;
                 mAlertToSearchingCountdown = -1;
                 return;
             }
@@ -347,23 +388,19 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void AIStartSearch()
+    private void AIStartSearch()
     {
-        Debug.Log("Search");
-
-        mState = State.Searching;
+        mState = State.Search;
         AnimationSetWalk();
         mNavMeshAgent.speed = WalkSpeed;
         MoveTowards(mPlayerLastSeenPosition);
         mCurrentPhaseCountdown = SearchPhaseDuration;
     }
 
-    void AIRoutineSearch()
+    private void AIRoutineSearch()
     {
         if (mSeesPlayer)
         {
-
-
             if (Vector3.Distance(Player.transform.position, transform.position) < ConfirmedSightDistance)
             {
                 // Player is right in front of the enemy
@@ -384,23 +421,21 @@ public class Enemy : MonoBehaviour
             if (mCurrentPhaseCountdown <= 0)
             {
                 // Back to patrolling
-                mState = State.Patrolling;
+                mState = State.Patrol;
                 return;
             }
         }
     }
 
-    void AIStartChase()
+    private void AIStartChase()
     {
-        Debug.Log("Chase");
-
-        mState = State.Chasing;
+        mState = State.Chase;
         AnimationSetRun();
         mNavMeshAgent.speed = RunSpeed;
         mCurrentPhaseCountdown = ChasePhaseDuration;
     }
 
-    void AIRoutineChase()
+    private void AIRoutineChase()
     {
         if (!mIsAttacking)
         {
@@ -431,52 +466,5 @@ public class Enemy : MonoBehaviour
                 return;
             }
         }
-    }
-
-    // Necessary because the NavMeshAgent aparently doesn't stop immediately
-    void StopInPlace()
-    {
-        mNavMeshAgent.SetDestination(transform.position);
-    }
-
-    void FacePosition(Vector3 position)
-    {
-        Vector3 direction = position - transform.position;
-        direction.y = 0;
-        Quaternion lookRotation = Quaternion.LookRotation(direction);
-        transform.rotation = lookRotation;
-    }
-
-    void BlinkThisFrame()
-    {
-        SetVisibility(Time.timeSinceLevelLoad % 0.1 < 0.05);
-    }
-
-    void SetVisibility(bool visible)
-    {
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            // This checks if the child has a renderer component.
-            // The linter suggested this to avoid needlesly
-            // allocating the component if it doesn't have one.
-            if (!transform.GetChild(i).gameObject.TryGetComponent<Renderer>(out var rend)) continue;
-
-            rend.enabled = visible;
-        }
-    }
-
-    void SetAttackColliderActive(bool active)
-    {
-        if (mAttackCollider)
-        {
-            mAttackCollider.enabled = active;
-        }
-    }
-
-    private void Die()
-    {
-        StopInPlace();
-        mRigidbody.constraints = RigidbodyConstraints.FreezeAll;
-        mAnimator.SetTrigger("Die");
     }
 }
