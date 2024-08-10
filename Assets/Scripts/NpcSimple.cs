@@ -35,7 +35,7 @@ public class NpcSimple : MonoBehaviour
         {
             if (Player.InteractedWithMeThisFrame(transform.position))
             {
-                GoIdle();
+                WakeUp();
                 mGoToSleepCountdown = TimeBeforingFallingAsleep;
             }
         }
@@ -46,8 +46,8 @@ public class NpcSimple : MonoBehaviour
         mAnimator.SetTrigger("Sleep");
     }
 
-    void GoIdle()
+    void WakeUp()
     {
-        mAnimator.SetTrigger("GoIdle");
+        mAnimator.SetTrigger("WakeUp");
     }
 }
