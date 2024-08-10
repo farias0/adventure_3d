@@ -391,10 +391,10 @@ MonoBehaviour:
   - {fileID: 8441347373152129077}
   AttackRange: 1.15
   ConfirmedSightDistance: 9
-  AlertPhaseDuration: 2.5
+  AlertPhaseDuration: 3.5
   SearchPhaseDuration: 3
   ChasePhaseDuration: 3
-  AlertToSearchingDuration: 3
+  AlertToSearchingDuration: 2
 --- !u!54 &1297139929015394148
 Rigidbody:
   m_ObjectHideFlags: 0
