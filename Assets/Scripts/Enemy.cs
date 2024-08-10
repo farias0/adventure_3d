@@ -197,18 +197,24 @@ public class Enemy : MonoBehaviour
         mLives = Lives;
         mAnimator.SetTrigger("Ressurrect");
         mRigidbody.constraints = RigidbodyConstraints.None;
+        AIStartPatrol();
     }
 
-    private void MoveTowards(Vector3 destination)
+    private void MoveTowards(Vector3 destination, float speed)
     {
+        mNavMeshAgent.speed = speed;
         mNavMeshAgent.SetDestination(destination);
         UpdateRotationWhileWalking();
+
+        if (speed == 0) AnimationSetIdle();
+        else if (speed == WalkSpeed) AnimationSetWalk();
+        else if (speed == RunSpeed) AnimationSetRun();
     }
 
-    // Necessary because the NavMeshAgent aparently doesn't stop immediately
     private void StopInPlace()
     {
         mNavMeshAgent.SetDestination(transform.position);
+        mNavMeshAgent.speed = 0;
     }
 
     private void FacePosition(Vector3 position)
@@ -312,9 +318,7 @@ public class Enemy : MonoBehaviour
     private void AIStartPatrol()
     {
         mState = State.Patrol;
-        mNavMeshAgent.speed = WalkSpeed;
-        AnimationSetWalk();
-        MoveTowards(PatrolPoints[mCurrentPatrolPoint].position);
+        MoveTowards(PatrolPoints[mCurrentPatrolPoint].position, WalkSpeed);
     }
 
     private void AIRoutinePatrol()
@@ -324,7 +328,7 @@ public class Enemy : MonoBehaviour
         if (mNavMeshAgent.remainingDistance < 0.5f)
         {
             mCurrentPatrolPoint = (mCurrentPatrolPoint + 1) % PatrolPoints.Length;
-            MoveTowards(PatrolPoints[mCurrentPatrolPoint].position);
+            MoveTowards(PatrolPoints[mCurrentPatrolPoint].position, WalkSpeed);
         }
 
         UpdateRotationWhileWalking();
@@ -334,7 +338,6 @@ public class Enemy : MonoBehaviour
     {
         mState = State.Alert;
         AnimationSetAlert();
-        mNavMeshAgent.speed = 0;
         StopInPlace();
         FacePosition(mPlayerLastSeenPosition);
         mCurrentPhaseCountdown = AlertPhaseDuration;
@@ -385,9 +388,7 @@ public class Enemy : MonoBehaviour
     private void AIStartSearch()
     {
         mState = State.Search;
-        AnimationSetWalk();
-        mNavMeshAgent.speed = WalkSpeed;
-        MoveTowards(mPlayerLastSeenPosition);
+        MoveTowards(mPlayerLastSeenPosition, WalkSpeed);
         mCurrentPhaseCountdown = SearchPhaseDuration;
     }
 
@@ -407,7 +408,7 @@ public class Enemy : MonoBehaviour
             mCurrentPhaseCountdown = SearchPhaseDuration;
 
             // Update route
-            if (mPlayerLastSeenPosition != mNavMeshAgent.destination) MoveTowards(mPlayerLastSeenPosition);
+            if (mPlayerLastSeenPosition != mNavMeshAgent.destination) MoveTowards(mPlayerLastSeenPosition, WalkSpeed);
 
         }
         else if (Vector3.Distance(mPlayerLastSeenPosition, transform.position) < 0.5f)
@@ -421,8 +422,6 @@ public class Enemy : MonoBehaviour
     private void AIStartChase()
     {
         mState = State.Chase;
-        AnimationSetRun();
-        mNavMeshAgent.speed = RunSpeed;
         mCurrentPhaseCountdown = ChasePhaseDuration;
     }
 
@@ -438,7 +437,7 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                MoveTowards(Player.transform.position);
+                MoveTowards(Player.transform.position, RunSpeed);
             }
         }
 
