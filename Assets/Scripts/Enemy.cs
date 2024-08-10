@@ -186,6 +186,7 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
+        SetModelVisibility(true);
         StopInPlace();
         mRigidbody.constraints = RigidbodyConstraints.FreezeAll;
         mAnimator.SetTrigger("Die");
