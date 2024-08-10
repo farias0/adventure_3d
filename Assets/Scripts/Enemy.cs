@@ -37,7 +37,7 @@ public class Enemy : MonoBehaviour
     private NavMeshAgent mNavMeshAgent;
     private Rigidbody mRigidbody;
     private Collider mAttackCollider;
-    private State mState = State.Patrol;
+    private State mState;
     private int mLives;
     private float mInvincibleCountdown = 0;
     private int mCurrentPatrolPoint = 0;
@@ -116,6 +116,8 @@ public class Enemy : MonoBehaviour
         // between points (ie, the agent doesn't slow down as it
         // approaches a destination point).
         mNavMeshAgent.autoBraking = false;
+
+        AIStartPatrol();
     }
 
     // Update is called once per frame
@@ -311,29 +313,26 @@ public class Enemy : MonoBehaviour
         return true;
     }
 
+    private void AIStartPatrol()
+    {
+        mState = State.Patrol;
+        mNavMeshAgent.speed = WalkSpeed;
+        AnimationSetWalk();
+        MoveTowards(PatrolPoints[mCurrentPatrolPoint].position);
+    }
+
     // Follows the patrol points in order
     private void AIRoutinePatrol()
     {
         if (PatrolPoints.Length == 0) return;
 
         if (mNavMeshAgent.remainingDistance < 0.5f)
-            mCurrentPatrolPoint = (mCurrentPatrolPoint + 1) % PatrolPoints.Length;
-
-        if (mIsAttacking) return;
-
-
-        if (Vector3.Distance(mNavMeshAgent.destination, PatrolPoints[mCurrentPatrolPoint].position) < 0.2f)
         {
-            // Already going there
-            UpdateRotationWhileWalking();
-            return;
+            mCurrentPatrolPoint = (mCurrentPatrolPoint + 1) % PatrolPoints.Length;
+            MoveTowards(PatrolPoints[mCurrentPatrolPoint].position);
         }
 
-        // By setting these every frame, we avoid having to control
-        // is we're transitioning into patrolling the area
-        AnimationSetWalk();
-        mNavMeshAgent.speed = WalkSpeed;
-        MoveTowards(PatrolPoints[mCurrentPatrolPoint].position);
+        UpdateRotationWhileWalking();
     }
 
     private void AIStartAlert()
@@ -379,7 +378,7 @@ public class Enemy : MonoBehaviour
             if (mCurrentPhaseCountdown <= 0)
             {
                 // Back to patrolling
-                mState = State.Patrol;
+                AIStartPatrol();
                 mAlertToSearchingCountdown = -1;
                 return;
             }
@@ -399,6 +398,8 @@ public class Enemy : MonoBehaviour
 
     private void AIRoutineSearch()
     {
+        UpdateRotationWhileWalking();
+
         if (mSeesPlayer)
         {
             if (Vector3.Distance(Player.transform.position, transform.position) < ConfirmedSightDistance)
@@ -416,14 +417,9 @@ public class Enemy : MonoBehaviour
         }
         else if (Vector3.Distance(mPlayerLastSeenPosition, transform.position) < 0.5f)
         {
-            mCurrentPhaseCountdown -= Time.deltaTime;
-
-            if (mCurrentPhaseCountdown <= 0)
-            {
-                // Back to patrolling
-                mState = State.Patrol;
-                return;
-            }
+            
+            AIStartPatrol();
+            return;
         }
     }
 
