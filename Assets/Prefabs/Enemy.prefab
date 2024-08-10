@@ -380,9 +380,8 @@ MonoBehaviour:
   Player: {fileID: 0}
   Lives: 2
   InvincibleTime: 0.35
-  VisionConeRadiusSearch: 13
-  VisionConeRadiusChase: 6
-  VisionConeAngle: 60
+  VisionConeRadius: 13
+  VisionConeAngle: 45
   WalkSpeed: 1.5
   RunSpeed: 2.3
   PatrolPoints:
@@ -391,6 +390,11 @@ MonoBehaviour:
   - {fileID: 6507067840517468240}
   - {fileID: 8441347373152129077}
   AttackRange: 1.15
+  ConfirmedSightDistance: 9
+  AlertPhaseDuration: 2.5
+  SearchPhaseDuration: 3
+  ChasePhaseDuration: 3
+  AlertToSearchingDuration: 3
 --- !u!54 &1297139929015394148
 Rigidbody:
   m_ObjectHideFlags: 0

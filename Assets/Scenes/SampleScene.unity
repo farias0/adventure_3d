@@ -2233,6 +2233,26 @@ PrefabInstance:
       propertyPath: Player
       value: 
       objectReference: {fileID: 1578291719}
+    - target: {fileID: 2016087936195835928, guid: e303d5b4301d4a441a8c3ea3b4780346, type: 3}
+      propertyPath: AlertPhaseDuration
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016087936195835928, guid: e303d5b4301d4a441a8c3ea3b4780346, type: 3}
+      propertyPath: ChasePhaseDuration
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016087936195835928, guid: e303d5b4301d4a441a8c3ea3b4780346, type: 3}
+      propertyPath: SearchPhaseDuration
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016087936195835928, guid: e303d5b4301d4a441a8c3ea3b4780346, type: 3}
+      propertyPath: ConfirmedSightDistance
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016087936195835928, guid: e303d5b4301d4a441a8c3ea3b4780346, type: 3}
+      propertyPath: AlertToSearchingDuration
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5501295356707062959, guid: e303d5b4301d4a441a8c3ea3b4780346, type: 3}
       propertyPath: m_LocalPosition.x
       value: -25.410152
