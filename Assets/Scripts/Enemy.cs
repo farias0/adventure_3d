@@ -105,10 +105,6 @@ public class Enemy : MonoBehaviour
             mLives = Lives;
         }
 
-
-        // Otherwise the first patrol point would be the second one in the list
-        mCurrentPatrolPoint = PatrolPoints.Length - 1;
-
         // We don't want the player pushing the enemy around
         Physics.IgnoreCollision(GetComponent<Collider>(), Player.GetComponent<Collider>());
 
@@ -281,7 +277,6 @@ public class Enemy : MonoBehaviour
         mAnimator.SetInteger("MovementState", AnimationMoveState.Idle.GetHashCode());
     }
 
-    // Updates the enemy state based on what its seeing
     private bool SeesPlayer()
     {
         Vector3 direction = Player.transform.position - transform.position;
@@ -321,7 +316,6 @@ public class Enemy : MonoBehaviour
         MoveTowards(PatrolPoints[mCurrentPatrolPoint].position);
     }
 
-    // Follows the patrol points in order
     private void AIRoutinePatrol()
     {
         if (PatrolPoints.Length == 0) return;
