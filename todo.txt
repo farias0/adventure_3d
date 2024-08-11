@@ -1,0 +1,58 @@
+- inimigo ficando invisível quando morre
+
+- inventário
+
+- baús/pickups
+
+- gameplay loop
+	- vidas
+	- hud
+	- morte e restart
+	- checkpoint
+
+- aumentar tempo de invencibilidade do inimigo?
+
+- inimigo
+	- IA do inimigo
+		- agaixar diminui raio do cone de visão
+		- inimigo responde ao som dos passos
+			- player oferecer método para o inimigo checar se ouve ele esse frame
+
+- escadas
+___
+
+- escudo
+- dodge
+
+- colocar um game juice no combate
+
+- câmera parar de tremer quando abaixa
+	- talvez colocar uma tolerância no movimento y
+
+
+- npc com escudo
+- arco e flecha
+- arremessar bomba
+- ciclo de noite e dia
+- sons
+- fogo
+- nadar
+
+______
+
+Espalhar pelo mapa como colecionável, ou com vendedores:
+- Poder de ataque / número de corações aumentar com itens pelo jogo
+- Diferente armas com diferentes poder de ataque
+- Estudos/armaduras
+- Itens de quest
+- Dinheiro
+- Itens de cura (alimentos)
+!! Checkpoint consumível (super valioso)
+
+!! Checkpoints são somente em pontos de interesse do mapa
+!! Checkpoints resetam inimigos (bonfire)
+!! Morrer reseta o inventário p/ o estado do checkpoint
+	- Ao encontrar itens poderosos, jogador tem que decidir entre voltar p/ checkpoint ou continuar explorando
+- Navegar entre checkpoints representa uma jornada p/ o qual o jogador pode se preparar (e tentar novamente se morrer, sem penalidade)
+!! Checkpoints curam parcialmente o jogador
+	!! Checkpoints em pontos mais extremos curam mais
