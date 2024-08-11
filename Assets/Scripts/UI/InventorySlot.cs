@@ -10,6 +10,19 @@ public class InventorySlot : VisualElement
     public Image Icon;
     public string ItemGuid = "";
 
+
+    public void HoldItem(ItemDetails item)
+    {
+        Icon.image = item.Icon.texture;
+        ItemGuid = item.GUID;
+    }
+
+    public void DropItem()
+    {
+        ItemGuid = "";
+        Icon.image = null;
+    }
+
     public InventorySlot()
     {
         //Create a new Image element and add it to the root
