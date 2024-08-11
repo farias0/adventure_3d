@@ -41,7 +41,8 @@ ___
 ______
 
 Espalhar pelo mapa como colecionável, ou com vendedores:
-- Poder de ataque / número de corações aumentar com itens pelo jogo
+- Poder de ataque / número de corações / força aumentar com itens pelo jogo
+	- !! Talvez upgrades que permitam escolher entre um ou outro skill (estilo Dead Cells)
 - Diferente armas com diferentes poder de ataque
 - Estudos/armaduras
 - Itens de quest
@@ -56,3 +57,7 @@ Espalhar pelo mapa como colecionável, ou com vendedores:
 - Navegar entre checkpoints representa uma jornada p/ o qual o jogador pode se preparar (e tentar novamente se morrer, sem penalidade)
 !! Checkpoints curam parcialmente o jogador
 	!! Checkpoints em pontos mais extremos curam mais
+
+- Tunels que levam a partes inacessíveis do mapa
+	- Abre caminho, permitindo checkpoint
+- Somente um ponto alto do mapa, escondido, de onde pode fazer paragliding
