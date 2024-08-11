@@ -5,6 +5,7 @@
             <ui:VisualElement name="Inventory" class="inventory">
                 <ui:VisualElement name="SlotContainer" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; justify-content: center;" />
             </ui:VisualElement>
+            <ui:VisualElement name="GhostIcon" style="flex-grow: 1; position: absolute; width: 10.8%; height: 18%; visibility: hidden;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

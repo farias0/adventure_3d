@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 // TODO this enum is global. Where should I put it?
 enum AnimationMoveState
@@ -15,6 +16,7 @@ public class Player : MonoBehaviour
 {
     // TODO consider making some of these constants to clear up the component in the inspector
     public GameObject Weapon;
+    public UIDocument UserInterface;
     public float SpeedStanding;
     public float SpeedCrouched;
     public float HeightCrouched;
@@ -73,6 +75,11 @@ public class Player : MonoBehaviour
         //if (Input.GetButtonDown("Attack3")) Attack3();
         if (Input.GetButtonDown("Crouch")) CrouchToggle();
         mInteractedThisFrame = Input.GetButtonDown("Interact");
+
+        if (Input.GetButtonDown("ToggleInventory"))
+        {
+            // TODO
+        }
 
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");

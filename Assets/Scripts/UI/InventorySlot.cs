@@ -32,6 +32,23 @@ public class InventorySlot : VisualElement
         //Add USS style properties to the elements
         AddToClassList("slotContainer");
         Icon.AddToClassList("slotIcon");
+
+        RegisterCallback<PointerDownEvent>(OnPointerDown);
+    }
+
+    private void OnPointerDown(PointerDownEvent evt)
+{
+        //Not the left mouse button
+        if (evt.button != 0 || ItemGuid.Equals(""))
+        {
+            return;
+        }
+
+        //Clear the image
+        Icon.image = null;
+
+        //Start the drag
+        InventoryController.StartDrag(evt.position, this);
     }
 
     #region UXML
