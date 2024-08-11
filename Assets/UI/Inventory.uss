@@ -28,7 +28,7 @@
     border-right-color: rgb(48, 48, 48);
     border-top-color: rgb(48, 48, 48);
     border-bottom-color: rgb(48, 48, 48);
-    background-color: rgba(9, 19, 21, 0.5);
+    background-color: rgba(9, 19, 21, 0.8);
     background-image: url("project://database/Assets/UI/Icons/ItemSlotBackground.png?fileID=2800000&guid=8b8738a3d2923574ca7a34628ee6e404&type=3#ItemSlotBackground");
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
