@@ -8,6 +8,7 @@ using UnityEngine.UIElements.Experimental;
 public class InventoryController : MonoBehaviour
 {
     public List<InventorySlot> InventoryItems = new();
+    public List<Sprite> SelectedSlotAnimFrames;
 
 
     private static bool mIsDragging;
@@ -16,6 +17,11 @@ public class InventoryController : MonoBehaviour
 
     private VisualElement mRoot;
     private VisualElement mSlotContainer;
+    
+    // TODO make this a struct
+    private int mSelectedSlotAnimCurrentFrameCount = 0;
+    private int mSelectedSlotAnimCurrentFrame = 0;
+    private bool mSelectedSlotAnimCurrentFrameDirection = true; // true = forwards
     private bool isInventoryOpen;
 
 
@@ -51,6 +57,33 @@ public class InventoryController : MonoBehaviour
     void Update()
     {
         if (Input.GetButtonDown("ToggleInventory")) ToggleInventory();
+
+        if (isInventoryOpen)
+        {
+
+            mSlotContainer[0].style.backgroundImage = SelectedSlotAnimFrames[mSelectedSlotAnimCurrentFrame].texture;
+            
+
+            // Increase frame counter
+            mSelectedSlotAnimCurrentFrameCount++;
+
+            if (mSelectedSlotAnimCurrentFrameCount >= 24) // How long a frame is
+            {
+
+                mSelectedSlotAnimCurrentFrameCount = 0;
+
+                // Next frame
+                mSelectedSlotAnimCurrentFrame++;
+            }
+            
+            if (mSelectedSlotAnimCurrentFrame >= SelectedSlotAnimFrames.Count)
+                mSelectedSlotAnimCurrentFrame = 0;
+
+        }
+        else 
+        {
+            mSelectedSlotAnimCurrentFrame = 0; // TODO put this on ToggleInventory() maybe
+        }
     }
 
     private void Awake()
