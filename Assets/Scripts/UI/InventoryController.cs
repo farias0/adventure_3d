@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,53 +7,93 @@ using UnityEngine.UIElements;
 using UnityEngine.UIElements.Experimental;
 
 
-class SelectedSlotAnimation
+class SelectedSlotManager
 {
-    readonly List<Sprite> mFrames;
-    float mFrameTimer = 0f;
-    int mCurrentFrame = 0;
-    bool mDirection = true; // true = forwards
-
-    private const float FrameDuration = 4 * (1f / 60f);
-
-    public SelectedSlotAnimation(List<Sprite> frames)
+    public enum CursorDirection
     {
-        mFrames = frames;
+        Left,
+        Right,
+        Up,
+        Down
     }
 
-    public Sprite GetFrameAndTick()
-    {
-        mFrameTimer += Time.deltaTime;
+    readonly List<Sprite> mAnimFrames;
+    readonly VisualElement mSlotContainer;
+    private StyleBackground defaultBG;
+    private int mSelectedSlotIndex = 0;
+    private float mAnimFrameTimer = 0f;
+    private int mAnimCurrentFrame = 0;
+    private bool mAnimDirection = true; // true = forwards
+    private const float FrameDuration = 4 * (1f / 60f);
+    private const int SlotsPerRow = 5;
 
-        if (mFrameTimer >= FrameDuration)
+    public SelectedSlotManager(VisualElement slotContainer, List<Sprite> animationFrames)
+    {
+        mSlotContainer = slotContainer;
+        mAnimFrames = animationFrames;
+
+        defaultBG = mSlotContainer[0].style.backgroundImage;
+    }
+
+    public void TickAnimation()
+    {
+        mAnimFrameTimer += Time.deltaTime;
+
+        if (mAnimFrameTimer >= FrameDuration)
         {
-            mFrameTimer = 0;
+            mAnimFrameTimer = 0;
 
             // Next frame
-            if (mDirection) mCurrentFrame++;
-            else mCurrentFrame--;
+            if (mAnimDirection) mAnimCurrentFrame++;
+            else mAnimCurrentFrame--;
         }
 
         // Ping pong effect
-        if (mCurrentFrame >= mFrames.Count)
+        if (mAnimCurrentFrame >= mAnimFrames.Count)
         {
-            mDirection = false;
-            mCurrentFrame = mFrames.Count - 2;
+            mAnimDirection = false;
+            mAnimCurrentFrame = mAnimFrames.Count - 2;
         }
-        else if (mCurrentFrame < 0)
+        else if (mAnimCurrentFrame < 0)
         {
-            mDirection = true;
-            mCurrentFrame = 1;
+            mAnimDirection = true;
+            mAnimCurrentFrame = 1;
         }
 
-        return mFrames[mCurrentFrame];
+        mSlotContainer[mSelectedSlotIndex].style.backgroundImage =
+            mAnimFrames[mAnimCurrentFrame].texture;
     }
 
-    public void Reset()
+    public void ResetAnimation()
     {
-        mFrameTimer = 0f;
-        mCurrentFrame = 0;
-        mDirection = true;
+        mAnimFrameTimer = 0f;
+        mAnimCurrentFrame = 0;
+        mAnimDirection = true;
+    }
+
+    public void MoveCursor(CursorDirection dir)
+    {
+        mSlotContainer[mSelectedSlotIndex].style.backgroundImage = defaultBG;
+
+        switch (dir)
+        {
+            case CursorDirection.Left:
+                mSelectedSlotIndex--;
+                if (mSelectedSlotIndex < 0) mSelectedSlotIndex = mSlotContainer.childCount - 1;
+                break;
+            case CursorDirection.Right:
+                mSelectedSlotIndex++;
+                if (mSelectedSlotIndex >= mSlotContainer.childCount) mSelectedSlotIndex = 0;
+                break;
+            case CursorDirection.Up:
+                mSelectedSlotIndex -= SlotsPerRow;
+                if (mSelectedSlotIndex < 0) mSelectedSlotIndex += mSlotContainer.childCount;
+                break;
+            case CursorDirection.Down:
+                mSelectedSlotIndex += SlotsPerRow;
+                if (mSelectedSlotIndex >= mSlotContainer.childCount) mSelectedSlotIndex -= mSlotContainer.childCount;
+                break;
+        }
     }
 }
 
@@ -69,8 +110,11 @@ public class InventoryController : MonoBehaviour
     private VisualElement mRoot;
     private VisualElement mSlotContainer;
     private bool mIsInventoryOpen;
-    private int mSelectedSlotIndex = 0;
-    private SelectedSlotAnimation mSelectedSlotAnimation;
+    private SelectedSlotManager mSelectedSlotManager;
+    private SelectedSlotManager.CursorDirection? mLastCursorDirection = null;
+
+
+    private const float GamepadDeadzone = 0.25f; 
 
 
     public static void StartDrag(Vector2 position, InventorySlot originalSlot)
@@ -98,7 +142,7 @@ public class InventoryController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mSelectedSlotAnimation = new SelectedSlotAnimation(SelectedSlotAnimFrames);
+        mSelectedSlotManager = new SelectedSlotManager(mSlotContainer, SelectedSlotAnimFrames);
     }
 
     // Update is called once per frame
@@ -108,7 +152,7 @@ public class InventoryController : MonoBehaviour
 
         if (!mIsInventoryOpen) return;
 
-        UpdatedSelectedSlotAnimation();
+        mSelectedSlotManager.TickAnimation();
     }
 
     private void Awake()
@@ -149,6 +193,32 @@ public class InventoryController : MonoBehaviour
         if (!mIsInventoryOpen) return;
 
 
+        float moveX = Input.GetAxis("Horizontal");
+        float moveZ = Input.GetAxis("Vertical");
+
+        // For keyboards
+        if ((Math.Abs(moveX) == 1) && (Math.Abs(moveZ) == 1))
+        {
+            moveX *= 0.7071f;
+            moveZ *= 0.7071f;
+        }
+
+        SelectedSlotManager.CursorDirection? cursorDirection = null;
+
+        if (moveX > GamepadDeadzone)
+            cursorDirection = SelectedSlotManager.CursorDirection.Right;
+        else if (moveX < -1 * GamepadDeadzone)
+            cursorDirection = SelectedSlotManager.CursorDirection.Left;
+        else if (moveZ > GamepadDeadzone)
+            cursorDirection = SelectedSlotManager.CursorDirection.Up;
+        else if (moveZ < -1 * GamepadDeadzone)
+            cursorDirection = SelectedSlotManager.CursorDirection.Down;
+        
+        // Disables hold to keep moving cursor
+        if (cursorDirection != null && cursorDirection != mLastCursorDirection)
+            mSelectedSlotManager.MoveCursor(cursorDirection.Value);
+
+        mLastCursorDirection = cursorDirection;
     }
 
     private void GameController_OnInventoryChanged(string[] itemGuid, InventoryChangeType change)
@@ -174,7 +244,7 @@ public class InventoryController : MonoBehaviour
         if (mIsInventoryOpen)
             FadeIn(mRoot, 250);
         else
-            mSelectedSlotAnimation?.Reset();
+            mSelectedSlotManager?.ResetAnimation();
 
         // Lock or unlock the cursor
         // Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
@@ -236,11 +306,5 @@ public class InventoryController : MonoBehaviour
     private void FadeOut(VisualElement element, int duration)
     {
         element.experimental.animation.Start(new StyleValues { opacity = 1f }, new StyleValues { opacity = 0f }, duration);
-    }
-
-    private void UpdatedSelectedSlotAnimation()
-    {
-        mSlotContainer[mSelectedSlotIndex].style.backgroundImage =
-            mSelectedSlotAnimation.GetFrameAndTick().texture;
     }
 }
