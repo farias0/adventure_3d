@@ -1,7 +1,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Inventory.uss?fileID=7433441132597879392&amp;guid=73086f3f96253364091df11df3129d29&amp;type=3#Inventory" />
-    <ui:VisualElement name="Container" class="container" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; background-color: rgba(0, 0, 0, 0.51);">
+    <ui:VisualElement name="Container" class="container" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; background-color: rgba(0, 0, 0, 0.51); flex-direction: row;">
         <ui:VisualElement name="Panel" class="panel">
+            <ui:VisualElement name="Equipments" class="equipments">
+                <ui:VisualElement name="EquipmentContainer" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; justify-content: center;" />
+            </ui:VisualElement>
             <ui:VisualElement name="Inventory" class="inventory">
                 <ui:VisualElement name="SlotContainer" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; justify-content: center;" />
             </ui:VisualElement>

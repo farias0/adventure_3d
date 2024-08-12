@@ -118,7 +118,8 @@ public class InventoryController : MonoBehaviour
 
 
     private VisualElement mRoot;
-    private VisualElement mSlotContainer;
+    private VisualElement mEquipmentContainer;
+    private VisualElement mInventorySlotContainer;
     private readonly List<InventorySlot> InventorySlots = new();
     private bool mIsInventoryOpen;
     private SelectedSlotManager mSelectedSlotManager;
@@ -150,7 +151,7 @@ public class InventoryController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mSelectedSlotManager = new SelectedSlotManager(mSlotContainer, SelectedSlotAnimFrames);
+        mSelectedSlotManager = new SelectedSlotManager(mInventorySlotContainer, SelectedSlotAnimFrames);
     }
 
     // Update is called once per frame
@@ -172,17 +173,24 @@ public class InventoryController : MonoBehaviour
 
         mGhostIcon = mRoot.Query<VisualElement>("GhostIcon");
 
-        //Search the root for the SlotContainer Visual Element
-        mSlotContainer = mRoot.Q<VisualElement>("SlotContainer");
+        mEquipmentContainer = mRoot.Q<VisualElement>("EquipmentContainer");
+        
+        InventorySlot sword = new();
+        InventorySlots.Add(sword);
+        mEquipmentContainer.Add(sword);
 
-        //Create InventorySlots and add them as children to the SlotContainer
+        InventorySlot shield = new();
+        InventorySlots.Add(shield);
+        mEquipmentContainer.Add(shield);
+
+        mInventorySlotContainer = mRoot.Q<VisualElement>("SlotContainer");
         for (int i = 0; i < 20; i++)
         {
             InventorySlot item = new();
 
             InventorySlots.Add(item);
 
-            mSlotContainer.Add(item);
+            mInventorySlotContainer.Add(item);
         }
 
         GameController.OnInventoryChanged += GameController_OnInventoryChanged;
@@ -364,7 +372,7 @@ public class InventoryController : MonoBehaviour
     private void SyncGhostIconWithSelectedSlot()
     {
         SyncGhostIconWithPosition(
-            mSlotContainer[mSelectedSlotManager.GetSelectedSlotIndex()].worldBound.position);
+            mInventorySlotContainer[mSelectedSlotManager.GetSelectedSlotIndex()].worldBound.position);
     }
 
     private void FadeIn(VisualElement element, int duration)
