@@ -35,6 +35,11 @@ public class InventoryController : MonoBehaviour
         mGhostIcon.style.visibility = Visibility.Visible;
     }
 
+    public bool IsOpen()
+    {
+        return isInventoryOpen;
+    }
+
     // Start is called before the first frame update
     void Start()
     {

@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
         ProcessInput();
 
 
@@ -94,29 +94,37 @@ public class Player : MonoBehaviour
 
     private void  ProcessInput()
     {
-        //if (Input.GetKeyDown(KeyCode.M)) Debug.Log("Is crouched: " + mIsCrouched.ToString()); // FOR DEBUGGING
+
+        Vector3 move = Vector3.zero;
 
 
-        if (Input.GetButtonDown("Attack1")) Attack1();
-        if (Input.GetButtonDown("Attack2")) Attack2();
-        //if (Input.GetButtonDown("Attack3")) Attack3();
-        if (Input.GetButtonDown("Crouch")) CrouchToggle();
-        mInteractedThisFrame = Input.GetButtonDown("Interact");
-        
-        
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
+        if (!InventoryController.IsOpen()) {
 
-        // For keyboards
-        if ((Math.Abs(moveX) == 1) && (Math.Abs(moveZ) == 1))
-        {
-            moveX *= 0.7071f;
-            moveZ *= 0.7071f;
+            if (Input.GetButtonDown("Attack1")) Attack1();
+            if (Input.GetButtonDown("Attack2")) Attack2();
+            //if (Input.GetButtonDown("Attack3")) Attack3();
+            if (Input.GetButtonDown("Crouch")) CrouchToggle();
+            mInteractedThisFrame = Input.GetButtonDown("Interact");
+            
+            
+            float moveX = Input.GetAxis("Horizontal");
+            float moveZ = Input.GetAxis("Vertical");
+
+            // For keyboards
+            if ((Math.Abs(moveX) == 1) && (Math.Abs(moveZ) == 1))
+            {
+                moveX *= 0.7071f;
+                moveZ *= 0.7071f;
+            }
+
+            move = new(moveX, 0, moveZ);
         }
 
-        MovePlayer(new(moveX, 0, moveZ));
+
+        MovePlayer(move);
     }
 
+    // ATTENTION: Must be run every frame so the animation updates correctly
     private void MovePlayer(Vector3 move)
     {
         if (move.magnitude > IdleToWalkThreshold)
