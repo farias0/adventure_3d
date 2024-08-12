@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
 {
     // TODO consider making some of these constants to clear up the component in the inspector
     public GameObject Weapon;
-    public UIDocument UserInterface;
+    public InventoryController InventoryController;
     public float SpeedStanding;
     public float SpeedCrouched;
     public float HeightCrouched;
@@ -67,55 +67,8 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.M)) Debug.Log("Is crouched: " + mIsCrouched.ToString()); // FOR DEBUGGING
-
-
-        if (Input.GetButtonDown("Attack1")) Attack1();
-        if (Input.GetButtonDown("Attack2")) Attack2();
-        //if (Input.GetButtonDown("Attack3")) Attack3();
-        if (Input.GetButtonDown("Crouch")) CrouchToggle();
-        mInteractedThisFrame = Input.GetButtonDown("Interact");
         
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
-
-
-        bool isAttacking = IsAttacking();
-
-
-        // For keyboards
-        if ((Math.Abs(moveX) == 1) && (Math.Abs(moveZ) == 1))
-        {
-            moveX *= 0.7071f;
-            moveZ *= 0.7071f;
-        }
-
-
-        Vector3 move = new(moveX, 0, moveZ);
-        AnimationMoveState animationMoveState = AnimationMoveState.Idle;
-
-
-        if (move.magnitude > IdleToWalkThreshold)
-        {
-
-            if (!isAttacking && !IsGettingHit())
-            {
-                // Move player
-                mController.Move(mSpeed * Time.deltaTime * move);
-            }
-
-
-            // Rotate player
-            Quaternion targetRotation = Quaternion.LookRotation(move);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
-
-
-            // Set movement animation
-            if (mIsCrouched || Mathf.Abs(moveX) + Mathf.Abs(moveZ) < WalkToRunThreshold)
-                animationMoveState = AnimationMoveState.Walk;
-            else
-                animationMoveState = AnimationMoveState.Run;
-        }
+        ProcessInput();
 
 
         // Apply gravity
@@ -135,9 +88,66 @@ public class Player : MonoBehaviour
 
 
         // Activates weapon during attack
-        if (isAttacking) SetWeaponActive(true);
+        if (IsAttacking()) SetWeaponActive(true);
         else SetWeaponActive(false);
+    }
 
+    private void  ProcessInput()
+    {
+        //if (Input.GetKeyDown(KeyCode.M)) Debug.Log("Is crouched: " + mIsCrouched.ToString()); // FOR DEBUGGING
+
+
+        if (Input.GetButtonDown("Attack1")) Attack1();
+        if (Input.GetButtonDown("Attack2")) Attack2();
+        //if (Input.GetButtonDown("Attack3")) Attack3();
+        if (Input.GetButtonDown("Crouch")) CrouchToggle();
+        mInteractedThisFrame = Input.GetButtonDown("Interact");
+        
+        
+        float moveX = Input.GetAxis("Horizontal");
+        float moveZ = Input.GetAxis("Vertical");
+
+        // For keyboards
+        if ((Math.Abs(moveX) == 1) && (Math.Abs(moveZ) == 1))
+        {
+            moveX *= 0.7071f;
+            moveZ *= 0.7071f;
+        }
+
+        MovePlayer(new(moveX, 0, moveZ));
+    }
+
+    private void MovePlayer(Vector3 move)
+    {
+        if (move.magnitude > IdleToWalkThreshold)
+        {
+
+            if (!IsAttacking() && !IsGettingHit())
+            {
+                // Move player
+                mController.Move(mSpeed * Time.deltaTime * move);
+            }
+
+
+            // Rotate player
+            Quaternion targetRotation = Quaternion.LookRotation(move);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.deltaTime);
+        }
+
+        SetMovementAnimation(move);
+    }
+
+    private void SetMovementAnimation(Vector3 move)
+    {
+        AnimationMoveState animationMoveState = AnimationMoveState.Idle;
+
+        if (move.magnitude > IdleToWalkThreshold)
+        {
+            if (mIsCrouched || Mathf.Abs(move.x) + Mathf.Abs(move.z) < WalkToRunThreshold)
+                animationMoveState = AnimationMoveState.Walk;
+            else
+                animationMoveState = AnimationMoveState.Run;
+        }
 
         mAnimator.SetInteger("MovementState", animationMoveState.GetHashCode());
     }

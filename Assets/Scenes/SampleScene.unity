@@ -3878,6 +3878,10 @@ PrefabInstance:
       propertyPath: UserInterface
       value: 
       objectReference: {fileID: 396613117}
+    - target: {fileID: 1426381783355051311, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
+      propertyPath: InventoryController
+      value: 
+      objectReference: {fileID: 396613119}
     - target: {fileID: 2670275071614443411, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
