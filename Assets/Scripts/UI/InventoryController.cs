@@ -72,6 +72,8 @@ class SelectedSlotManager
         mAnimDirection = true;
     }
 
+    public int GetSelectedSlotIndex() => mSelectedSlotIndex;
+
     public void SetSelectedSlot(int index)
     {
         mSlotContainer[mSelectedSlotIndex].style.backgroundImage = mDefaultBG;
@@ -134,13 +136,10 @@ public class InventoryController : MonoBehaviour
         mIsDragging = true;
         mOriginalSlot = originalSlot;
 
-        SyncGhostIconWithCursor(position);
+        EnableGhostIcon(GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Icon);
+        SyncGhostIconWithPosition(position);
 
-        mGhostIcon.style.backgroundImage = GameController.GetItemByGuid(originalSlot.ItemGuid).Icon.texture;
-        mGhostIcon.style.visibility = Visibility.Visible;
-
-        mSelectedSlotManager.SetSelectedSlot(
-            InventorySlots.IndexOf(originalSlot));
+        mSelectedSlotManager.SetSelectedSlot(InventorySlots.IndexOf(originalSlot));
     }
 
     public bool IsOpen()
@@ -260,16 +259,29 @@ public class InventoryController : MonoBehaviour
         
         // Disables hold to keep moving cursor
         if (cursorDirection != null && cursorDirection != mLastCursorDirection)
+        {
             mSelectedSlotManager.MoveCursor(cursorDirection.Value);
+            
+            if (mOriginalSlot != null)
+                SyncGhostIconWithSelectedSlot();
+        }
 
         mLastCursorDirection = cursorDirection;
+
+
+        if (Input.GetButtonDown("Submit"))
+        {
+            InventorySlot selectedSlot = InventorySlots[mSelectedSlotManager.GetSelectedSlotIndex()];
+            if (mOriginalSlot == null) StartMovingItem(selectedSlot);
+            else FinishMovingItem(selectedSlot);
+        }
     }
 
     private void OnPointerMove(PointerMoveEvent evt)
     {
         if (!mIsDragging) return;
 
-        SyncGhostIconWithCursor(evt.position);
+        SyncGhostIconWithPosition(evt.position);
     }
 
     private void OnPointerUp(PointerUpEvent evt)
@@ -287,15 +299,7 @@ public class InventoryController : MonoBehaviour
                             Vector2.Distance(x.worldBound.position, mGhostIcon.worldBound.position))
                         .First();
             
-            string movedItemGuid = mOriginalSlot.ItemGuid;
-            string presentItemGuid = closestSlot.ItemGuid;
-
-            if (string.IsNullOrEmpty(presentItemGuid)) mOriginalSlot.DropItem();
-            else mOriginalSlot.HoldItem(GameController.GetItemByGuid(presentItemGuid));
-
-            closestSlot.HoldItem(GameController.GetItemByGuid(movedItemGuid));
-
-            mSelectedSlotManager.SetSelectedSlot(InventorySlots.IndexOf(closestSlot));
+            MoveItemToSlot(mOriginalSlot, closestSlot);
         }
         //Didn't find any (dragged off the window)
         else
@@ -310,10 +314,57 @@ public class InventoryController : MonoBehaviour
 
     }
 
-    private void SyncGhostIconWithCursor(Vector2 cursorPosition)
+    private void StartMovingItem(InventorySlot fromSlot)
     {
-        mGhostIcon.style.top = cursorPosition.y - mGhostIcon.layout.height / 2;
-        mGhostIcon.style.left = cursorPosition.x - mGhostIcon.layout.width / 2;
+        if (fromSlot.ItemGuid == "") return;
+
+        mOriginalSlot = fromSlot;
+        fromSlot.Icon.image = null;
+        EnableGhostIcon(GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Icon);
+        SyncGhostIconWithSelectedSlot();
+    }
+
+    private void FinishMovingItem(InventorySlot toSlot)
+    {
+        MoveItemToSlot(mOriginalSlot, toSlot);
+        mOriginalSlot = null;
+        DisableGhostIcon();
+    }
+
+    private void MoveItemToSlot(InventorySlot from, InventorySlot to)
+    {
+        string movedItemGuid = from.ItemGuid;
+        string presentItemGuid = to.ItemGuid;
+
+        if (string.IsNullOrEmpty(presentItemGuid)) from.DropItem();
+        else from.HoldItem(GameController.GetItemByGuid(presentItemGuid));
+
+        to.HoldItem(GameController.GetItemByGuid(movedItemGuid));
+
+        mSelectedSlotManager.SetSelectedSlot(InventorySlots.IndexOf(to));
+    }
+
+    private void EnableGhostIcon(Sprite icon)
+    {
+        mGhostIcon.style.backgroundImage = icon.texture;
+        mGhostIcon.style.visibility = Visibility.Visible;
+    }
+    
+    private void DisableGhostIcon()
+    {
+        mGhostIcon.style.visibility = Visibility.Hidden;
+    }
+
+    private void SyncGhostIconWithPosition(Vector2 position)
+    {
+        mGhostIcon.style.top = position.y - mGhostIcon.layout.height / 2;
+        mGhostIcon.style.left = position.x - mGhostIcon.layout.width / 2;
+    }
+
+    private void SyncGhostIconWithSelectedSlot()
+    {
+        SyncGhostIconWithPosition(
+            mSlotContainer[mSelectedSlotManager.GetSelectedSlotIndex()].worldBound.position);
     }
 
     private void FadeIn(VisualElement element, int duration)
