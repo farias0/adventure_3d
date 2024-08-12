@@ -21,25 +21,28 @@ public class InventoryController : MonoBehaviour
 
         public Sprite GetFrameAndTick()
         {
-            // Increase frame counter
-            //if (mDirection)
-                mFrameCounter++;
-            //else
-            //    mFrameCounter--;
+            mFrameCounter++;
 
-
-            if (mFrameCounter >= 24) // How long a frame is
+            if (mFrameCounter >= 36) // How long a frame is
             {
-
                 mFrameCounter = 0;
 
                 // Next frame
-                mCurrentFrame++;
+                if (mDirection) mCurrentFrame++;
+                else mCurrentFrame--;
             }
             
+            // Ping pong effect
             if (mCurrentFrame >= mFrames.Count)
-                mCurrentFrame = 0;
-
+            {
+                mDirection = false;
+                mCurrentFrame = mFrames.Count - 2;
+            }
+            else if (mCurrentFrame < 0)
+            {
+                mDirection = true;
+                mCurrentFrame = 1;
+            }
 
             return mFrames[mCurrentFrame];
         }
