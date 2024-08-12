@@ -48,7 +48,7 @@ public class InventorySlot : VisualElement
         Icon.image = null;
 
         //Start the drag
-        InventoryController.StartDrag(evt.position, this);
+        InventoryController.Instance.StartDrag(evt.position, this);
     }
 
     #region UXML

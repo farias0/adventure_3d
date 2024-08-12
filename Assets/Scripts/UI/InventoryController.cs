@@ -106,48 +106,41 @@ class SelectedSlotManager
 
 public class InventoryController : MonoBehaviour
 {
-    public List<InventorySlot> InventoryItems = new();
     public List<Sprite> SelectedSlotAnimFrames;
 
 
-    private static bool mIsDragging;
-    private static InventorySlot mOriginalSlot;
-    private static VisualElement mGhostIcon;
-
-    // Allows the static DragAndDrop methods to talk to the
-    // single InventoryController instance in the scene.
+    /// <summary>
+    /// There should only be a single instance per scene
+    /// </summary>
     public static InventoryController Instance { get; private set; }
 
 
     private VisualElement mRoot;
     private VisualElement mSlotContainer;
+    private readonly List<InventorySlot> InventorySlots = new();
     private bool mIsInventoryOpen;
     private SelectedSlotManager mSelectedSlotManager;
-    private SelectedSlotManager.CursorDirection? mLastCursorDirection = null;
+    private bool mIsDragging;
+    private InventorySlot mOriginalSlot; // Used when moving an item between slots
+    private VisualElement mGhostIcon;
+    private SelectedSlotManager.CursorDirection? mLastCursorDirection = null; // The last directional input from the player
 
 
     private const float GamepadDeadzone = 0.25f; 
 
 
-    public static void StartDrag(Vector2 position, InventorySlot originalSlot)
+    public void StartDrag(Vector2 position, InventorySlot originalSlot)
     {
-        //Set tracking variables
         mIsDragging = true;
         mOriginalSlot = originalSlot;
 
-        //Set the new position
-        mGhostIcon.style.top = position.y - mGhostIcon.layout.height / 2;
-        mGhostIcon.style.left = position.x - mGhostIcon.layout.width / 2;
+        SyncGhostIconWithCursor(position);
 
-        //Set the image
         mGhostIcon.style.backgroundImage = GameController.GetItemByGuid(originalSlot.ItemGuid).Icon.texture;
-
-        //Flip the visibility on
         mGhostIcon.style.visibility = Visibility.Visible;
 
-        // Select the slot that is being dragged
-        Instance.mSelectedSlotManager.SetSelectedSlot(
-            Instance.InventoryItems.IndexOf(originalSlot));
+        mSelectedSlotManager.SetSelectedSlot(
+            InventorySlots.IndexOf(originalSlot));
     }
 
     public bool IsOpen()
@@ -188,7 +181,7 @@ public class InventoryController : MonoBehaviour
         {
             InventorySlot item = new();
 
-            InventoryItems.Add(item);
+            InventorySlots.Add(item);
 
             mSlotContainer.Add(item);
         }
@@ -201,6 +194,39 @@ public class InventoryController : MonoBehaviour
         //A little gambiarra -- the inventory starts closed!
         mIsInventoryOpen = true;
         ToggleInventory();
+    }
+
+    private void GameController_OnInventoryChanged(string[] itemGuid, InventoryChangeType change)
+    {
+        //Loop through each item and if it has been picked up, add it to the next empty slot
+        foreach (string item in itemGuid)
+        {
+            if (change == InventoryChangeType.Pickup)
+            {
+                var emptySlot = InventorySlots.FirstOrDefault(x => x.ItemGuid.Equals(""));
+                            
+                emptySlot?.HoldItem(GameController.GetItemByGuid(item));
+            }
+        }
+    }
+
+    private void ToggleInventory()
+    {
+        // Toggle visibility of the inventory
+        mIsInventoryOpen = !mIsInventoryOpen;
+        mRoot.style.display = mIsInventoryOpen ? DisplayStyle.Flex : DisplayStyle.None;
+
+        if (mIsInventoryOpen)
+            FadeIn(mRoot, 250);
+        else
+            mSelectedSlotManager?.ResetAnimation();
+
+        // Lock or unlock the cursor
+        // Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
+        // Cursor.visible = isInventoryOpen;
+
+        // Handle pausing/unpausing the game
+        // Time.timeScale = isInventoryOpen ? 0f : 1f;
     }
 
     private void ProcessInput()
@@ -239,49 +265,11 @@ public class InventoryController : MonoBehaviour
         mLastCursorDirection = cursorDirection;
     }
 
-    private void GameController_OnInventoryChanged(string[] itemGuid, InventoryChangeType change)
-    {
-        //Loop through each item and if it has been picked up, add it to the next empty slot
-        foreach (string item in itemGuid)
-        {
-            if (change == InventoryChangeType.Pickup)
-            {
-                var emptySlot = InventoryItems.FirstOrDefault(x => x.ItemGuid.Equals(""));
-                            
-                emptySlot?.HoldItem(GameController.GetItemByGuid(item));
-            }
-        }
-    }
-
-    private void ToggleInventory()
-    {
-        // Toggle visibility of the inventory
-        mIsInventoryOpen = !mIsInventoryOpen;
-        mRoot.style.display = mIsInventoryOpen ? DisplayStyle.Flex : DisplayStyle.None;
-
-        if (mIsInventoryOpen)
-            FadeIn(mRoot, 250);
-        else
-            mSelectedSlotManager?.ResetAnimation();
-
-        // Lock or unlock the cursor
-        // Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
-        // Cursor.visible = isInventoryOpen;
-
-        // Handle pausing/unpausing the game
-        // Time.timeScale = isInventoryOpen ? 0f : 1f;
-    }
-
     private void OnPointerMove(PointerMoveEvent evt)
     {
-        //Only take action if the player is dragging an item around the screen
         if (!mIsDragging) return;
 
-
-        //Set the new position
-        mGhostIcon.style.top = evt.position.y - mGhostIcon.layout.height / 2;
-        mGhostIcon.style.left = evt.position.x - mGhostIcon.layout.width / 2;
-
+        SyncGhostIconWithCursor(evt.position);
     }
 
     private void OnPointerUp(PointerUpEvent evt)
@@ -290,13 +278,17 @@ public class InventoryController : MonoBehaviour
 
 
         //Check to see if they are dropping the ghost icon over any inventory slots.
-        IEnumerable<InventorySlot> slots = InventoryItems.Where(x => x.worldBound.Overlaps(mGhostIcon.worldBound));
+        IEnumerable<InventorySlot> slots = InventorySlots.Where(x => x.worldBound.Overlaps(mGhostIcon.worldBound));
 
         //Found at least one
         if (slots.Count() != 0)
         {
             InventorySlot closestSlot = slots.OrderBy(x => Vector2.Distance(x.worldBound.position, mGhostIcon.worldBound.position)).First();
             
+            /*
+                TODO dragging to the same slot disappears with the item, fix this.
+            */
+
             //Set the new inventory slot with the data
             closestSlot.HoldItem(GameController.GetItemByGuid(mOriginalSlot.ItemGuid));
             
@@ -304,7 +296,7 @@ public class InventoryController : MonoBehaviour
             mOriginalSlot.DropItem();
 
             // Set the selected slot to the new slot
-            mSelectedSlotManager.SetSelectedSlot(InventoryItems.IndexOf(closestSlot));
+            mSelectedSlotManager.SetSelectedSlot(InventorySlots.IndexOf(closestSlot));
         }
         //Didn't find any (dragged off the window)
         else
@@ -317,6 +309,12 @@ public class InventoryController : MonoBehaviour
         mOriginalSlot = null;
         mGhostIcon.style.visibility = Visibility.Hidden;
 
+    }
+
+    private void SyncGhostIconWithCursor(Vector2 cursorPosition)
+    {
+        mGhostIcon.style.top = cursorPosition.y - mGhostIcon.layout.height / 2;
+        mGhostIcon.style.left = cursorPosition.x - mGhostIcon.layout.width / 2;
     }
 
     private void FadeIn(VisualElement element, int duration)
