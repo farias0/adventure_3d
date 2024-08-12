@@ -10,9 +10,11 @@ public class InventoryController : MonoBehaviour
     private class SelectedSlotAnimation
     {
         readonly List<Sprite> mFrames;
-        int mFrameCounter = 0;
+        float mFrameTimer = 0f;
         int mCurrentFrame = 0;
         bool mDirection = true; // true = forwards
+
+        private const float FrameDuration = 4 * (1f / 60f);
 
         public SelectedSlotAnimation(List<Sprite> frames)
         {
@@ -21,17 +23,17 @@ public class InventoryController : MonoBehaviour
 
         public Sprite GetFrameAndTick()
         {
-            mFrameCounter++;
+            mFrameTimer += Time.deltaTime;
 
-            if (mFrameCounter >= 36) // How long a frame is
+            if (mFrameTimer >= FrameDuration)
             {
-                mFrameCounter = 0;
+                mFrameTimer = 0;
 
                 // Next frame
                 if (mDirection) mCurrentFrame++;
                 else mCurrentFrame--;
             }
-            
+
             // Ping pong effect
             if (mCurrentFrame >= mFrames.Count)
             {
@@ -49,7 +51,7 @@ public class InventoryController : MonoBehaviour
 
         public void Reset()
         {
-            mFrameCounter = 0;
+            mFrameTimer = 0f;
             mCurrentFrame = 0;
             mDirection = true;
         }
