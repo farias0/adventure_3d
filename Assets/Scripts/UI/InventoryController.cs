@@ -288,8 +288,10 @@ public class InventoryController : MonoBehaviour
                         .First();
             
             string movedItemGuid = mOriginalSlot.ItemGuid;
+            string presentItemGuid = closestSlot.ItemGuid;
 
-            mOriginalSlot.DropItem();
+            if (string.IsNullOrEmpty(presentItemGuid)) mOriginalSlot.DropItem();
+            else mOriginalSlot.HoldItem(GameController.GetItemByGuid(presentItemGuid));
 
             closestSlot.HoldItem(GameController.GetItemByGuid(movedItemGuid));
 
