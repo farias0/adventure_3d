@@ -7,6 +7,51 @@ using UnityEngine.UIElements.Experimental;
 
 public class InventoryController : MonoBehaviour
 {
+    private class SelectedSlotAnimation
+    {
+        readonly List<Sprite> mFrames;
+        int mFrameCounter = 0;
+        int mCurrentFrame = 0;
+        bool mDirection = true; // true = forwards
+
+        public SelectedSlotAnimation(List<Sprite> frames)
+        {
+            mFrames = frames;
+        }
+
+        public Sprite GetFrameAndTick()
+        {
+            // Increase frame counter
+            //if (mDirection)
+                mFrameCounter++;
+            //else
+            //    mFrameCounter--;
+
+
+            if (mFrameCounter >= 24) // How long a frame is
+            {
+
+                mFrameCounter = 0;
+
+                // Next frame
+                mCurrentFrame++;
+            }
+            
+            if (mCurrentFrame >= mFrames.Count)
+                mCurrentFrame = 0;
+
+
+            return mFrames[mCurrentFrame];
+        }
+
+        public void Reset()
+        {
+            mFrameCounter = 0;
+            mCurrentFrame = 0;
+            mDirection = true;
+        }
+    }
+
     public List<InventorySlot> InventoryItems = new();
     public List<Sprite> SelectedSlotAnimFrames;
 
@@ -18,10 +63,7 @@ public class InventoryController : MonoBehaviour
     private VisualElement mRoot;
     private VisualElement mSlotContainer;
     
-    // TODO make this a struct
-    private int mSelectedSlotAnimCurrentFrameCount = 0;
-    private int mSelectedSlotAnimCurrentFrame = 0;
-    private bool mSelectedSlotAnimCurrentFrameDirection = true; // true = forwards
+    private SelectedSlotAnimation mSelectedSlotAnimation;
     private bool isInventoryOpen;
 
 
@@ -50,7 +92,7 @@ public class InventoryController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        mSelectedSlotAnimation = new SelectedSlotAnimation(SelectedSlotAnimFrames);
     }
 
     // Update is called once per frame
@@ -60,29 +102,7 @@ public class InventoryController : MonoBehaviour
 
         if (isInventoryOpen)
         {
-
-            mSlotContainer[0].style.backgroundImage = SelectedSlotAnimFrames[mSelectedSlotAnimCurrentFrame].texture;
-            
-
-            // Increase frame counter
-            mSelectedSlotAnimCurrentFrameCount++;
-
-            if (mSelectedSlotAnimCurrentFrameCount >= 24) // How long a frame is
-            {
-
-                mSelectedSlotAnimCurrentFrameCount = 0;
-
-                // Next frame
-                mSelectedSlotAnimCurrentFrame++;
-            }
-            
-            if (mSelectedSlotAnimCurrentFrame >= SelectedSlotAnimFrames.Count)
-                mSelectedSlotAnimCurrentFrame = 0;
-
-        }
-        else 
-        {
-            mSelectedSlotAnimCurrentFrame = 0; // TODO put this on ToggleInventory() maybe
+            mSlotContainer[0].style.backgroundImage = mSelectedSlotAnimation.GetFrameAndTick().texture;
         }
     }
 
@@ -136,7 +156,10 @@ public class InventoryController : MonoBehaviour
         isInventoryOpen = !isInventoryOpen;
         mRoot.style.display = isInventoryOpen ? DisplayStyle.Flex : DisplayStyle.None;
 
-        if (isInventoryOpen) FadeIn(mRoot, 250);
+        if (isInventoryOpen)
+            FadeIn(mRoot, 250);
+        else
+            mSelectedSlotAnimation?.Reset();
 
         // Lock or unlock the cursor
         // Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
