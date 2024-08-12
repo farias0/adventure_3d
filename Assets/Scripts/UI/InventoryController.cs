@@ -134,16 +134,18 @@ public class InventoryController : MonoBehaviour
         mGhostIcon = mRoot.Query<VisualElement>("GhostIcon");
 
         mEquipmentContainer = mRoot.Q<VisualElement>("EquipmentContainer");
+        mInventorySlotContainer = mRoot.Q<VisualElement>("SlotContainer");
         
         InventorySlot sword = new();
-        InventorySlots.Add(sword);
+        //InventorySlots.Add(sword); //TODO
+        mInventorySlotContainer.Add(sword);
         mEquipmentContainer.Add(sword);
 
         InventorySlot shield = new();
-        InventorySlots.Add(shield);
+        //InventorySlots.Add(shield); //TODO
+        mInventorySlotContainer.Add(shield);
         mEquipmentContainer.Add(shield);
 
-        mInventorySlotContainer = mRoot.Q<VisualElement>("SlotContainer");
         for (int i = 0; i < 20; i++)
         {
             InventorySlot item = new();
