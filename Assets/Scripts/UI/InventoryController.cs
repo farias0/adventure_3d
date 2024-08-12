@@ -19,14 +19,16 @@ class SelectedSlotManager
     }
 
 
-    readonly VisualElement mSlotContainer;
+    readonly int mSlotCount;
     private int mSelectedSlotIndex = 0;
+
+    private const int EquipmentSlotsCount = 2;
     private const int SlotsPerRow = 5;
 
 
-    public SelectedSlotManager(VisualElement slotContainer)
+    public SelectedSlotManager(int slotCount)
     {
-        mSlotContainer = slotContainer;
+        mSlotCount = slotCount;
     }
 
     public int GetSelectedSlotIndex() => mSelectedSlotIndex;
@@ -41,20 +43,33 @@ class SelectedSlotManager
         switch (dir)
         {
             case CursorDirection.Left:
+                if (mSelectedSlotIndex == 0) return;
+                if ((mSelectedSlotIndex > EquipmentSlotsCount) && (mSelectedSlotIndex - EquipmentSlotsCount) % SlotsPerRow == 0) {
+                    // Left edge of the inventory panel
+                    mSelectedSlotIndex = EquipmentSlotsCount - 1;
+                    return;
+                }
                 mSelectedSlotIndex--;
-                if (mSelectedSlotIndex < 0) mSelectedSlotIndex = mSlotContainer.childCount - 1;
+                if (mSelectedSlotIndex < 0) mSelectedSlotIndex = mSlotCount - 1;
                 break;
+
             case CursorDirection.Right:
+                if (mSelectedSlotIndex == mSlotCount - 1) return;
                 mSelectedSlotIndex++;
-                if (mSelectedSlotIndex >= mSlotContainer.childCount) mSelectedSlotIndex = 0;
+                if (mSelectedSlotIndex >= mSlotCount) mSelectedSlotIndex = 0;
                 break;
+
             case CursorDirection.Up:
+                if (mSelectedSlotIndex < EquipmentSlotsCount) return; // Equipment panel
                 mSelectedSlotIndex -= SlotsPerRow;
-                if (mSelectedSlotIndex < 0) mSelectedSlotIndex += mSlotContainer.childCount;
+                if (mSelectedSlotIndex < EquipmentSlotsCount) mSelectedSlotIndex -= EquipmentSlotsCount; // Can't finish on the equipment panel
+                if (mSelectedSlotIndex < 0) mSelectedSlotIndex += mSlotCount;
                 break;
+
             case CursorDirection.Down:
+                if (mSelectedSlotIndex < EquipmentSlotsCount) return; // Equipment panel
                 mSelectedSlotIndex += SlotsPerRow;
-                if (mSelectedSlotIndex >= mSlotContainer.childCount) mSelectedSlotIndex -= mSlotContainer.childCount;
+                if (mSelectedSlotIndex >= mSlotCount) mSelectedSlotIndex -= mSlotCount - EquipmentSlotsCount;
                 break;
         }
     }
@@ -109,7 +124,7 @@ public class InventoryController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mSelectedSlotManager = new SelectedSlotManager(mInventorySlotContainer);
+        mSelectedSlotManager = new SelectedSlotManager(mEquipmentContainer.childCount + mInventorySlotContainer.childCount);
         mSelectedSlotAnimation = new AnimationSelectedItemSlot(SelectedSlotAnimFrames);
         mSlotDefaultBG = mInventorySlotContainer[0].style.backgroundImage;
     }
