@@ -5,58 +5,59 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.UIElements.Experimental;
 
-public class InventoryController : MonoBehaviour
+
+class SelectedSlotAnimation
 {
-    private class SelectedSlotAnimation
+    readonly List<Sprite> mFrames;
+    float mFrameTimer = 0f;
+    int mCurrentFrame = 0;
+    bool mDirection = true; // true = forwards
+
+    private const float FrameDuration = 4 * (1f / 60f);
+
+    public SelectedSlotAnimation(List<Sprite> frames)
     {
-        readonly List<Sprite> mFrames;
-        float mFrameTimer = 0f;
-        int mCurrentFrame = 0;
-        bool mDirection = true; // true = forwards
-
-        private const float FrameDuration = 4 * (1f / 60f);
-
-        public SelectedSlotAnimation(List<Sprite> frames)
-        {
-            mFrames = frames;
-        }
-
-        public Sprite GetFrameAndTick()
-        {
-            mFrameTimer += Time.deltaTime;
-
-            if (mFrameTimer >= FrameDuration)
-            {
-                mFrameTimer = 0;
-
-                // Next frame
-                if (mDirection) mCurrentFrame++;
-                else mCurrentFrame--;
-            }
-
-            // Ping pong effect
-            if (mCurrentFrame >= mFrames.Count)
-            {
-                mDirection = false;
-                mCurrentFrame = mFrames.Count - 2;
-            }
-            else if (mCurrentFrame < 0)
-            {
-                mDirection = true;
-                mCurrentFrame = 1;
-            }
-
-            return mFrames[mCurrentFrame];
-        }
-
-        public void Reset()
-        {
-            mFrameTimer = 0f;
-            mCurrentFrame = 0;
-            mDirection = true;
-        }
+        mFrames = frames;
     }
 
+    public Sprite GetFrameAndTick()
+    {
+        mFrameTimer += Time.deltaTime;
+
+        if (mFrameTimer >= FrameDuration)
+        {
+            mFrameTimer = 0;
+
+            // Next frame
+            if (mDirection) mCurrentFrame++;
+            else mCurrentFrame--;
+        }
+
+        // Ping pong effect
+        if (mCurrentFrame >= mFrames.Count)
+        {
+            mDirection = false;
+            mCurrentFrame = mFrames.Count - 2;
+        }
+        else if (mCurrentFrame < 0)
+        {
+            mDirection = true;
+            mCurrentFrame = 1;
+        }
+
+        return mFrames[mCurrentFrame];
+    }
+
+    public void Reset()
+    {
+        mFrameTimer = 0f;
+        mCurrentFrame = 0;
+        mDirection = true;
+    }
+}
+
+public class InventoryController : MonoBehaviour
+{
     public List<InventorySlot> InventoryItems = new();
     public List<Sprite> SelectedSlotAnimFrames;
 
@@ -67,9 +68,9 @@ public class InventoryController : MonoBehaviour
 
     private VisualElement mRoot;
     private VisualElement mSlotContainer;
-    
+    private bool mIsInventoryOpen;
+    private int mSelectedSlotIndex = 0;
     private SelectedSlotAnimation mSelectedSlotAnimation;
-    private bool isInventoryOpen;
 
 
     public static void StartDrag(Vector2 position, InventorySlot originalSlot)
@@ -91,7 +92,7 @@ public class InventoryController : MonoBehaviour
 
     public bool IsOpen()
     {
-        return isInventoryOpen;
+        return mIsInventoryOpen;
     }
 
     // Start is called before the first frame update
@@ -103,12 +104,11 @@ public class InventoryController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("ToggleInventory")) ToggleInventory();
+        ProcessInput();
 
-        if (isInventoryOpen)
-        {
-            mSlotContainer[0].style.backgroundImage = mSelectedSlotAnimation.GetFrameAndTick().texture;
-        }
+        if (!mIsInventoryOpen) return;
+
+        UpdatedSelectedSlotAnimation();
     }
 
     private void Awake()
@@ -137,8 +137,18 @@ public class InventoryController : MonoBehaviour
         mGhostIcon.RegisterCallback<PointerUpEvent>(OnPointerUp);
 
         //A little gambiarra -- the inventory starts closed!
-        isInventoryOpen = true;
+        mIsInventoryOpen = true;
         ToggleInventory();
+    }
+
+    private void ProcessInput()
+    {
+
+        if (Input.GetButtonDown("ToggleInventory")) ToggleInventory();
+
+        if (!mIsInventoryOpen) return;
+
+
     }
 
     private void GameController_OnInventoryChanged(string[] itemGuid, InventoryChangeType change)
@@ -158,10 +168,10 @@ public class InventoryController : MonoBehaviour
     private void ToggleInventory()
     {
         // Toggle visibility of the inventory
-        isInventoryOpen = !isInventoryOpen;
-        mRoot.style.display = isInventoryOpen ? DisplayStyle.Flex : DisplayStyle.None;
+        mIsInventoryOpen = !mIsInventoryOpen;
+        mRoot.style.display = mIsInventoryOpen ? DisplayStyle.Flex : DisplayStyle.None;
 
-        if (isInventoryOpen)
+        if (mIsInventoryOpen)
             FadeIn(mRoot, 250);
         else
             mSelectedSlotAnimation?.Reset();
@@ -218,13 +228,19 @@ public class InventoryController : MonoBehaviour
 
     }
 
-    public void FadeIn(VisualElement element, int duration)
+    private void FadeIn(VisualElement element, int duration)
     {
         element.experimental.animation.Start(new StyleValues { opacity = 0f }, new StyleValues { opacity = 1f }, duration);
     }
 
-    public void FadeOut(VisualElement element, int duration)
+    private void FadeOut(VisualElement element, int duration)
     {
         element.experimental.animation.Start(new StyleValues { opacity = 1f }, new StyleValues { opacity = 0f }, duration);
+    }
+
+    private void UpdatedSelectedSlotAnimation()
+    {
+        mSlotContainer[mSelectedSlotIndex].style.backgroundImage =
+            mSelectedSlotAnimation.GetFrameAndTick().texture;
     }
 }
