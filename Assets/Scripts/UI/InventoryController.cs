@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.UIElements.Experimental;
 
 public class InventoryController : MonoBehaviour
 {
@@ -102,6 +103,8 @@ public class InventoryController : MonoBehaviour
         isInventoryOpen = !isInventoryOpen;
         mRoot.style.display = isInventoryOpen ? DisplayStyle.Flex : DisplayStyle.None;
 
+        if (isInventoryOpen) FadeIn(mRoot, 250);
+
         // Lock or unlock the cursor
         // Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
         // Cursor.visible = isInventoryOpen;
@@ -152,5 +155,15 @@ public class InventoryController : MonoBehaviour
         mOriginalSlot = null;
         mGhostIcon.style.visibility = Visibility.Hidden;
 
+    }
+
+    public void FadeIn(VisualElement element, int duration)
+    {
+        element.experimental.animation.Start(new StyleValues { opacity = 0f }, new StyleValues { opacity = 1f }, duration);
+    }
+
+    public void FadeOut(VisualElement element, int duration)
+    {
+        element.experimental.animation.Start(new StyleValues { opacity = 1f }, new StyleValues { opacity = 0f }, duration);
     }
 }
