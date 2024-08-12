@@ -75,12 +75,7 @@ public class Player : MonoBehaviour
         //if (Input.GetButtonDown("Attack3")) Attack3();
         if (Input.GetButtonDown("Crouch")) CrouchToggle();
         mInteractedThisFrame = Input.GetButtonDown("Interact");
-
-        if (Input.GetButtonDown("ToggleInventory"))
-        {
-            // TODO
-        }
-
+        
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 

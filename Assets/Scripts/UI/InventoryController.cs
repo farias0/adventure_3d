@@ -12,9 +12,10 @@ public class InventoryController : MonoBehaviour
     private static bool mIsDragging;
     private static InventorySlot mOriginalSlot;
     private static VisualElement mGhostIcon;
-    
+
     private VisualElement mRoot;
     private VisualElement mSlotContainer;
+    private bool isInventoryOpen;
 
 
     public static void StartDrag(Vector2 position, InventorySlot originalSlot)
@@ -43,7 +44,7 @@ public class InventoryController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetButtonDown("ToggleInventory")) ToggleInventory();
     }
 
     private void Awake()
@@ -70,6 +71,10 @@ public class InventoryController : MonoBehaviour
 
         mGhostIcon.RegisterCallback<PointerMoveEvent>(OnPointerMove);
         mGhostIcon.RegisterCallback<PointerUpEvent>(OnPointerUp);
+
+        //A little gambiarra -- the inventory starts closed!
+        isInventoryOpen = true;
+        ToggleInventory();
     }
 
     private void GameController_OnInventoryChanged(string[] itemGuid, InventoryChangeType change)
@@ -84,6 +89,20 @@ public class InventoryController : MonoBehaviour
                 emptySlot?.HoldItem(GameController.GetItemByGuid(item));
             }
         }
+    }
+
+    private void ToggleInventory()
+    {
+        // Toggle visibility of the inventory
+        isInventoryOpen = !isInventoryOpen;
+        mRoot.style.display = isInventoryOpen ? DisplayStyle.Flex : DisplayStyle.None;
+
+        // Lock or unlock the cursor
+        // Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
+        // Cursor.visible = isInventoryOpen;
+
+        // Handle pausing/unpausing the game
+        // Time.timeScale = isInventoryOpen ? 0f : 1f;
     }
 
     private void OnPointerMove(PointerMoveEvent evt)
