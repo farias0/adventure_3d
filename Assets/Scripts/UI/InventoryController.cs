@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,6 +72,12 @@ class SelectedSlotManager
         mAnimDirection = true;
     }
 
+    public void SetSelectedSlot(int index)
+    {
+        mSlotContainer[mSelectedSlotIndex].style.backgroundImage = defaultBG;
+        mSelectedSlotIndex = index;
+    }
+
     public void MoveCursor(CursorDirection dir)
     {
         mSlotContainer[mSelectedSlotIndex].style.backgroundImage = defaultBG;
@@ -107,6 +114,11 @@ public class InventoryController : MonoBehaviour
     private static InventorySlot mOriginalSlot;
     private static VisualElement mGhostIcon;
 
+    // Allows the static DragAndDrop methods to talk to the
+    // single InventoryController instance in the scene.
+    public static InventoryController Instance { get; private set; }
+
+
     private VisualElement mRoot;
     private VisualElement mSlotContainer;
     private bool mIsInventoryOpen;
@@ -132,6 +144,10 @@ public class InventoryController : MonoBehaviour
 
         //Flip the visibility on
         mGhostIcon.style.visibility = Visibility.Visible;
+
+        // Select the slot that is being dragged
+        Instance.mSelectedSlotManager.SetSelectedSlot(
+            Instance.InventoryItems.IndexOf(originalSlot));
     }
 
     public bool IsOpen()
@@ -157,6 +173,8 @@ public class InventoryController : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
+
         //Store the root from the UI Document component
         mRoot = GetComponent<UIDocument>().rootVisualElement;
 
@@ -284,6 +302,9 @@ public class InventoryController : MonoBehaviour
             
             //Clear the original slot
             mOriginalSlot.DropItem();
+
+            // Set the selected slot to the new slot
+            mSelectedSlotManager.SetSelectedSlot(InventoryItems.IndexOf(closestSlot));
         }
         //Didn't find any (dragged off the window)
         else
