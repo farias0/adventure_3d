@@ -20,7 +20,7 @@ class SelectedSlotManager
 
     readonly List<Sprite> mAnimFrames;
     readonly VisualElement mSlotContainer;
-    private StyleBackground defaultBG;
+    private StyleBackground mDefaultBG;
     private int mSelectedSlotIndex = 0;
     private float mAnimFrameTimer = 0f;
     private int mAnimCurrentFrame = 0;
@@ -33,7 +33,7 @@ class SelectedSlotManager
         mSlotContainer = slotContainer;
         mAnimFrames = animationFrames;
 
-        defaultBG = mSlotContainer[0].style.backgroundImage;
+        mDefaultBG = mSlotContainer[0].style.backgroundImage;
     }
 
     public void TickAnimation()
@@ -74,13 +74,13 @@ class SelectedSlotManager
 
     public void SetSelectedSlot(int index)
     {
-        mSlotContainer[mSelectedSlotIndex].style.backgroundImage = defaultBG;
+        mSlotContainer[mSelectedSlotIndex].style.backgroundImage = mDefaultBG;
         mSelectedSlotIndex = index;
     }
 
     public void MoveCursor(CursorDirection dir)
     {
-        mSlotContainer[mSelectedSlotIndex].style.backgroundImage = defaultBG;
+        mSlotContainer[mSelectedSlotIndex].style.backgroundImage = mDefaultBG;
 
         switch (dir)
         {
@@ -234,7 +234,7 @@ public class InventoryController : MonoBehaviour
 
         if (Input.GetButtonDown("ToggleInventory")) ToggleInventory();
 
-        if (!mIsInventoryOpen) return;
+        if (!mIsInventoryOpen || mIsDragging) return;
 
 
         float moveX = Input.GetAxis("Horizontal");
@@ -283,19 +283,16 @@ public class InventoryController : MonoBehaviour
         //Found at least one
         if (slots.Count() != 0)
         {
-            InventorySlot closestSlot = slots.OrderBy(x => Vector2.Distance(x.worldBound.position, mGhostIcon.worldBound.position)).First();
+            InventorySlot closestSlot = slots.OrderBy(x =>
+                            Vector2.Distance(x.worldBound.position, mGhostIcon.worldBound.position))
+                        .First();
             
-            /*
-                TODO dragging to the same slot disappears with the item, fix this.
-            */
+            string movedItemGuid = mOriginalSlot.ItemGuid;
 
-            //Set the new inventory slot with the data
-            closestSlot.HoldItem(GameController.GetItemByGuid(mOriginalSlot.ItemGuid));
-            
-            //Clear the original slot
             mOriginalSlot.DropItem();
 
-            // Set the selected slot to the new slot
+            closestSlot.HoldItem(GameController.GetItemByGuid(movedItemGuid));
+
             mSelectedSlotManager.SetSelectedSlot(InventorySlots.IndexOf(closestSlot));
         }
         //Didn't find any (dragged off the window)
