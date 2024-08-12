@@ -35,29 +35,7 @@ ___
 - arremessar bomba
 - ciclo de noite e dia
 - sons
-- fogo
+- fogo  <<-- talvez deixar quieto
 - nadar
 
-______
 
-Espalhar pelo mapa como colecionável, ou com vendedores:
-- Poder de ataque / número de corações / força aumentar com itens pelo jogo
-	- !! Talvez upgrades que permitam escolher entre um ou outro skill (estilo Dead Cells)
-- Diferente armas com diferentes poder de ataque
-- Estudos/armaduras
-- Itens de quest
-- Dinheiro
-- Itens de cura (alimentos)
-!! Checkpoint consumível (super valioso)
-
-!! Checkpoints são somente em pontos de interesse do mapa
-!! Checkpoints resetam inimigos (bonfire)
-!! Morrer reseta o inventário p/ o estado do checkpoint
-	- Ao encontrar itens poderosos, jogador tem que decidir entre voltar p/ checkpoint ou continuar explorando
-- Navegar entre checkpoints representa uma jornada p/ o qual o jogador pode se preparar (e tentar novamente se morrer, sem penalidade)
-!! Checkpoints curam parcialmente o jogador
-	!! Checkpoints em pontos mais extremos curam mais
-
-- Tunels que levam a partes inacessíveis do mapa
-	- Abre caminho, permitindo checkpoint
-- Somente um ponto alto do mapa, escondido, de onde pode fazer paragliding

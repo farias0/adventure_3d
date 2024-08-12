@@ -900,6 +900,7 @@ Transform:
   - {fileID: 1508859926}
   - {fileID: 187341825}
   - {fileID: 2119101797}
+  - {fileID: 682565393}
   - {fileID: 1778738501}
   - {fileID: 1651977606}
   - {fileID: 1652692299}
@@ -1967,6 +1968,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 3536960419302557616, guid: 144e5384ed49bbd42b0917c9ca9ec00d, type: 3}
   m_PrefabInstance: {fileID: 186428772}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &682565393 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6455027376716026491, guid: afad2ca802d23d543b104ccbc86fc7ed, type: 3}
+  m_PrefabInstance: {fileID: 2129923249}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
@@ -5507,27 +5513,27 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 250937918}
     m_Modifications:
     - target: {fileID: 5971506605154683073, guid: afad2ca802d23d543b104ccbc86fc7ed, type: 3}
       propertyPath: m_Name
-      value: chest
+      value: Chest
       objectReference: {fileID: 0}
     - target: {fileID: 6455027376716026491, guid: afad2ca802d23d543b104ccbc86fc7ed, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15.78273
+      value: 8.44273
       objectReference: {fileID: 0}
     - target: {fileID: 6455027376716026491, guid: afad2ca802d23d543b104ccbc86fc7ed, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.0018366277
+      value: 11.229633
       objectReference: {fileID: 0}
     - target: {fileID: 6455027376716026491, guid: afad2ca802d23d543b104ccbc86fc7ed, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 26.259933
+      value: -17.410065
       objectReference: {fileID: 0}
     - target: {fileID: 6455027376716026491, guid: afad2ca802d23d543b104ccbc86fc7ed, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.01662527
+      value: -0.016625255
       objectReference: {fileID: 0}
     - target: {fileID: 6455027376716026491, guid: afad2ca802d23d543b104ccbc86fc7ed, type: 3}
       propertyPath: m_LocalRotation.x
@@ -5772,5 +5778,4 @@ SceneRoots:
   - {fileID: 1688943953}
   - {fileID: 1191526368}
   - {fileID: 1124283062}
-  - {fileID: 2129923249}
   - {fileID: 65469702}
