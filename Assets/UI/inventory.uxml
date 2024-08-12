@@ -3,10 +3,10 @@
     <ui:VisualElement name="Container" class="container" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; background-color: rgba(0, 0, 0, 0.51); flex-direction: row;">
         <ui:VisualElement name="Panel" class="panel">
             <ui:VisualElement name="Equipments" class="equipments">
-                <ui:VisualElement name="EquipmentContainer" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; justify-content: center;" />
+                <ui:VisualElement name="EquipmentSlotContainer" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; justify-content: center;" />
             </ui:VisualElement>
             <ui:VisualElement name="Inventory" class="inventory">
-                <ui:VisualElement name="SlotContainer" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; justify-content: center;" />
+                <ui:VisualElement name="InventorySlotContainer" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; justify-content: center;" />
             </ui:VisualElement>
             <ui:VisualElement name="GhostIcon" style="flex-grow: 1; position: absolute; width: 10.8%; height: 18%; visibility: hidden;" />
         </ui:VisualElement>

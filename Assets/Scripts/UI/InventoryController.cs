@@ -87,7 +87,7 @@ public class InventoryController : MonoBehaviour
 
 
     private VisualElement mRoot;
-    private VisualElement mEquipmentContainer;
+    private VisualElement mEquipmentSlotContainer;
     private VisualElement mInventorySlotContainer;
     private readonly List<InventorySlot> InventorySlots = new();
     private StyleBackground mSlotDefaultBG;
@@ -124,7 +124,7 @@ public class InventoryController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mSelectedSlotManager = new SelectedSlotManager(mEquipmentContainer.childCount + mInventorySlotContainer.childCount);
+        mSelectedSlotManager = new SelectedSlotManager(mEquipmentSlotContainer.childCount + mInventorySlotContainer.childCount);
         mSelectedSlotAnimation = new AnimationSelectedItemSlot(SelectedSlotAnimFrames);
         mSlotDefaultBG = mInventorySlotContainer[0].style.backgroundImage;
     }
@@ -149,16 +149,16 @@ public class InventoryController : MonoBehaviour
 
         mGhostIcon = mRoot.Query<VisualElement>("GhostIcon");
 
-        mEquipmentContainer = mRoot.Q<VisualElement>("EquipmentContainer");
-        mInventorySlotContainer = mRoot.Q<VisualElement>("SlotContainer");
+        mEquipmentSlotContainer = mRoot.Q<VisualElement>("EquipmentSlotContainer");
+        mInventorySlotContainer = mRoot.Q<VisualElement>("InventorySlotContainer");
         
         InventorySlot sword = new();
         InventorySlots.Add(sword);
-        mEquipmentContainer.Add(sword);
+        mEquipmentSlotContainer.Add(sword);
 
         InventorySlot shield = new();
         InventorySlots.Add(shield);
-        mEquipmentContainer.Add(shield);
+        mEquipmentSlotContainer.Add(shield);
 
         for (int i = 0; i < 20; i++)
         {
@@ -216,7 +216,7 @@ public class InventoryController : MonoBehaviour
 
     private VisualElement GetSlotElementByIndex(int index)
     {
-        if (index < EquipmentSlotsCount) return mEquipmentContainer[index];
+        if (index < EquipmentSlotsCount) return mEquipmentSlotContainer[index];
         else return mInventorySlotContainer[index - EquipmentSlotsCount];
     }
 
