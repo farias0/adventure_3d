@@ -18,72 +18,26 @@ class SelectedSlotManager
         Down
     }
 
-    readonly List<Sprite> mAnimFrames;
+
     readonly VisualElement mSlotContainer;
-    private StyleBackground mDefaultBG;
     private int mSelectedSlotIndex = 0;
-    private float mAnimFrameTimer = 0f;
-    private int mAnimCurrentFrame = 0;
-    private bool mAnimDirection = true; // true = forwards
-    private const float FrameDuration = 4 * (1f / 60f);
     private const int SlotsPerRow = 5;
 
-    public SelectedSlotManager(VisualElement slotContainer, List<Sprite> animationFrames)
+
+    public SelectedSlotManager(VisualElement slotContainer)
     {
         mSlotContainer = slotContainer;
-        mAnimFrames = animationFrames;
-
-        mDefaultBG = mSlotContainer[0].style.backgroundImage;
-    }
-
-    public void TickAnimation()
-    {
-        mAnimFrameTimer += Time.deltaTime;
-
-        if (mAnimFrameTimer >= FrameDuration)
-        {
-            mAnimFrameTimer = 0;
-
-            // Next frame
-            if (mAnimDirection) mAnimCurrentFrame++;
-            else mAnimCurrentFrame--;
-        }
-
-        // Ping pong effect
-        if (mAnimCurrentFrame >= mAnimFrames.Count)
-        {
-            mAnimDirection = false;
-            mAnimCurrentFrame = mAnimFrames.Count - 2;
-        }
-        else if (mAnimCurrentFrame < 0)
-        {
-            mAnimDirection = true;
-            mAnimCurrentFrame = 1;
-        }
-
-        mSlotContainer[mSelectedSlotIndex].style.backgroundImage =
-            mAnimFrames[mAnimCurrentFrame].texture;
-    }
-
-    public void ResetAnimation()
-    {
-        mAnimFrameTimer = 0f;
-        mAnimCurrentFrame = 0;
-        mAnimDirection = true;
     }
 
     public int GetSelectedSlotIndex() => mSelectedSlotIndex;
 
     public void SetSelectedSlot(int index)
     {
-        mSlotContainer[mSelectedSlotIndex].style.backgroundImage = mDefaultBG;
         mSelectedSlotIndex = index;
     }
 
     public void MoveCursor(CursorDirection dir)
     {
-        mSlotContainer[mSelectedSlotIndex].style.backgroundImage = mDefaultBG;
-
         switch (dir)
         {
             case CursorDirection.Left:
@@ -121,11 +75,13 @@ public class InventoryController : MonoBehaviour
     private VisualElement mEquipmentContainer;
     private VisualElement mInventorySlotContainer;
     private readonly List<InventorySlot> InventorySlots = new();
-    private bool mIsInventoryOpen;
+    private StyleBackground mSlotDefaultBG;
+    private VisualElement mGhostIcon;
     private SelectedSlotManager mSelectedSlotManager;
+    private AnimationSelectedItemSlot mSelectedSlotAnimation;
+    private bool mIsInventoryOpen;
     private bool mIsDragging;
     private InventorySlot mOriginalSlot; // Used when moving an item between slots
-    private VisualElement mGhostIcon;
     private SelectedSlotManager.CursorDirection? mLastCursorDirection = null; // The last directional input from the player
 
 
@@ -140,6 +96,7 @@ public class InventoryController : MonoBehaviour
         EnableGhostIcon(GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Icon);
         SyncGhostIconWithPosition(position);
 
+        StopAnimatingSlot(mSelectedSlotManager.GetSelectedSlotIndex());
         mSelectedSlotManager.SetSelectedSlot(InventorySlots.IndexOf(originalSlot));
     }
 
@@ -151,7 +108,9 @@ public class InventoryController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mSelectedSlotManager = new SelectedSlotManager(mInventorySlotContainer, SelectedSlotAnimFrames);
+        mSelectedSlotManager = new SelectedSlotManager(mInventorySlotContainer);
+        mSelectedSlotAnimation = new AnimationSelectedItemSlot(SelectedSlotAnimFrames);
+        mSlotDefaultBG = mInventorySlotContainer[3].style.backgroundImage;
     }
 
     // Update is called once per frame
@@ -161,7 +120,8 @@ public class InventoryController : MonoBehaviour
 
         if (!mIsInventoryOpen) return;
 
-        mSelectedSlotManager.TickAnimation();
+        mInventorySlotContainer[mSelectedSlotManager.GetSelectedSlotIndex()].style.backgroundImage
+            = mSelectedSlotAnimation.TickAnimation().texture;
     }
 
     private void Awake()
@@ -226,7 +186,7 @@ public class InventoryController : MonoBehaviour
         if (mIsInventoryOpen)
             FadeIn(mRoot, 250);
         else
-            mSelectedSlotManager?.ResetAnimation();
+            mSelectedSlotAnimation?.ResetAnimation();
 
         // Lock or unlock the cursor
         // Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
@@ -268,6 +228,7 @@ public class InventoryController : MonoBehaviour
         // Disables hold to keep moving cursor
         if (cursorDirection != null && cursorDirection != mLastCursorDirection)
         {
+            StopAnimatingSlot(mSelectedSlotManager.GetSelectedSlotIndex());
             mSelectedSlotManager.MoveCursor(cursorDirection.Value);
             
             if (mOriginalSlot != null)
@@ -349,6 +310,7 @@ public class InventoryController : MonoBehaviour
 
         to.HoldItem(GameController.GetItemByGuid(movedItemGuid));
 
+        StopAnimatingSlot(mSelectedSlotManager.GetSelectedSlotIndex());
         mSelectedSlotManager.SetSelectedSlot(InventorySlots.IndexOf(to));
     }
 
@@ -383,5 +345,11 @@ public class InventoryController : MonoBehaviour
     private void FadeOut(VisualElement element, int duration)
     {
         element.experimental.animation.Start(new StyleValues { opacity = 1f }, new StyleValues { opacity = 0f }, duration);
+    }
+
+    private void StopAnimatingSlot(int index)
+    {
+        mInventorySlotContainer[index].style.backgroundImage = mSlotDefaultBG;
+        mSelectedSlotAnimation.ResetAnimation();
     }
 }
