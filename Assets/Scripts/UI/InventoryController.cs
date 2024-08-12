@@ -86,18 +86,19 @@ public class InventoryController : MonoBehaviour
 
 
     private const float GamepadDeadzone = 0.25f; 
+    private const int EquipmentSlotsCount = 2;
 
 
-    public void StartDrag(Vector2 position, InventorySlot originalSlot)
+    public void StartDrag(Vector2 cursorPosition, InventorySlot fromSlot)
     {
         mIsDragging = true;
-        mOriginalSlot = originalSlot;
+        mOriginalSlot = fromSlot;
 
         EnableGhostIcon(GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Icon);
-        SyncGhostIconWithPosition(position);
+        SyncGhostIconWithPosition(cursorPosition);
 
         StopAnimatingSlot(mSelectedSlotManager.GetSelectedSlotIndex());
-        mSelectedSlotManager.SetSelectedSlot(InventorySlots.IndexOf(originalSlot));
+        mSelectedSlotManager.SetSelectedSlot(InventorySlots.IndexOf(fromSlot));
     }
 
     public bool IsOpen()
@@ -110,7 +111,7 @@ public class InventoryController : MonoBehaviour
     {
         mSelectedSlotManager = new SelectedSlotManager(mInventorySlotContainer);
         mSelectedSlotAnimation = new AnimationSelectedItemSlot(SelectedSlotAnimFrames);
-        mSlotDefaultBG = mInventorySlotContainer[3].style.backgroundImage;
+        mSlotDefaultBG = mInventorySlotContainer[0].style.backgroundImage;
     }
 
     // Update is called once per frame
@@ -120,8 +121,8 @@ public class InventoryController : MonoBehaviour
 
         if (!mIsInventoryOpen) return;
 
-        mInventorySlotContainer[mSelectedSlotManager.GetSelectedSlotIndex()].style.backgroundImage
-            = mSelectedSlotAnimation.TickAnimation().texture;
+        int selectedSlotIndex = mSelectedSlotManager.GetSelectedSlotIndex();
+        GetSlotElementByIndex(selectedSlotIndex).style.backgroundImage = mSelectedSlotAnimation.TickAnimation().texture;
     }
 
     private void Awake()
@@ -137,13 +138,11 @@ public class InventoryController : MonoBehaviour
         mInventorySlotContainer = mRoot.Q<VisualElement>("SlotContainer");
         
         InventorySlot sword = new();
-        //InventorySlots.Add(sword); //TODO
-        mInventorySlotContainer.Add(sword);
+        InventorySlots.Add(sword);
         mEquipmentContainer.Add(sword);
 
         InventorySlot shield = new();
-        //InventorySlots.Add(shield); //TODO
-        mInventorySlotContainer.Add(shield);
+        InventorySlots.Add(shield);
         mEquipmentContainer.Add(shield);
 
         for (int i = 0; i < 20; i++)
@@ -172,7 +171,9 @@ public class InventoryController : MonoBehaviour
         {
             if (change == InventoryChangeType.Pickup)
             {
-                var emptySlot = InventorySlots.FirstOrDefault(x => x.ItemGuid.Equals(""));
+                var emptySlot = InventorySlots
+                                        //.Skip(EquipemntSlotsCount)
+                                        .FirstOrDefault(x => x.ItemGuid.Equals(""));
                             
                 emptySlot?.HoldItem(GameController.GetItemByGuid(item));
             }
@@ -196,6 +197,12 @@ public class InventoryController : MonoBehaviour
 
         // Handle pausing/unpausing the game
         // Time.timeScale = isInventoryOpen ? 0f : 1f;
+    }
+
+    private VisualElement GetSlotElementByIndex(int index)
+    {
+        if (index < EquipmentSlotsCount) return mEquipmentContainer[index];
+        else return mInventorySlotContainer[index - EquipmentSlotsCount];
     }
 
     private void ProcessInput()
@@ -336,7 +343,7 @@ public class InventoryController : MonoBehaviour
     private void SyncGhostIconWithSelectedSlot()
     {
         SyncGhostIconWithPosition(
-            mInventorySlotContainer[mSelectedSlotManager.GetSelectedSlotIndex()].worldBound.position);
+            GetSlotElementByIndex(mSelectedSlotManager.GetSelectedSlotIndex()).worldBound.position);
     }
 
     private void FadeIn(VisualElement element, int duration)
@@ -351,7 +358,7 @@ public class InventoryController : MonoBehaviour
 
     private void StopAnimatingSlot(int index)
     {
-        mInventorySlotContainer[index].style.backgroundImage = mSlotDefaultBG;
+        GetSlotElementByIndex(index).style.backgroundImage = mSlotDefaultBG;
         mSelectedSlotAnimation.ResetAnimation();
     }
 }
