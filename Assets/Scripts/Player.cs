@@ -283,12 +283,16 @@ public class Player : MonoBehaviour
     }
 
 
-    void SetWeaponActive(bool active)
+    void SetWeaponActive(bool isActive)
     {
         Transform container = GetWeaponContainer().transform;
         
         if (container.childCount == 0) return;
 
-        container.GetComponentInChildren<Collider>().enabled = active;
+        GameObject weapon = container.GetChild(0).gameObject;
+
+        if (!weapon.activeSelf) return;
+
+        weapon.GetComponent<Collider>().enabled = isActive;
     }
 }
