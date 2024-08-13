@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.UIElements.Experimental;
 
+public delegate void OnPlayerEquippedItemChangedDelegate(string[] itemGuid, InventoryChangeType change);
+
 
 class SelectedSlotManager
 {
@@ -85,6 +87,9 @@ public class InventoryController : MonoBehaviour
     /// </summary>
     public static InventoryController Instance { get; private set; }
 
+    public static event OnPlayerEquippedItemChangedDelegate OnPlayerWeaponChanged = delegate { };
+    public static event OnPlayerEquippedItemChangedDelegate OnPlayerShieldChanged = delegate { };
+
 
     private VisualElement mRoot;
     private VisualElement mEquipmentSlotContainer;
@@ -121,6 +126,16 @@ public class InventoryController : MonoBehaviour
         return mIsInventoryOpen;
     }
 
+    public ItemDetails GetEquippedWeapon()
+    {
+        return GameController.GetItemByGuid(InventorySlots[0].ItemGuid);
+    }
+
+    public ItemDetails GetEquippedShield()
+    {
+        return GameController.GetItemByGuid(InventorySlots[1].ItemGuid);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -152,9 +167,9 @@ public class InventoryController : MonoBehaviour
         mEquipmentSlotContainer = mRoot.Q<VisualElement>("EquipmentSlotContainer");
         mInventorySlotContainer = mRoot.Q<VisualElement>("InventorySlotContainer");
         
-        InventorySlot sword = new();
-        InventorySlots.Add(sword);
-        mEquipmentSlotContainer.Add(sword);
+        InventorySlot weapon = new();
+        InventorySlots.Add(weapon);
+        mEquipmentSlotContainer.Add(weapon);
 
         InventorySlot shield = new();
         InventorySlots.Add(shield);
@@ -324,15 +339,39 @@ public class InventoryController : MonoBehaviour
         DisableGhostIcon();
     }
 
+    private void AssignItem(InventorySlot slot, ItemDetails item)
+    {
+        int index = InventorySlots.IndexOf(slot);
+
+        if (index == 0)
+            OnPlayerWeaponChanged(new string[] { item.GUID }, InventoryChangeType.Pickup);
+        else if (index == 1)
+            OnPlayerShieldChanged(new string[] { item.GUID }, InventoryChangeType.Pickup);
+
+        slot.HoldItem(item);
+    }
+
+    private void UnassignItem(InventorySlot slot)
+    {
+        int index = InventorySlots.IndexOf(slot);
+
+        if (index == 0)
+            OnPlayerWeaponChanged(new string[] { }, InventoryChangeType.Drop);
+        else if (index == 1)
+            OnPlayerShieldChanged(new string[] { }, InventoryChangeType.Drop);
+
+        slot.DropItem();
+    }
+
     private void MoveItemToSlot(InventorySlot from, InventorySlot to)
     {
         string movedItemGuid = from.ItemGuid;
         string presentItemGuid = to.ItemGuid;
 
-        if (string.IsNullOrEmpty(presentItemGuid)) from.DropItem();
-        else from.HoldItem(GameController.GetItemByGuid(presentItemGuid));
+        if (string.IsNullOrEmpty(presentItemGuid)) UnassignItem(from);
+        else AssignItem(from, GameController.GetItemByGuid(presentItemGuid));
 
-        to.HoldItem(GameController.GetItemByGuid(movedItemGuid));
+        AssignItem(to, GameController.GetItemByGuid(movedItemGuid));
 
         StopAnimatingSlot(mSelectedSlotManager.GetSelectedSlotIndex());
         mSelectedSlotManager.SetSelectedSlot(InventorySlots.IndexOf(to));

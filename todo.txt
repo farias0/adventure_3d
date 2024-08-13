@@ -1,6 +1,9 @@
-- inimigo ficando invisível quando morre
+- itens
+	- associar ID do item com o modelo
+	- adicionar novos itens
+	- existir no mundo: soltar e pegar
 
-- inventário
+- inimigo ficando invisível quando morre
 
 - baús/pickups
 

@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UIElements;
 
 // TODO this enum is global. Where should I put it?
@@ -14,9 +16,6 @@ enum AnimationMoveState
 
 public class Player : MonoBehaviour
 {
-    // TODO consider making some of these constants to clear up the component in the inspector
-    public GameObject Weapon;
-    public InventoryController InventoryController;
     public float SpeedStanding;
     public float SpeedCrouched;
     public float HeightCrouched;
@@ -62,6 +61,9 @@ public class Player : MonoBehaviour
         
         mCharacterRadiusDefault = mController.radius;
         mCharacterRadiusCrouched = mCharacterRadiusDefault * (HeightCrouched / mHeightStanding);
+
+        InventoryController.OnPlayerWeaponChanged += InventoryController_OnPlayerWeaponChanged;
+        InventoryController.OnPlayerShieldChanged += InventoryController_OnPlayerShieldChanged;
     }
 
     // Update is called once per frame
@@ -92,13 +94,65 @@ public class Player : MonoBehaviour
         else SetWeaponActive(false);
     }
 
+    private void InventoryController_OnPlayerWeaponChanged(string[] itemGuid, InventoryChangeType change)
+    {
+        Transform container = GetWeaponContainer().transform;
+
+        if (change == InventoryChangeType.Drop && container.childCount == 0)
+        {
+            Debug.LogError("Inventory asked player to drop weapon, but player has no weapon to drop.");
+            return;
+        }
+
+        else if (change == InventoryChangeType.Pickup && container.childCount == 0)
+        {
+            // Should have no problem in the final implementation, but for now will cause errors
+            return; // TODO remove this
+        }
+
+
+        GameObject weapon = container.GetChild(0).gameObject;
+
+        if (change == InventoryChangeType.Pickup)
+            weapon.SetActive(true);
+
+        else
+            weapon.SetActive(false);
+    }
+
+    private void InventoryController_OnPlayerShieldChanged(string[] itemGuid, InventoryChangeType change)
+    {
+        Transform container = GetShieldContainer().transform;
+
+        if (change == InventoryChangeType.Drop && container.childCount == 0)
+        {
+            Debug.LogError("Inventory asked player to drop shield, but player has no shield to drop.");
+            return;
+        }
+
+        else if (change == InventoryChangeType.Pickup && container.childCount == 0)
+        {
+            // Should have no problem in the final implementation, but for now will cause errors
+            return; // TODO remove this
+        }
+        
+
+        GameObject shield = container.GetChild(0).gameObject;
+
+        if (change == InventoryChangeType.Pickup)
+            shield.SetActive(true);
+
+        else
+            shield.SetActive(false);
+    }
+
     private void  ProcessInput()
     {
 
         Vector3 move = Vector3.zero;
 
 
-        if (!InventoryController.IsOpen()) {
+        if (!InventoryController.Instance.IsOpen()) {
 
             if (Input.GetButtonDown("Attack1")) Attack1();
             if (Input.GetButtonDown("Attack2")) Attack2();
@@ -208,9 +262,33 @@ public class Player : MonoBehaviour
         rend.enabled = visible;
     }
 
+    private ItemDetails GetEquippedWeaponDetails()
+    {
+        return InventoryController.Instance.GetEquippedWeapon();
+    }
+
+    private ItemDetails GetEquippedShieldDetails()
+    {
+        return InventoryController.Instance.GetEquippedShield();
+    }
+
+    private GameObject GetWeaponContainer()
+    {
+        return transform.Find("root/pelvis/Weapon").gameObject;
+    }
+
+    private GameObject GetShieldContainer()
+    {
+        return transform.Find("root/pelvis/Shield").gameObject;
+    }
+
+
     void SetWeaponActive(bool active)
     {
-        Collider collider = Weapon.GetComponent<Collider>();
-        collider.enabled = active;
+        Transform container = GetWeaponContainer().transform;
+        
+        if (container.childCount == 0) return;
+
+        container.GetComponentInChildren<Collider>().enabled = active;
     }
 }

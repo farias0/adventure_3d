@@ -19,6 +19,7 @@ public enum InventoryChangeType
     Pickup,
     Drop
 }
+
 public delegate void OnInventoryChangedDelegate(string[] itemGuid, InventoryChangeType change);
 
 /// <summary>
