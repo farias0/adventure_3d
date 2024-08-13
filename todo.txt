@@ -1,6 +1,9 @@
 - itens
-	- adicionar novos itens
-	- existir no mundo: soltar e pegar
+	- permitir item único no jogo => usar GameManager
+	- adicionar novos equipamentos
+	- adicionar item não-único (cura? dinheiro?)
+	- soltar
+	- pegar
 
 - inimigo ficando invisível quando morre
 
