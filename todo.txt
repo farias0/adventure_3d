@@ -1,5 +1,4 @@
 - itens
-	- associar ID do item com o modelo
 	- adicionar novos itens
 	- existir no mundo: soltar e pegar
 

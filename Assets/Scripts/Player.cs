@@ -94,7 +94,7 @@ public class Player : MonoBehaviour
         else SetWeaponActive(false);
     }
 
-    private void InventoryController_OnPlayerWeaponChanged(string[] itemGuid, InventoryChangeType change)
+    private void InventoryController_OnPlayerWeaponChanged(string itemGuid, InventoryChangeType change)
     {
         Transform container = GetWeaponContainer().transform;
 
@@ -104,23 +104,18 @@ public class Player : MonoBehaviour
             return;
         }
 
-        else if (change == InventoryChangeType.Pickup && container.childCount == 0)
+        if (change == InventoryChangeType.Drop)
         {
-            // Should have no problem in the final implementation, but for now will cause errors
-            return; // TODO remove this
+            GameObject weapon = container.GetChild(0).gameObject;
+            Destroy(weapon);
         }
-
-
-        GameObject weapon = container.GetChild(0).gameObject;
-
-        if (change == InventoryChangeType.Pickup)
-            weapon.SetActive(true);
-
-        else
-            weapon.SetActive(false);
+        else{
+            ItemData newWeapon = GameController.GetItemByGuid(itemGuid);
+            Instantiate(newWeapon.Prefab, container);
+        }
     }
 
-    private void InventoryController_OnPlayerShieldChanged(string[] itemGuid, InventoryChangeType change)
+    private void InventoryController_OnPlayerShieldChanged(string itemGuid, InventoryChangeType change)
     {
         Transform container = GetShieldContainer().transform;
 
@@ -130,20 +125,16 @@ public class Player : MonoBehaviour
             return;
         }
 
-        else if (change == InventoryChangeType.Pickup && container.childCount == 0)
+        if (change == InventoryChangeType.Drop)
         {
-            // Should have no problem in the final implementation, but for now will cause errors
-            return; // TODO remove this
+            GameObject shield = container.GetChild(0).gameObject;
+            Destroy(shield);
         }
-        
-
-        GameObject shield = container.GetChild(0).gameObject;
-
-        if (change == InventoryChangeType.Pickup)
-            shield.SetActive(true);
-
         else
-            shield.SetActive(false);
+        {
+            ItemData newShield = GameController.GetItemByGuid(itemGuid);
+            Instantiate(newShield.Prefab, container);
+        }
     }
 
     private void  ProcessInput()
@@ -292,7 +283,9 @@ public class Player : MonoBehaviour
         GameObject weapon = container.GetChild(0).gameObject;
 
         if (!weapon.activeSelf) return;
+        
+        if (!weapon.TryGetComponent<Collider>(out var collider)) return;
 
-        weapon.GetComponent<Collider>().enabled = isActive;
+        collider.enabled = isActive;
     }
 }

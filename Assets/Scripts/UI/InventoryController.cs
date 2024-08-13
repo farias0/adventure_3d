@@ -14,7 +14,7 @@ public enum InventoryChangeType
 }
 
 public delegate void OnInventoryChangedDelegate(string[] itemGuid, InventoryChangeType change);
-public delegate void OnPlayerEquippedItemChangedDelegate(string[] itemGuid, InventoryChangeType change);
+public delegate void OnPlayerEquippedItemChangedDelegate(string itemGuid, InventoryChangeType change);
 
 class SelectedSlotManager
 {
@@ -123,8 +123,7 @@ public class InventoryController : MonoBehaviour
         EnableGhostIcon(GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Icon);
         SyncGhostIconWithPosition(cursorPosition);
 
-        StopAnimatingSlot(mSelectedSlotManager.GetSelectedSlotIndex());
-        mSelectedSlotManager.SetSelectedSlot(InventorySlots.IndexOf(fromSlot));
+        SetSelectedSlot(InventorySlots.IndexOf(fromSlot));
     }
 
     public bool IsOpen()
@@ -208,7 +207,7 @@ public class InventoryController : MonoBehaviour
             if (change == InventoryChangeType.Pickup)
             {
                 var emptySlot = InventorySlots
-                                        //.Skip(EquipemntSlotsCount)
+                                        .Skip(EquipmentSlotsCount)
                                         .FirstOrDefault(x => x.ItemGuid.Equals(""));
                             
                 emptySlot?.HoldItem(GameController.GetItemByGuid(item));
@@ -223,7 +222,10 @@ public class InventoryController : MonoBehaviour
         mRoot.style.display = mIsInventoryOpen ? DisplayStyle.Flex : DisplayStyle.None;
 
         if (mIsInventoryOpen)
+        {
             FadeIn(mRoot, 250);
+            SetSelectedSlot(EquipmentSlotsCount);
+        }
         else
             mSelectedSlotAnimation?.ResetAnimation();
 
@@ -239,6 +241,12 @@ public class InventoryController : MonoBehaviour
     {
         if (index < EquipmentSlotsCount) return mEquipmentSlotContainer[index];
         else return mInventorySlotContainer[index - EquipmentSlotsCount];
+    }
+
+    private void SetSelectedSlot(int index)
+    {
+        StopAnimatingSlot(mSelectedSlotManager.GetSelectedSlotIndex());
+        mSelectedSlotManager.SetSelectedSlot(index);
     }
 
     private void ProcessInput()
@@ -350,9 +358,9 @@ public class InventoryController : MonoBehaviour
         int index = InventorySlots.IndexOf(slot);
 
         if (index == 0)
-            OnPlayerWeaponChanged(new string[] { item.GUID }, InventoryChangeType.Pickup);
+            OnPlayerWeaponChanged(item.GUID, InventoryChangeType.Pickup);
         else if (index == 1)
-            OnPlayerShieldChanged(new string[] { item.GUID }, InventoryChangeType.Pickup);
+            OnPlayerShieldChanged(item.GUID, InventoryChangeType.Pickup);
 
         slot.HoldItem(item);
     }
@@ -362,9 +370,9 @@ public class InventoryController : MonoBehaviour
         int index = InventorySlots.IndexOf(slot);
 
         if (index == 0)
-            OnPlayerWeaponChanged(new string[] { }, InventoryChangeType.Drop);
+            OnPlayerWeaponChanged("", InventoryChangeType.Drop);
         else if (index == 1)
-            OnPlayerShieldChanged(new string[] { }, InventoryChangeType.Drop);
+            OnPlayerShieldChanged("", InventoryChangeType.Drop);
 
         slot.DropItem();
     }
@@ -379,8 +387,7 @@ public class InventoryController : MonoBehaviour
 
         AssignItem(to, GameController.GetItemByGuid(movedItemGuid));
 
-        StopAnimatingSlot(mSelectedSlotManager.GetSelectedSlotIndex());
-        mSelectedSlotManager.SetSelectedSlot(InventorySlots.IndexOf(to));
+        SetSelectedSlot(InventorySlots.IndexOf(to));
     }
 
     private void EnableGhostIcon(Sprite icon)
