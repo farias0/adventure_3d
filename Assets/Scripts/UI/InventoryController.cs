@@ -7,8 +7,14 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.UIElements.Experimental;
 
-public delegate void OnPlayerEquippedItemChangedDelegate(string[] itemGuid, InventoryChangeType change);
+public enum InventoryChangeType
+{
+    Pickup,
+    Drop
+}
 
+public delegate void OnInventoryChangedDelegate(string[] itemGuid, InventoryChangeType change);
+public delegate void OnPlayerEquippedItemChangedDelegate(string[] itemGuid, InventoryChangeType change);
 
 class SelectedSlotManager
 {
@@ -126,12 +132,12 @@ public class InventoryController : MonoBehaviour
         return mIsInventoryOpen;
     }
 
-    public ItemDetails GetEquippedWeapon()
+    public ItemData GetEquippedWeapon()
     {
         return GameController.GetItemByGuid(InventorySlots[0].ItemGuid);
     }
 
-    public ItemDetails GetEquippedShield()
+    public ItemData GetEquippedShield()
     {
         return GameController.GetItemByGuid(InventorySlots[1].ItemGuid);
     }
@@ -339,7 +345,7 @@ public class InventoryController : MonoBehaviour
         DisableGhostIcon();
     }
 
-    private void AssignItem(InventorySlot slot, ItemDetails item)
+    private void AssignItem(InventorySlot slot, ItemData item)
     {
         int index = InventorySlots.IndexOf(slot);
 

@@ -11,7 +11,7 @@ public class InventorySlot : VisualElement
     public string ItemGuid = "";
 
 
-    public void HoldItem(ItemDetails item)
+    public void HoldItem(ItemData item)
     {
         Icon.image = item.Icon.texture;
         ItemGuid = item.GUID;

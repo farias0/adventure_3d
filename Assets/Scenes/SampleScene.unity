@@ -2598,9 +2598,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7d510ad57f1d0a43b72d106f2329473, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IconSprites:
-  - {fileID: 21300000, guid: d4cb3742577bd454486e60e15da9234b, type: 3}
-  - {fileID: 21300000, guid: 03afc69072ca6504a889cf51e8fbbc7c, type: 3}
+  Items:
+  - {fileID: 11400000, guid: a3046ff5748005c4ebba8cbad9523a70, type: 2}
+  - {fileID: 11400000, guid: 2ac5d29903d4542439655f707b24ba29, type: 2}
 --- !u!1001 &1024133946
 PrefabInstance:
   m_ObjectHideFlags: 0

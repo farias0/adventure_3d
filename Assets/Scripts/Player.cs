@@ -262,12 +262,12 @@ public class Player : MonoBehaviour
         rend.enabled = visible;
     }
 
-    private ItemDetails GetEquippedWeaponDetails()
+    private ItemData GetEquippedWeaponDetails()
     {
         return InventoryController.Instance.GetEquippedWeapon();
     }
 
-    private ItemDetails GetEquippedShieldDetails()
+    private ItemData GetEquippedShieldDetails()
     {
         return InventoryController.Instance.GetEquippedShield();
     }
