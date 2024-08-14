@@ -16,10 +16,23 @@ public class CameraFollow : MonoBehaviour
     private float mOffsetVer;
     private Vector3 mPlayerPositionLastFrame;
 
+    
+    public static CameraFollow Instance { get; private set; }
+
+
+    public void ResetCamera()
+    {
+        mOffsetHor = 0;
+        mOffsetVer = 0;
+        mPlayerPositionLastFrame = Player.transform.position;
+        Update();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
+        Instance = this;
+
         mDistancePlayersHead = transform.position.y - Player.transform.position.y;
         mDistancePlayersBack = transform.position.z - Player.transform.position.z;
 

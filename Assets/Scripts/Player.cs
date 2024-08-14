@@ -11,7 +11,8 @@ enum AnimationMoveState
 {
     Idle = 0,
     Walk = 1,
-    Run = 2
+    Run = 2,
+    Dead = 3
 }
 
 public class Player : MonoBehaviour
@@ -30,6 +31,7 @@ public class Player : MonoBehaviour
     public float InteractionRadius;
 
     private const int MaxHealth = 30;
+    private const float RespawnTime = 4;
 
     Animator mAnimator;
     CharacterController mController;
@@ -41,6 +43,7 @@ public class Player : MonoBehaviour
     float mCharacterRadiusDefault;
     float mCharacterRadiusCrouched; // So the player doesn't float when its squished
     int mHealth = MaxHealth;
+    private float mRespawnCountdown = -1;
 
 
     /// <summary>
@@ -50,17 +53,17 @@ public class Player : MonoBehaviour
     /// <returns>If the player died by this hit</returns>
     public bool GetHit(int damage)
     {
-        if (mInvincibleCountdown > 0) return false;
+        if (mInvincibleCountdown > 0 || mHealth <= 0) return false;
 
         SetHealth(mHealth - damage);
-        mInvincibleCountdown = InvincibleTime;
 
         if (mHealth <= 0)
         {
-            Respawn();
+            Die();
             return true;
         }
 
+        mInvincibleCountdown = InvincibleTime;
         mAnimator.SetTrigger("GetHit");
         return false;
     }
@@ -100,9 +103,16 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        ProcessInput();
-
+        if (mRespawnCountdown > 0)
+        {
+            mRespawnCountdown -= Time.deltaTime;
+            ///if (mRespawnCountdown <= RespawnTime - 0.1) mAnimator.ResetTrigger("Die");
+            if (mRespawnCountdown <= 0)
+            {
+                Respawn();
+                mRespawnCountdown = -1;
+            }
+        }
 
         // Apply gravity
         if (!mController.isGrounded)
@@ -119,6 +129,11 @@ public class Player : MonoBehaviour
             else BlinkThisFrame();
         }
 
+
+        if (mHealth <= 0) return;
+
+
+        ProcessInput();
 
         // Activates weapon during attack
         if (IsAttacking()) SetWeaponActive(true);
@@ -210,11 +225,22 @@ public class Player : MonoBehaviour
         HUDController.Instance.PlayerSetHealth(health);
     }
 
+    private void Die()
+    {
+        SetHealth(0);
+        mAnimator.SetInteger("MovementState", AnimationMoveState.Dead.GetHashCode());
+        mAnimator.SetTrigger("Die");
+        mRespawnCountdown = RespawnTime;
+    }
+
     private void Respawn()
     {
         Vector3 spawnPoint = CurrentCheckpoint.GetSpawnPoint();
         transform.position = new(spawnPoint.x, transform.position.y, spawnPoint.z);
         SetHealth(MaxHealth);
+        mAnimator.SetInteger("MovementState", AnimationMoveState.Idle.GetHashCode());
+        mAnimator.SetTrigger("Respawn");
+        CameraFollow.Instance.ResetCamera();
     }
 
     // ATTENTION: Must be run every frame so the animation updates correctly

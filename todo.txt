@@ -1,4 +1,10 @@
+- vida vazia ao iniciar o jogo
+
 - sinalizar aos inimigos que o jogador morreu
+
+____
+
+- escudo
 
 - itens
 	- estruturar itens unicos e consumiveis no GameManager
@@ -23,7 +29,6 @@
 
 - escadas
 
-- escudo
 - dodge
 - pulo?
 
