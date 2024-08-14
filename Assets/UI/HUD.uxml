@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/HUD.uss?fileID=7433441132597879392&amp;guid=e1e3046680bfeaa40bd405bfcb5277b2&amp;type=3#HUD" />
+    <ui:VisualElement name="HealthBarContainer" class="health-bar-container">
+        <ui:VisualElement name="HealthBarFill" class="health-bar-fill" />
+    </ui:VisualElement>
+</ui:UXML>

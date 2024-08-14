@@ -1,3 +1,9 @@
+- gameplay loop
+	- vidas
+	- hud
+	- morte e restart
+	- checkpoint
+
 - itens
 	- estruturar itens unicos e consumiveis no GameManager
 	- adicionar novos equipamentos
@@ -7,13 +13,9 @@
 
 - inimigo ficando invisível quando morre
 
-- baús/pickups
+- slots do inventário não estão escalando com a resolução
 
-- gameplay loop
-	- vidas
-	- hud
-	- morte e restart
-	- checkpoint
+- baús/pickups
 
 - aumentar tempo de invencibilidade do inimigo?
 
@@ -35,6 +37,7 @@
 	- talvez colocar uma tolerância no movimento y
 
 
+- inventário ser grade de blocos
 - npc com escudo
 - arco e flecha
 - arremessar bomba
