@@ -104,12 +104,15 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (change == InventoryChangeType.Drop)
+        if (container.childCount > 0)
         {
             GameObject weapon = container.GetChild(0).gameObject;
             Destroy(weapon);
         }
-        else{
+
+        if (change == InventoryChangeType.Pickup)
+        {
+
             ItemData newWeapon = GameController.GetItemByGuid(itemGuid);
             Instantiate(newWeapon.Prefab, container);
         }
@@ -125,12 +128,13 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if (change == InventoryChangeType.Drop)
+        if (container.childCount > 0)
         {
             GameObject shield = container.GetChild(0).gameObject;
             Destroy(shield);
         }
-        else
+
+        if (change == InventoryChangeType.Pickup)
         {
             ItemData newShield = GameController.GetItemByGuid(itemGuid);
             Instantiate(newShield.Prefab, container);
