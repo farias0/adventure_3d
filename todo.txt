@@ -1,7 +1,7 @@
 - itens
-	- permitir item único no jogo => usar GameManager
+	- estruturar itens unicos e consumiveis no GameManager
 	- adicionar novos equipamentos
-	- adicionar item não-único (cura? dinheiro?)
+	- adicionar item não-único (cura? dinheiro)
 	- soltar
 	- pegar
 
@@ -24,10 +24,10 @@
 			- player oferecer método para o inimigo checar se ouve ele esse frame
 
 - escadas
-___
 
 - escudo
 - dodge
+- pulo?
 
 - colocar um game juice no combate
 
@@ -40,6 +40,7 @@ ___
 - arremessar bomba
 - ciclo de noite e dia
 - sons
+- armaduras
 - fogo  <<-- talvez deixar quieto
 - nadar
 
