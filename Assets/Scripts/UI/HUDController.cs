@@ -10,11 +10,11 @@ public class HUDController : MonoBehaviour
 
     private const float MaxHealth = 100f;
 
+
     /// <summary>
     /// There should only be a single instance per scene
     /// </summary>
     public static HUDController Instance { get; private set; }
-
 
     public void PlayerTakeDamage(float amount)
     {

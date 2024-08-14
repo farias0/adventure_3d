@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
         if (mInvincibleCountdown > 0) return;
 
         mAnimator.SetTrigger("GetHit");
-        HUDController.Instance.PlayerTakeDamage(10);
+        HUDController.Instance.PlayerTakeDamage(35);
         mInvincibleCountdown = InvincibleTime;
     }
 
