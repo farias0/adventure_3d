@@ -124,6 +124,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f7c096ece8b8b54b92692e1f1b1103e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentCheckpoint: {fileID: 0}
+  StartingWeapon: {fileID: 11400000, guid: a3046ff5748005c4ebba8cbad9523a70, type: 2}
+  StartingShield: {fileID: 11400000, guid: 2ac5d29903d4542439655f707b24ba29, type: 2}
   SpeedStanding: 3.5
   SpeedCrouched: 1.5
   HeightCrouched: 0.5

@@ -1,3 +1,5 @@
+- sinalizar aos inimigos que o jogador morreu
+
 - itens
 	- estruturar itens unicos e consumiveis no GameManager
 	- adicionar novos equipamentos

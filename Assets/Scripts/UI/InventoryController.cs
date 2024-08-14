@@ -141,6 +141,35 @@ public class InventoryController : MonoBehaviour
         return GameController.GetItemByGuid(InventorySlots[1].ItemGuid);
     }
 
+    /// <summary>
+    /// Tries to equip a weapon from the inventory
+    /// </summary>
+    /// <param name="itemGuid"></param>
+    /// <returns>If it was able to equip it</returns>
+    public bool EquipWeapon(string itemGuid)
+    {
+        // TODO make InventorySlots a dictionary
+        InventorySlot itemSlot = InventorySlots.FirstOrDefault(slot => slot.ItemGuid == itemGuid);
+        if (itemSlot == null) return false;
+
+        MoveItemToSlot(itemSlot, InventorySlots[0]);
+        return true;
+    }
+
+    /// <summary>
+    /// Tries to equip a shield from the inventory
+    /// </summary>
+    /// <param name="itemGuid"></param>
+    /// <returns>If it was able to equip it</returns>
+    public bool EquipShield(string itemGuid)
+    {
+        InventorySlot itemSlot = InventorySlots.FirstOrDefault(slot => slot.ItemGuid == itemGuid);
+        if (itemSlot == null) return false;
+
+        MoveItemToSlot(itemSlot, InventorySlots[1]);
+        return true;
+    }
+
     // Start is called before the first frame update
     void Start()
     {

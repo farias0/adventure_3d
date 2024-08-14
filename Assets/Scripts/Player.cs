@@ -17,6 +17,8 @@ enum AnimationMoveState
 public class Player : MonoBehaviour
 {
     public Checkpoint CurrentCheckpoint;
+    public ItemData StartingWeapon;
+    public ItemData StartingShield;
     public float SpeedStanding;
     public float SpeedCrouched;
     public float HeightCrouched;
@@ -84,6 +86,15 @@ public class Player : MonoBehaviour
         InventoryController.OnPlayerShieldChanged += InventoryController_OnPlayerShieldChanged;
 
         HUDController.Instance.PlayerSetMaxHealth(MaxHealth);
+
+        if (!InventoryController.Instance.EquipWeapon(StartingWeapon.GUID))
+        {
+            Debug.LogError("Failed to equip weapon on player start.");
+        }
+        if (!InventoryController.Instance.EquipShield(StartingShield.GUID))
+        {
+            Debug.LogError("Failed to equip shield on player start.");
+        }
     }
 
     // Update is called once per frame
