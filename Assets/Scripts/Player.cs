@@ -16,6 +16,7 @@ enum AnimationMoveState
 
 public class Player : MonoBehaviour
 {
+    public Checkpoint CurrentCheckpoint;
     public float SpeedStanding;
     public float SpeedCrouched;
     public float HeightCrouched;
@@ -26,6 +27,8 @@ public class Player : MonoBehaviour
     public float InvincibleTime;
     public float InteractionRadius;
 
+    private const int MaxHealth = 30;
+
     Animator mAnimator;
     CharacterController mController;
     float mHeightStanding = 0; // WARNING! Should be const. Defined at Start().
@@ -35,15 +38,29 @@ public class Player : MonoBehaviour
     bool mInteractedThisFrame = false;
     float mCharacterRadiusDefault;
     float mCharacterRadiusCrouched; // So the player doesn't float when its squished
+    int mHealth = MaxHealth;
 
 
-    public void GetHit()
+    /// <summary>
+    /// Hits the player
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <returns>If the player died by this hit</returns>
+    public bool GetHit(int damage)
     {
-        if (mInvincibleCountdown > 0) return;
+        if (mInvincibleCountdown > 0) return false;
+
+        SetHealth(mHealth - damage);
+        mInvincibleCountdown = InvincibleTime;
+
+        if (mHealth <= 0)
+        {
+            Respawn();
+            return true;
+        }
 
         mAnimator.SetTrigger("GetHit");
-        HUDController.Instance.PlayerTakeDamage(35);
-        mInvincibleCountdown = InvincibleTime;
+        return false;
     }
 
     public bool InteractedWithMeThisFrame(Vector3 position)
@@ -65,6 +82,8 @@ public class Player : MonoBehaviour
 
         InventoryController.OnPlayerWeaponChanged += InventoryController_OnPlayerWeaponChanged;
         InventoryController.OnPlayerShieldChanged += InventoryController_OnPlayerShieldChanged;
+
+        HUDController.Instance.PlayerSetMaxHealth(MaxHealth);
     }
 
     // Update is called once per frame
@@ -172,6 +191,19 @@ public class Player : MonoBehaviour
 
 
         MovePlayer(move);
+    }
+
+    private void SetHealth(int health)
+    {
+        mHealth = health;
+        HUDController.Instance.PlayerSetHealth(health);
+    }
+
+    private void Respawn()
+    {
+        Vector3 spawnPoint = CurrentCheckpoint.GetSpawnPoint();
+        transform.position = new(spawnPoint.x, transform.position.y, spawnPoint.z);
+        SetHealth(MaxHealth);
     }
 
     // ATTENTION: Must be run every frame so the animation updates correctly

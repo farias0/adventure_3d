@@ -1,9 +1,3 @@
-- gameplay loop
-	- vidas
-	- hud
-	- morte e restart
-	- checkpoint
-
 - itens
 	- estruturar itens unicos e consumiveis no GameManager
 	- adicionar novos equipamentos

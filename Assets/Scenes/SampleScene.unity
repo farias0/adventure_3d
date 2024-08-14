@@ -1749,7 +1749,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6623015008264760740, guid: b55b3882d0ce5c34fa35085a952d0bd7, type: 3}
       propertyPath: m_Name
-      value: MagicRocks
+      value: Checkpoint
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3955,6 +3955,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 396613117}
     - target: {fileID: 1426381783355051311, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
+      propertyPath: CurrentCheckpoint
+      value: 
+      objectReference: {fileID: 1826751621}
+    - target: {fileID: 1426381783355051311, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
       propertyPath: InventoryController
       value: 
       objectReference: {fileID: 396613119}
@@ -4768,6 +4772,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3536960419302557616, guid: 144e5384ed49bbd42b0917c9ca9ec00d, type: 3}
   m_PrefabInstance: {fileID: 1801882429}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1826751621 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5516129881816052562, guid: b55b3882d0ce5c34fa35085a952d0bd7, type: 3}
+  m_PrefabInstance: {fileID: 627532208}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ffd5a9488619048884ea6adcd73e22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1834265353 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3536960419302557616, guid: 144e5384ed49bbd42b0917c9ca9ec00d, type: 3}
@@ -5872,6 +5887,7 @@ SceneRoots:
   - {fileID: 1800297124}
   - {fileID: 396613118}
   - {fileID: 1578291718}
+  - {fileID: 627532208}
   - {fileID: 1778959975}
   - {fileID: 644498526}
   - {fileID: 1618163772}
@@ -5880,7 +5896,6 @@ SceneRoots:
   - {fileID: 7160350645367711278}
   - {fileID: 5137158530444775137}
   - {fileID: 651317743}
-  - {fileID: 627532208}
   - {fileID: 2010587951}
   - {fileID: 1228506303}
   - {fileID: 1918750792}

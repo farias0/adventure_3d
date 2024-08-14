@@ -6,9 +6,8 @@ using UnityEngine.UIElements;
 public class HUDController : MonoBehaviour
 {
     private VisualElement mHealthBarFill;
+    private float mMaxHealth;
     private float mCurrentHealth;
-
-    private const float MaxHealth = 100f;
 
 
     /// <summary>
@@ -16,17 +15,17 @@ public class HUDController : MonoBehaviour
     /// </summary>
     public static HUDController Instance { get; private set; }
 
-    public void PlayerTakeDamage(float amount)
+    public void PlayerSetHealth(int health)
     {
-        mCurrentHealth -= amount;
+        mCurrentHealth = health;
         if (mCurrentHealth < 0) mCurrentHealth = 0;
+        if (mCurrentHealth > mMaxHealth) mCurrentHealth = mMaxHealth;
         UpdateHealthBar();
     }
 
-    public void PlayerHeal(float amount)
+    public void PlayerSetMaxHealth(int health)
     {
-        mCurrentHealth += amount;
-        if (mCurrentHealth > MaxHealth) mCurrentHealth = MaxHealth;
+        mMaxHealth = health;
         UpdateHealthBar();
     }
 
@@ -46,13 +45,13 @@ public class HUDController : MonoBehaviour
         var root = GetComponent<UIDocument>().rootVisualElement;
         mHealthBarFill = root.Q<VisualElement>("HealthBarFill");
         
-        mCurrentHealth = MaxHealth;
+        mCurrentHealth = mMaxHealth;
         UpdateHealthBar();
     }
 
     private void UpdateHealthBar()
     {
-        float healthPercentage = mCurrentHealth / MaxHealth;
+        float healthPercentage = mCurrentHealth / mMaxHealth;
         mHealthBarFill.style.width = Length.Percent(healthPercentage * 100f);
     }
 }

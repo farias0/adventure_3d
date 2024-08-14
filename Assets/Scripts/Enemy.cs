@@ -32,6 +32,7 @@ public class Enemy : MonoBehaviour
     public float ChasePhaseDuration; // How long the enemy chases the player after losing sight of them
     public float AlertToSearchingDuration; // How long the enemy stays facing the player before going to searching
 
+    private const int Damage = 10;
 
     private Animator mAnimator;
     private NavMeshAgent mNavMeshAgent;
@@ -82,7 +83,10 @@ public class Enemy : MonoBehaviour
 
         if (IsDead()) return;
 
-        Player.GetComponent<Player>().GetHit();
+        if (Player.GetComponent<Player>().GetHit(Damage))
+        {
+            AIStartPatrol();
+        }
     }
 
 
