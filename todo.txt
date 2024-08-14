@@ -1,9 +1,3 @@
-- vida vazia ao iniciar o jogo
-
-- sinalizar aos inimigos que o jogador morreu
-
-____
-
 - escudo
 
 - itens

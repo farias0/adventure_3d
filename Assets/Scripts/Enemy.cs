@@ -80,13 +80,8 @@ public class Enemy : MonoBehaviour
 
     public void HitPlayer()
     {
-
         if (IsDead()) return;
-
-        if (Player.GetComponent<Player>().GetHit(Damage))
-        {
-            AIStartPatrol();
-        }
+        Player.GetComponent<Player>().GetHit(Damage);
     }
 
 
@@ -288,6 +283,9 @@ public class Enemy : MonoBehaviour
 
     private bool SeesPlayer()
     {
+        if (Player.GetComponent<Player>().IsDead()) return false;
+
+
         Vector3 direction = Player.transform.position - transform.position;
         
 
@@ -356,6 +354,12 @@ public class Enemy : MonoBehaviour
 
     private void AIRoutineAlert()
     {
+        if (Player.GetComponent<Player>().IsDead())
+        {
+            AIStartPatrol();
+            return;
+        }
+
         if (mSeesPlayer)
         {
             FacePosition(mPlayerLastSeenPosition);
@@ -405,6 +409,12 @@ public class Enemy : MonoBehaviour
 
     private void AIRoutineSearch()
     {
+        if (Player.GetComponent<Player>().IsDead())
+        {
+            AIStartPatrol();
+            return;
+        }
+
         UpdateRotationWhileWalking();
 
         if (mSeesPlayer)
@@ -445,6 +455,12 @@ public class Enemy : MonoBehaviour
 
     private void AIRoutineChase()
     {
+        if (Player.GetComponent<Player>().IsDead())
+        {
+            AIStartPatrol();
+            return;
+        }
+
         if (!mIsAttacking)
         {
             float distanceToPlayer = (Player.transform.position - transform.position).magnitude;

@@ -42,35 +42,34 @@ public class Player : MonoBehaviour
     bool mInteractedThisFrame = false;
     float mCharacterRadiusDefault;
     float mCharacterRadiusCrouched; // So the player doesn't float when its squished
-    int mHealth = MaxHealth;
+    int mHealth;
     private float mRespawnCountdown = -1;
 
 
-    /// <summary>
-    /// Hits the player
-    /// </summary>
-    /// <param name="damage"></param>
-    /// <returns>If the player died by this hit</returns>
-    public bool GetHit(int damage)
+    public void GetHit(int damage)
     {
-        if (mInvincibleCountdown > 0 || mHealth <= 0) return false;
+        if (mInvincibleCountdown > 0 || mHealth <= 0) return;
 
         SetHealth(mHealth - damage);
 
-        if (mHealth <= 0)
+        if (IsDead())
         {
             Die();
-            return true;
+            return;
         }
 
         mInvincibleCountdown = InvincibleTime;
         mAnimator.SetTrigger("GetHit");
-        return false;
     }
 
     public bool InteractedWithMeThisFrame(Vector3 position)
     {
         return mInteractedThisFrame && Vector3.Distance(position, transform.position) < InteractionRadius;
+    }
+
+    public bool IsDead()
+    {
+        return mHealth <= 0;
     }
 
     // Start is called before the first frame update
@@ -98,6 +97,8 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("Failed to equip shield on player start.");
         }
+
+        SetHealth(MaxHealth);
     }
 
     // Update is called once per frame
@@ -130,7 +131,7 @@ public class Player : MonoBehaviour
         }
 
 
-        if (mHealth <= 0) return;
+        if (IsDead()) return;
 
 
         ProcessInput();
