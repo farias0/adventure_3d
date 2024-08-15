@@ -418,6 +418,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Sun: {fileID: 705507994}
   SunRadius: 30
+  InitialDay: 1
+  InitialHour: 12
+  InitialMinute: 0
+  TimeUpdater: 0
+  DayUpdater: 0
 --- !u!4 &95179432
 Transform:
   m_ObjectHideFlags: 0
@@ -944,6 +949,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1508859926}
+  - {fileID: 610462595}
   - {fileID: 187341825}
   - {fileID: 2119101797}
   - {fileID: 682565393}
@@ -1745,6 +1751,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 144e5384ed49bbd42b0917c9ca9ec00d, type: 3}
+--- !u!4 &610462595 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3854269363171675655, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
+  m_PrefabInstance: {fileID: 1276157754}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &627532208
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2412,7 +2423,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8761642006526928797, guid: e303d5b4301d4a441a8c3ea3b4780346, type: 3}
       propertyPath: m_Name
-      value: Enemy (1)
+      value: SkeletonSimple
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3420,6 +3431,67 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e88b7bb02ae149940a5a0cddf34fe370, type: 3}
+--- !u!1001 &1276157754
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 250937918}
+    m_Modifications:
+    - target: {fileID: -175985785317655149, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
+      propertyPath: Player
+      value: 
+      objectReference: {fileID: 1578291719}
+    - target: {fileID: 3136820629370392942, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
+      propertyPath: m_Name
+      value: SkeletonEvil
+      objectReference: {fileID: 0}
+    - target: {fileID: 3854269363171675655, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 18.246023
+      objectReference: {fileID: 0}
+    - target: {fileID: 3854269363171675655, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 11.229616
+      objectReference: {fileID: 0}
+    - target: {fileID: 3854269363171675655, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -14.6876545
+      objectReference: {fileID: 0}
+    - target: {fileID: 3854269363171675655, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 3854269363171675655, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3854269363171675655, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 3854269363171675655, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3854269363171675655, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3854269363171675655, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3854269363171675655, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9d5f88f00a81d6a46b0fd2bfc7d6ea0a, type: 3}
 --- !u!1001 &1317200558
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3916,7 +3988,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8761642006526928797, guid: e303d5b4301d4a441a8c3ea3b4780346, type: 3}
       propertyPath: m_Name
-      value: Enemy
+      value: SkeletonSimple
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -1,29 +1,29 @@
-- escudo
+- item de cura consumivel
 
-- itens
-	- estruturar itens unicos e consumiveis no GameManager
-	- adicionar novos equipamentos
-	- adicionar item não-único (cura? dinheiro)
-	- soltar
-	- pegar
+- escudo
 
 - inimigo ficando invisível quando morre
 
 - slots do inventário não estão escalando com a resolução
 
-- baús/pickups
+- adicionar novos equipamentos
+- soltar itens
+- pegar itens do mundo
+- baús
 
-- aumentar tempo de invencibilidade do inimigo?
+- dinheiro
 
-- inimigo
-	- IA do inimigo
-		- agaixar diminui raio do cone de visão
-		- inimigo responde ao som dos passos
-			- player oferecer método para o inimigo checar se ouve ele esse frame
+- criar novos inimigos
+
+- IA do inimigo
+	- agaixar diminui raio do cone de visão
+	- inimigo responde ao som dos passos
+		- player oferecer método para o inimigo checar se ouve ele esse frame
 
 - escadas
 
 - dodge
+
 - pulo?
 
 - colocar um game juice no combate
