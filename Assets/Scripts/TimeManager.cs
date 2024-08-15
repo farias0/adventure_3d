@@ -19,6 +19,7 @@ public class TimeManager : MonoBehaviour
     public int InitialMinute = 0;
     [Range(0, 1440)] 
     public int TimeUpdater; // Control the game time from the inspector
+    public int DayUpdater; // Control the game day from the inspector
 
     private int mDay;
     [Range(0, 23)]
@@ -45,12 +46,14 @@ public class TimeManager : MonoBehaviour
         mMinute = InitialMinute;
 
         TimeUpdater = mHour * 60 + (int)mMinute;
+        DayUpdater = mDay;
     }
 
     // Update is called once per frame
     void Update()
     {
         int timeForUpdater = mHour * 60 + (int)mMinute;
+        int dayForUpdater = mDay;
 
 
         mMinute += Time.deltaTime;
@@ -86,6 +89,11 @@ public class TimeManager : MonoBehaviour
         }
         else
             TimeUpdater = mHour * 60 + (int)mMinute;
+        // DayUpdater
+        if (DayUpdater != dayForUpdater)
+            mDay = DayUpdater;
+        else
+            DayUpdater = mDay;
     }
 
     private float CalculateSunAngle(int hour, float minute)

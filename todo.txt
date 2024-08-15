@@ -1,9 +1,3 @@
-- colocar hud
-
-- colocar botões de mudar horário
-
-- confirmar se os horários fazem sentido com nascer e por do sol
-
 - scriptar coruja c/ relógio
 
 ___
