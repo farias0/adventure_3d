@@ -10,15 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 16da95d597d3e4347bb36a76a2984426, type: 3}
-  m_Name: OwlCamp
+  m_Name: OwlCampNighttime
   m_EditorClassIdentifier: 
   lines:
-  - speaker: Coruja
-    text: Ei! Por que me acordou?
-  - speaker: Coruja
-    text: "Ningu\xE9m te avisou que as corujas dormem durante o dia?"
-  - speaker: Coruja
-    text: ...
-  - speaker: Coruja
-    text: "Mas mudando de assunto, voc\xEA viu aquele labirinto ao leste do acampamento?\n\xC9
-      de arrepiar as penas da nuca... brrrr"
+  - text: "Por que voc\xEA t\xE1 acordado?"
+  - text: " Voc\xEA n\xE3o t\xE1 pensando em visitar aquele labirinto horripilante
+      a essas horras n\xE3o, est\xE1?"
+  - text: Eu hein... brrrr

@@ -5,15 +5,25 @@ using UnityEngine;
 
 public class DialogueBox : MonoBehaviour
 {
-    public Dialogue Dialogue;
+    public List<Dialogue> Dialogue;
 
     private Quaternion mOriginalRotation;
     
 
     private Canvas mCanvas;
     private TextMeshProUGUI mText;
+    private int mCurrentDialogue = 0;
     private int mCurrentLineIndex = 0;
 
+
+    public void SetDialogue(int index)
+    {
+        if (index < Dialogue.Count)
+        {
+            mCurrentDialogue = index;
+            mCurrentLineIndex = 0;
+        }
+    }
 
     public bool IsOn()
     {
@@ -30,9 +40,9 @@ public class DialogueBox : MonoBehaviour
     {
         mCanvas.enabled = true;
 
-        if (mCurrentLineIndex < Dialogue.lines.Count)
+        if (mCurrentLineIndex < Dialogue[mCurrentDialogue].lines.Count)
         {
-            mText.text = Dialogue.lines[mCurrentLineIndex].text;
+            mText.text = Dialogue[mCurrentDialogue].lines[mCurrentLineIndex].text;
             mCurrentLineIndex++;
         }
         else

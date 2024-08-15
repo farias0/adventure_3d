@@ -281,4 +281,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 146e302c20d6c2749a1e34218aee548a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Dialogue: {fileID: 11400000, guid: 342bf9fac98d22f4c905696c889dc74f, type: 2}
+  Dialogue:
+  - {fileID: 11400000, guid: 342bf9fac98d22f4c905696c889dc74f, type: 2}
+  - {fileID: 11400000, guid: 3b4780d68190684448b1c818ec922e05, type: 2}

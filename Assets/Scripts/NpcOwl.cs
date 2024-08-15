@@ -28,7 +28,14 @@ public class NpcOwl : MonoBehaviour
         {
             if (IsAwake())
             {
+                if (!mDialogueBox.IsOn())
+                {
+                    if (TimeManager.IsDay()) mDialogueBox.SetDialogue(0);
+                    else mDialogueBox.SetDialogue(1);
+                }
+
                 mDialogueBox.ShowNext();
+                
                 if (TimeManager.IsDay()) mGoToSleepCountdown = TimeBeforingFallingAsleep;
             }
             else
