@@ -1,3 +1,13 @@
+- calcular angulo do sol pelo horario
+
+- colocar hud
+
+- colocar botões de mudar horário
+
+- confirmar se os horários fazem sentido com nascer e por do sol
+
+- scriptar coruja c/ relógio
+
 - escudo
 
 - itens
@@ -36,7 +46,6 @@
 - npc com escudo
 - arco e flecha
 - arremessar bomba
-- ciclo de noite e dia
 - sons
 - armaduras
 - fogo  <<-- talvez deixar quieto
