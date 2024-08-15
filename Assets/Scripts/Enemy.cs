@@ -113,15 +113,14 @@ public class Enemy : MonoBehaviour
         // approaches a destination point).
         mNavMeshAgent.autoBraking = false;
 
+        GameController.AddWorldResetListener(Respawn);
+
         AIStartPatrol();
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.M)) Ressurect(); // FOR DEBUGGING
-
         if (IsDead()) return;
 
 
@@ -180,7 +179,7 @@ public class Enemy : MonoBehaviour
         mAnimator.SetTrigger("Die");
     }
 
-    private void Ressurect()
+    private void Respawn()
     {
         mHealth = MaxHealth;
         mAnimator.SetTrigger("Ressurrect");

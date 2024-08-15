@@ -251,6 +251,7 @@ public class Player : MonoBehaviour
         mAnimator.SetInteger("MovementState", AnimationMoveState.Idle.GetHashCode());
         mAnimator.SetTrigger("Respawn");
         GameCamera.Instance.ResetCamera();
+        GameController.ResetWorld();
     }
 
     // ATTENTION: Must be run every frame so the animation updates correctly
