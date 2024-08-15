@@ -569,7 +569,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
-  Lives: 2
   InvincibleTime: 0.35
   VisionConeRadius: 13
   VisionConeAngle: 45
@@ -587,6 +586,7 @@ MonoBehaviour:
   ChasePhaseDuration: 3
   AlertToSearchingDuration: 2
   AttackDamage: 10
+  MaxHealth: 40
 --- !u!114 &2347041702791424650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -601,6 +601,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AttackRange: 1.15
   AttackDamage: 10
+  AlertPhaseDuration: 3.5
+  ConfirmedSightDistance: 9
+  RunSpeed: 2.3
+  MaxHealth: 40
 --- !u!54 &3136376042985095866
 Rigidbody:
   m_ObjectHideFlags: 0

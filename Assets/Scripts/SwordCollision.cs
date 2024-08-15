@@ -21,7 +21,7 @@ public class SwordCollision : MonoBehaviour
         if (collider.CompareTag("Enemy"))
         {
             Enemy enemy = collider.GetComponent<Enemy>();
-            enemy.GetHit();
+            enemy.GetHit(Player.Instance.AttackDamage);
         }
     }
 }

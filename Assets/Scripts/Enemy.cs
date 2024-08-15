@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering;
 
 
 public class Enemy : MonoBehaviour
@@ -17,7 +18,6 @@ public class Enemy : MonoBehaviour
 
 
     public GameObject Player;
-    public int Lives;
     public float InvincibleTime;
     public float VisionConeRadius;
     [Range(0,360)]
@@ -32,6 +32,7 @@ public class Enemy : MonoBehaviour
     public float ChasePhaseDuration; // How long the enemy chases the player after losing sight of them
     public float AlertToSearchingDuration; // How long the enemy stays facing the player before going to searching
     public int AttackDamage = 10;
+    public int MaxHealth = 40;
 
     private const int TouchDamage = 10;
 
@@ -39,7 +40,7 @@ public class Enemy : MonoBehaviour
     private NavMeshAgent mNavMeshAgent;
     private Rigidbody mRigidbody;
     private State mState;
-    private int mLives;
+    private int mHealth;
     private float mInvincibleCountdown = 0;
     private int mCurrentPatrolPoint = 0;
     private bool mIsAttacking;
@@ -59,27 +60,25 @@ public class Enemy : MonoBehaviour
         return mAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Attack");
     }
 
-    public void GetHit()
+    public void GetHit(int damage)
     {
         if (IsDead()) return;
 
         if (mInvincibleCountdown > 0) return;
         
-        mLives--;
+        mHealth -= damage;
         mInvincibleCountdown = InvincibleTime;
         FacePosition(Player.transform.position);
+
+        Debug.Log("Enemy hit! Health: " + mHealth);
         
-        if (mLives <= 0)
+        if (mHealth <= 0)
         {
             Die();
-
-            Debug.Log("Enemy died");
-            if (mLives < 0) Debug.LogError("Enemy with negative lives! Lives: " + mLives);
         }
         else
         {
             mAnimator.SetTrigger("GetHit");
-            Debug.Log("Enemy hit but not dead");
         }
     }
 
@@ -98,14 +97,14 @@ public class Enemy : MonoBehaviour
         mRigidbody = GetComponent<Rigidbody>();
 
 
-        if (Lives < 0)
+        if (MaxHealth <= 0)
         {
-            Debug.LogError("Enemy with negative lives");
-            mLives = 0;
+            Debug.LogError("Enemy with invalid max health");
+            mHealth = 1;
         }
         else
         {
-            mLives = Lives;
+            mHealth = MaxHealth;
         }
 
         // We don't want the player pushing the enemy around
@@ -185,7 +184,7 @@ public class Enemy : MonoBehaviour
 
     private void Ressurect()
     {
-        mLives = Lives;
+        mHealth = MaxHealth;
         mAnimator.SetTrigger("Ressurrect");
         mRigidbody.constraints = RigidbodyConstraints.None;
         AIStartPatrol();

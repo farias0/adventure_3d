@@ -29,6 +29,9 @@ public class Player : MonoBehaviour
     public float FallSpeed;
     public float InvincibleTime;
     public float InteractionRadius;
+    public int AttackDamage = 20;
+
+    public static Player Instance;
 
     private const int MaxHealth = 30;
     private const float RespawnTime = 4;
@@ -70,6 +73,12 @@ public class Player : MonoBehaviour
     public bool IsDead()
     {
         return mHealth <= 0;
+    }
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     // Start is called before the first frame update

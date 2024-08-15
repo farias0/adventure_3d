@@ -5,8 +5,13 @@ using UnityEngine;
 public class Skeleton : MonoBehaviour
 {
     
-    public float AttackRange;
-    public int AttackDamage;
+    public float AttackRange = 1.15f;
+    public int AttackDamage = 10;
+    public float AlertPhaseDuration = 3.5f;
+    public float ConfirmedSightDistance = 9;
+    public float RunSpeed = 2.3f;
+    public int MaxHealth = 40;
+
 
     private Enemy mEnemyComponent;
     private Collider mAttackCollider;
@@ -20,6 +25,10 @@ public class Skeleton : MonoBehaviour
 
         mEnemyComponent.AttackRange = AttackRange;
         mEnemyComponent.AttackDamage = AttackDamage;
+        mEnemyComponent.AlertPhaseDuration = AlertPhaseDuration;
+        mEnemyComponent.ConfirmedSightDistance = ConfirmedSightDistance;
+        mEnemyComponent.RunSpeed = RunSpeed;
+        mEnemyComponent.MaxHealth = MaxHealth;
     }
 
     // Update is called once per frame

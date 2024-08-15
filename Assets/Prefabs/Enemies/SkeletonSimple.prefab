@@ -271,43 +271,43 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.92
+      value: -25.3591
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 11.23147
+      value: 0.013594627
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -16.07
+      value: 16.768097
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7222502
+      value: -0.7139585
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: -0.02494578
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.6916319
+      value: 0.69895434
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: -0.03322436
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 4.707
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 87.519
+      value: 271.247
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: 0.723
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -381,7 +381,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
-  Lives: 2
   InvincibleTime: 0.35
   VisionConeRadius: 13
   VisionConeAngle: 45
@@ -399,6 +398,7 @@ MonoBehaviour:
   ChasePhaseDuration: 3
   AlertToSearchingDuration: 2
   AttackDamage: 10
+  MaxHealth: 40
 --- !u!114 &8763604872209863000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -413,6 +413,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AttackRange: 1.15
   AttackDamage: 10
+  AlertPhaseDuration: 3.5
+  ConfirmedSightDistance: 9
+  RunSpeed: 2.3
+  MaxHealth: 40
 --- !u!54 &1297139929015394148
 Rigidbody:
   m_ObjectHideFlags: 0
