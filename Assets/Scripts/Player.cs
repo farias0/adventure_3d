@@ -241,7 +241,7 @@ public class Player : MonoBehaviour
         SetHealth(MaxHealth);
         mAnimator.SetInteger("MovementState", AnimationMoveState.Idle.GetHashCode());
         mAnimator.SetTrigger("Respawn");
-        CameraFollow.Instance.ResetCamera();
+        GameCamera.Instance.ResetCamera();
     }
 
     // ATTENTION: Must be run every frame so the animation updates correctly

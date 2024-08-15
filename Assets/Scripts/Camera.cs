@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraFollow : MonoBehaviour
+public class GameCamera : MonoBehaviour
 {
     public GameObject Player;
     public float MinVisibilityHor;
@@ -17,7 +17,7 @@ public class CameraFollow : MonoBehaviour
     private Vector3 mPlayerPositionLastFrame;
 
     
-    public static CameraFollow Instance { get; private set; }
+    public static GameCamera Instance { get; private set; }
 
 
     public void ResetCamera()
