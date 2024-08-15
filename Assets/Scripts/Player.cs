@@ -116,11 +116,11 @@ public class Player : MonoBehaviour
         if (mRespawnCountdown > 0)
         {
             mRespawnCountdown -= Time.deltaTime;
-            ///if (mRespawnCountdown <= RespawnTime - 0.1) mAnimator.ResetTrigger("Die");
             if (mRespawnCountdown <= 0)
             {
                 Respawn();
                 mRespawnCountdown = -1;
+                return; // Without this, movement input overrides the teleport to the spawn point
             }
         }
 

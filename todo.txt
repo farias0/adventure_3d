@@ -1,15 +1,13 @@
-- jogador consegue reviver onde morreu ao mover o analógico
-
-- criar labirinto sem arma, envolvendo stealth, culminando na luta com o evil skeleton
+- IA do inimigo
+	- agaixar diminui raio do cone de visão
+	- inimigo responde ao som dos passos
+		- player oferecer método para o inimigo checar se ouve ele esse frame
 
 - item de cura consumivel
 
+- criar labirinto sem arma, envolvendo stealth, culminando na luta com o evil skeleton
+
 - escudo
-
-- inimigo ficando invisível quando morre
-- às vezes inimigo fica com 0 de vida e não morre
-
-- slots do inventário não estão escalando com a resolução
 
 - adicionar novos equipamentos
 - soltar itens
@@ -18,12 +16,12 @@
 
 - dinheiro
 
-- criar novos inimigos
+- inimigo ficando invisível quando morre
+- às vezes inimigo fica com 0 de vida e não morre
 
-- IA do inimigo
-	- agaixar diminui raio do cone de visão
-	- inimigo responde ao som dos passos
-		- player oferecer método para o inimigo checar se ouve ele esse frame
+- slots do inventário não estão escalando com a resolução
+
+- criar novos inimigos
 
 - escadas
 
