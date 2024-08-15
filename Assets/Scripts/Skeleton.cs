@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Skeleton : MonoBehaviour
 {
-    
-    public float AttackRange = 1.15f;
     public int AttackDamage = 10;
     public float AlertPhaseDuration = 3.5f;
     public float ConfirmedSightDistance = 9;
@@ -23,7 +21,6 @@ public class Skeleton : MonoBehaviour
         mEnemyComponent = GetComponent<Enemy>();
         mAttackCollider = transform.Find("AttackCollider").GetComponent<Collider>();
 
-        mEnemyComponent.AttackRange = AttackRange;
         mEnemyComponent.AttackDamage = AttackDamage;
         mEnemyComponent.AlertPhaseDuration = AlertPhaseDuration;
         mEnemyComponent.ConfirmedSightDistance = ConfirmedSightDistance;

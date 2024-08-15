@@ -34,8 +34,6 @@ public class Enemy : MonoBehaviour
     public int AttackDamage = 10;
     public int MaxHealth = 40;
 
-    private const int TouchDamage = 10;
-
     private Animator mAnimator;
     private NavMeshAgent mNavMeshAgent;
     private Rigidbody mRigidbody;
@@ -166,7 +164,7 @@ public class Enemy : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player")) HitPlayer(TouchDamage);
+        if (other.CompareTag("Player")) HitPlayer(AttackDamage);
     }
 
     private void Attack()

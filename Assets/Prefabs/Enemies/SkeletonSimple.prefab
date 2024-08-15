@@ -54,7 +54,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6578152137030055879}
   - component: {fileID: 4970116049219656437}
-  - component: {fileID: 5738701780995107297}
   m_Layer: 0
   m_Name: AttackCollider
   m_TagString: Untagged
@@ -98,18 +97,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5738701780995107297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4968542288378627047}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f780baf829a3bcb42bcc4de0ca1c8510, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5530714244054214475
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,43 +258,43 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -25.3591
+      value: 2.92
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.013594627
+      value: 11.23147
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 16.768097
+      value: -16.07
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.7139585
+      value: 0.7222502
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.02494578
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.69895434
+      value: 0.6916319
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.03322436
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 4.707
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 271.247
+      value: 87.519
       objectReference: {fileID: 0}
     - target: {fileID: 2468889828458600031, guid: 4a46e821c58b5cd42b14eaab6d197266, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0.723
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -392,7 +379,7 @@ MonoBehaviour:
   - {fileID: 6507067840517468240}
   - {fileID: 8441347373152129077}
   AttackRange: 1.15
-  ConfirmedSightDistance: 9
+  ConfirmedSightDistance: 7.5
   AlertPhaseDuration: 3.5
   SearchPhaseDuration: 3
   ChasePhaseDuration: 3
@@ -411,10 +398,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b141eed39ecf70241be270c2327dd133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AttackRange: 1.15
   AttackDamage: 10
   AlertPhaseDuration: 3.5
-  ConfirmedSightDistance: 9
+  ConfirmedSightDistance: 7.5
   RunSpeed: 2.3
   MaxHealth: 40
 --- !u!54 &1297139929015394148

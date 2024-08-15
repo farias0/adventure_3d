@@ -525,7 +525,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 1de8c054802452e40bdca50d00a7067c, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -599,12 +599,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b141eed39ecf70241be270c2327dd133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AttackRange: 1.15
-  AttackDamage: 10
-  AlertPhaseDuration: 3.5
-  ConfirmedSightDistance: 9
-  RunSpeed: 2.3
-  MaxHealth: 40
+  AttackDamage: 15
+  AlertPhaseDuration: 0.2
+  ConfirmedSightDistance: 13
+  RunSpeed: 3.5
+  MaxHealth: 80
 --- !u!54 &3136376042985095866
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -963,7 +962,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5997836843773575197}
   - component: {fileID: 657538477621208928}
-  - component: {fileID: 5696695727463486528}
   m_Layer: 0
   m_Name: AttackCollider
   m_TagString: Untagged
@@ -1007,18 +1005,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5696695727463486528
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5238674961746995049}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f780baf829a3bcb42bcc4de0ca1c8510, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5518754182335793969
 GameObject:
   m_ObjectHideFlags: 0

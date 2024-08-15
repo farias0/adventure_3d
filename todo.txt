@@ -1,3 +1,9 @@
+- jogador consegue reviver onde morreu ao mover o analógico
+
+- resetar estado do mundo do morrer
+
+- criar labirinto sem arma, envolvendo stealth, culminando na luta com o evil skeleton
+
 - item de cura consumivel
 
 - escudo
