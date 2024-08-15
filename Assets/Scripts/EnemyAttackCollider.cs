@@ -20,7 +20,7 @@ public class EnemyAttackCollider : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player")) mEnemy.HitPlayer();
+        if (other.CompareTag("Player")) mEnemy.HitPlayer(mEnemy.AttackDamage);
         Debug.Log("EnemyAttackCollider::OnTriggerStay");
     }
 }

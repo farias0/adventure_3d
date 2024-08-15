@@ -480,6 +480,7 @@ GameObject:
   - component: {fileID: 4985691113074979274}
   - component: {fileID: -2888338656384307449}
   - component: {fileID: -175985785317655149}
+  - component: {fileID: 2347041702791424650}
   - component: {fileID: 3136376042985095866}
   - component: {fileID: 6481784959274652849}
   m_Layer: 0
@@ -585,6 +586,21 @@ MonoBehaviour:
   SearchPhaseDuration: 3
   ChasePhaseDuration: 3
   AlertToSearchingDuration: 2
+  AttackDamage: 10
+--- !u!114 &2347041702791424650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3136820629370392942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b141eed39ecf70241be270c2327dd133, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttackRange: 1.15
+  AttackDamage: 10
 --- !u!54 &3136376042985095866
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -31,13 +31,13 @@ public class Enemy : MonoBehaviour
     public float SearchPhaseDuration; // How long the enemy searches for the player after losing sight of them
     public float ChasePhaseDuration; // How long the enemy chases the player after losing sight of them
     public float AlertToSearchingDuration; // How long the enemy stays facing the player before going to searching
+    public int AttackDamage = 10;
 
-    private const int Damage = 10;
+    private const int TouchDamage = 10;
 
     private Animator mAnimator;
     private NavMeshAgent mNavMeshAgent;
     private Rigidbody mRigidbody;
-    private Collider mAttackCollider;
     private State mState;
     private int mLives;
     private float mInvincibleCountdown = 0;
@@ -52,6 +52,11 @@ public class Enemy : MonoBehaviour
     public bool IsDead()
     {
         return mAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Dead");
+    }
+
+    public bool IsAttacking()
+    {
+        return mAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Attack");
     }
 
     public void GetHit()
@@ -78,10 +83,10 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void HitPlayer()
+    public void HitPlayer(int damage)
     {
         if (IsDead()) return;
-        Player.GetComponent<Player>().GetHit(Damage);
+        Player.GetComponent<Player>().GetHit(damage);
     }
 
 
@@ -91,7 +96,6 @@ public class Enemy : MonoBehaviour
         mAnimator = GetComponent<Animator>();
         mNavMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         mRigidbody = GetComponent<Rigidbody>();
-        mAttackCollider = transform.Find("AttackCollider").GetComponent<Collider>();
 
 
         if (Lives < 0)
@@ -159,20 +163,11 @@ public class Enemy : MonoBehaviour
                 AIRoutineChase();
                 break;
         }
-
-
-        if (mIsAttacking) SetAttackColliderActive(true);
-        else SetAttackColliderActive(false);
     }
 
     void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player")) HitPlayer();
-    }
-
-    private bool IsAttacking()
-    {
-        return mAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Attack");
+        if (other.CompareTag("Player")) HitPlayer(TouchDamage);
     }
 
     private void Attack()
@@ -247,14 +242,6 @@ public class Enemy : MonoBehaviour
             if (!transform.GetChild(i).gameObject.TryGetComponent<Renderer>(out var rend)) continue;
 
             rend.enabled = visible;
-        }
-    }
-
-    private void SetAttackColliderActive(bool active)
-    {
-        if (mAttackCollider)
-        {
-            mAttackCollider.enabled = active;
         }
     }
 
