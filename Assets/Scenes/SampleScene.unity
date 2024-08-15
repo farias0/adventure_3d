@@ -2606,6 +2606,7 @@ MonoBehaviour:
   MinVisibilityHor: 3.5
   MinVisibilityVer: 2
   Speed: 1.2
+  ResetSpeed: 0.7
 --- !u!4 &999180042 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3536960419302557616, guid: 144e5384ed49bbd42b0917c9ca9ec00d, type: 3}

@@ -9,12 +9,14 @@ public class GameCamera : MonoBehaviour
     public float MinVisibilityHor;
     public float MinVisibilityVer;
     public float Speed;
+    public float ResetSpeed;
 
     private float mDistancePlayersHead; // WARNING! Should be const -- defined at Start().
     private float mDistancePlayersBack; // WARNING! Should be const -- defined at Start().
     private float mOffsetHor;
     private float mOffsetVer;
     private Vector3 mPlayerPositionLastFrame;
+    private bool mSmoothlyResetOn = false;
 
     
     public static GameCamera Instance { get; private set; }
@@ -26,6 +28,11 @@ public class GameCamera : MonoBehaviour
         mOffsetVer = 0;
         mPlayerPositionLastFrame = Player.transform.position;
         Update();
+    }
+
+    public void SmoothlyResetCamera()
+    {
+        mSmoothlyResetOn = true;
     }
 
     // Start is called before the first frame update
@@ -42,8 +49,21 @@ public class GameCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (mSmoothlyResetOn)
+        {
+            mOffsetHor = Mathf.Lerp(mOffsetHor, 0, Time.deltaTime * ResetSpeed);
+            mOffsetVer = Mathf.Lerp(mOffsetVer, 0, Time.deltaTime * ResetSpeed);
+
+            if (Mathf.Abs(mOffsetHor) < 1f && Mathf.Abs(mOffsetVer) < 1f)
+            {
+                mSmoothlyResetOn = false;
+            }
+        }
+
 
         Vector3 playerMovement = Player.transform.position - mPlayerPositionLastFrame;
+
+        if (playerMovement != Vector3.zero) mSmoothlyResetOn = false;
 
         if (playerMovement.x > 0) // Player moving to the right
         {

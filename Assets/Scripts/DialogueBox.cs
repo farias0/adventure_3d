@@ -38,6 +38,10 @@ public class DialogueBox : MonoBehaviour
 
     public void ShowNext()
     {
+        if (!mCanvas.enabled) {
+            GameCamera.Instance.SmoothlyResetCamera();
+        }
+
         mCanvas.enabled = true;
 
         if (mCurrentLineIndex < Dialogue[mCurrentDialogue].lines.Count)
