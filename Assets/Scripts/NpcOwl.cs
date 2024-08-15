@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NpcSimple : MonoBehaviour
+public class NpcOwl : MonoBehaviour
 {
     public Player Player;
     public float TimeBeforingFallingAsleep;
@@ -19,7 +19,6 @@ public class NpcSimple : MonoBehaviour
         mDialogueBox = GetComponentInChildren<DialogueBox>();
 
         Sleep();
-        mGoToSleepCountdown = -1;
     }
 
     // Update is called once per frame
@@ -30,46 +29,49 @@ public class NpcSimple : MonoBehaviour
             if (IsAwake())
             {
                 mDialogueBox.ShowNext();
+                if (TimeManager.IsDay()) mGoToSleepCountdown = TimeBeforingFallingAsleep;
             }
             else
             {
                 WakeUp();
             }
-
-            mGoToSleepCountdown = TimeBeforingFallingAsleep;
         }
 
-        else if (IsAwake())
+        if (TimeManager.IsDay() && mGoToSleepCountdown <= 0 && mGoToSleepCountdown != -1 && !mDialogueBox.IsOn())
+        {
+            Sleep();
+        }
+        else if (IsAwake() && TimeManager.IsDay())
         {
             mGoToSleepCountdown -= Time.deltaTime;
+        }
+        else if (!IsAwake() && !TimeManager.IsDay())
+        {
+            WakeUp();
+        }
 
-            if (Vector3.Distance(Player.transform.position, transform.position) > TerminateConversationDistance &&
-                mDialogueBox.IsOn())
-            {
-                mDialogueBox.TurnOff();
-            }
-
-            if (mGoToSleepCountdown <= 0)
-            {
-                Sleep();
-                mGoToSleepCountdown = -1;
-            }
+        if (mDialogueBox.IsOn() &&
+            Vector3.Distance(Player.transform.position, transform.position) > TerminateConversationDistance)
+        {
+            mDialogueBox.TurnOff();
         }
     }
 
     private bool IsAwake()
     {
-        return mGoToSleepCountdown != -1;
+        return mGoToSleepCountdown > 0;
     }
 
     private void Sleep()
     {
         mDialogueBox.TurnOff();
         mAnimator.SetTrigger("Sleep");
+        mGoToSleepCountdown = -1;
     }
 
     private void WakeUp()
     {
         mAnimator.SetTrigger("WakeUp");
+        mGoToSleepCountdown = TimeBeforingFallingAsleep;
     }
 }

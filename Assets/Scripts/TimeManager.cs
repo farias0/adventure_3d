@@ -28,6 +28,9 @@ public class TimeManager : MonoBehaviour
     private float mMinute;
 
 
+    public static TimeManager Instance { get; private set; }
+
+
     public GameTime GetTime()
     {
         return new GameTime
@@ -38,9 +41,16 @@ public class TimeManager : MonoBehaviour
         };
     }
 
+    public static bool IsDay()
+    {
+        return Instance.mHour >= 6 && Instance.mHour < 18;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        Instance = this;
+
         mDay = InitialDay;
         mHour = InitialHour;
         mMinute = InitialMinute;
