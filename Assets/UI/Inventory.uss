@@ -21,6 +21,23 @@
     align-self: center;
 }
 
+.footerContainer {
+    flex-grow: 1;
+    flex-direction: row;
+    width: 100%;
+    padding-left: 12%;
+    align-self: flex-end;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.dateTime {
+    -unity-font-style: italic;
+    align-self: flex-end;
+    color: rgb(255, 255, 255);
+    font-size: 130%;
+}
+
 .inventory {
     flex-grow: 1;
     width: 60%;

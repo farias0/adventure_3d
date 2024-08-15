@@ -4,6 +4,9 @@
         <ui:VisualElement name="Panel" class="panel">
             <ui:VisualElement name="Equipments" class="equipments">
                 <ui:VisualElement name="EquipmentSlotContainer" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; justify-content: center;" />
+                <ui:VisualElement name="FooterContainer" class="footerContainer">
+                    <ui:Label text="" name="DateTime" class="dateTime" />
+                </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="Inventory" class="inventory">
                 <ui:VisualElement name="InventorySlotContainer" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap; justify-content: center;" />

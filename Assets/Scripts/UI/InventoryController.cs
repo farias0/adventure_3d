@@ -170,6 +170,11 @@ public class InventoryController : MonoBehaviour
         return true;
     }
 
+    public void UpdateDateTime(GameTime time)
+    {
+        mRoot.Q<Label>("DateTime").text = $"{time.Hour}:{time.Minute:D2}, dia {time.Day}";
+    }
+
     // Start is called before the first frame update
     void Start()
     {

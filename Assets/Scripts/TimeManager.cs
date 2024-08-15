@@ -75,6 +75,8 @@ public class TimeManager : MonoBehaviour
         Sun.transform.LookAt(Vector3.zero);
 
 
+        InventoryController.Instance.UpdateDateTime(GetTime());
+
 
         // TimeUpdater
         if (TimeUpdater != timeForUpdater)
