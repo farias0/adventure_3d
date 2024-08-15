@@ -1,5 +1,3 @@
-- calcular angulo do sol pelo horario
-
 - colocar hud
 
 - colocar botões de mudar horário
@@ -7,6 +5,8 @@
 - confirmar se os horários fazem sentido com nascer e por do sol
 
 - scriptar coruja c/ relógio
+
+___
 
 - escudo
 

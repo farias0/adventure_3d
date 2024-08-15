@@ -13,16 +13,15 @@ public class TimeManager : MonoBehaviour
 {
     public Light Sun;
     public float SunRadius = 10.0f;
-    public float GameSpeed = 60.0f; // 60 means 1 second irl = 1 minute in game
+    public int InitialDay = 1;
+    public int InitialHour = 12;
+    public int InitialMinute = 0;
 
     private int mDay;
     [Range(0, 23)]
     private int mHour;
     [Range(0, 60)]
     private float mMinute;
-    private float mCurrentAngle = 90;
-
-    const float SunDegreePerSecond = 360.0f / 1440.0f / 60.0f;
 
 
     public GameTime GetTime()
@@ -38,7 +37,9 @@ public class TimeManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        mDay = InitialDay;
+        mHour = InitialHour;
+        mMinute = InitialMinute;
     }
 
     // Update is called once per frame
@@ -57,13 +58,19 @@ public class TimeManager : MonoBehaviour
         }
 
 
-        mCurrentAngle += SunDegreePerSecond * GameSpeed * Time.deltaTime;
-        float angleInRadians = mCurrentAngle * Mathf.Deg2Rad;
+        float angleInRadians = CalculateSunAngle(mHour, mMinute) * Mathf.Deg2Rad;
 
         float x = Mathf.Cos(angleInRadians) * SunRadius;
         float y = Mathf.Sin(angleInRadians) * SunRadius;
 
         Sun.transform.position = new Vector3(x, y, Sun.transform.position.z);
         Sun.transform.LookAt(Vector3.zero);
+    }
+
+    private float CalculateSunAngle(int hour, float minute)
+    {
+        float hourAngle = hour * 15f;
+        float minuteAngle = minute * 0.25f;
+        return hourAngle + minuteAngle + 270;
     }
 }
