@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class GameTime
 {
@@ -16,6 +17,8 @@ public class TimeManager : MonoBehaviour
     public int InitialDay = 1;
     public int InitialHour = 12;
     public int InitialMinute = 0;
+    [Range(0, 1440)] 
+    public int TimeUpdater; // Control the game time from the inspector
 
     private int mDay;
     [Range(0, 23)]
@@ -40,11 +43,16 @@ public class TimeManager : MonoBehaviour
         mDay = InitialDay;
         mHour = InitialHour;
         mMinute = InitialMinute;
+
+        TimeUpdater = mHour * 60 + (int)mMinute;
     }
 
     // Update is called once per frame
     void Update()
     {
+        int timeForUpdater = mHour * 60 + (int)mMinute;
+
+
         mMinute += Time.deltaTime;
         if (mMinute >= 60)
         {
@@ -65,6 +73,17 @@ public class TimeManager : MonoBehaviour
 
         Sun.transform.position = new Vector3(x, y, Sun.transform.position.z);
         Sun.transform.LookAt(Vector3.zero);
+
+
+
+        // TimeUpdater
+        if (TimeUpdater != timeForUpdater)
+        {
+            mHour = TimeUpdater / 60;
+            mMinute = TimeUpdater % 60;
+        }
+        else
+            TimeUpdater = mHour * 60 + (int)mMinute;
     }
 
     private float CalculateSunAngle(int hour, float minute)
