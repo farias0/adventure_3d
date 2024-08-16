@@ -69,6 +69,13 @@ public class Player : MonoBehaviour
         else mAnimator.SetTrigger("GetHit");
     }
 
+    public void HitShield()
+    {
+        if (mInvincibleCountdown > 0 || mHealth <= 0) return;
+
+        mAnimator.SetTrigger("DefendGetHit");
+    }
+
     public bool InteractedWithMeThisFrame(Vector3 position)
     {
         return mInteractedThisFrame && Vector3.Distance(position, transform.position) < InteractionRadius;
@@ -209,8 +216,7 @@ public class Player : MonoBehaviour
 
         if (!InventoryController.Instance.IsOpen()) {
 
-            if (Input.GetButton("Defend")) Defend();
-            else mIsDefending = false;
+            mIsDefending = Input.GetButton("Defend");
             if (Input.GetButtonDown("Attack1")) Attack1();
             if (Input.GetButtonDown("Attack2")) Attack2();
             if (Input.GetButtonDown("Crouch")) CrouchToggle();
@@ -329,11 +335,6 @@ public class Player : MonoBehaviour
     {
         if (mIsDefending) return;
         mAnimator.SetTrigger("Attack3");
-    }
-
-    void Defend()
-    {
-        mIsDefending = true;
     }
 
     bool IsAttacking()

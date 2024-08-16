@@ -68,7 +68,8 @@ public class Enemy : MonoBehaviour
         mInvincibleCountdown = InvincibleTime;
         FacePosition(Player.transform.position);
 
-        Debug.Log("Enemy hit! Health: " + mHealth);
+        if (damage > 0) Debug.Log("Enemy hit! Health: " + mHealth);
+        else Debug.Log("Enemy hit shield");
         
         if (mHealth <= 0)
         {
@@ -161,14 +162,23 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void OnTriggerStay(Collider other)
+    void OnTriggerEnter(Collider other)
     {
+        if (mInvincibleCountdown > 0) return;
+
         if (other.CompareTag("Player")) HitPlayer(AttackDamage);
+        if (other.CompareTag("Shield") && IsAttacking()) HitShield();
     }
 
     private void Attack()
     {
         mAnimator.SetTrigger("Attack");
+    }
+
+    public void HitShield()
+    {
+        Player.GetComponent<Player>().HitShield();
+        GetHit(0); // TODO use another animation for getting parried, and replace the "!IsGettingHit()" check in OnTriggerStay
     }
 
     private void Die()
