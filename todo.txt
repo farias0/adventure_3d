@@ -1,6 +1,8 @@
 - só ativar collider do escudo ao segurá-lo
 - procurar uma animação própria pro inimigo ao ser defendido, ou pelo menos usar um Countdown diferente
 
+- sistema de stamina?
+
 - tirar atributo Player da classe Enemy (ou fazer ele ser uma cópia de Instance)
 
 - escudo
