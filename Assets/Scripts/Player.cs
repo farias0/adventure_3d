@@ -12,7 +12,8 @@ enum AnimationMoveState
     Idle = 0,
     Walk = 1,
     Run = 2,
-    Dead = 3
+    Dead = 3,
+    Defend = 4
 }
 
 public class Player : MonoBehaviour
@@ -47,6 +48,7 @@ public class Player : MonoBehaviour
     float mCharacterRadiusCrouched; // So the player doesn't float when its squished
     int mHealth;
     private float mRespawnCountdown = -1;
+    private bool mIsDefending = false;
 
 
     public void GetHit(int damage)
@@ -62,7 +64,9 @@ public class Player : MonoBehaviour
         }
 
         mInvincibleCountdown = InvincibleTime;
-        mAnimator.SetTrigger("GetHit");
+
+        if (mIsDefending) mAnimator.SetTrigger("DefendGetHit");
+        else mAnimator.SetTrigger("GetHit");
     }
 
     public bool InteractedWithMeThisFrame(Vector3 position)
@@ -205,9 +209,10 @@ public class Player : MonoBehaviour
 
         if (!InventoryController.Instance.IsOpen()) {
 
+            if (Input.GetButton("Defend")) Defend();
+            else mIsDefending = false;
             if (Input.GetButtonDown("Attack1")) Attack1();
             if (Input.GetButtonDown("Attack2")) Attack2();
-            //if (Input.GetButtonDown("Attack3")) Attack3();
             if (Input.GetButtonDown("Crouch")) CrouchToggle();
             mInteractedThisFrame = Input.GetButtonDown("Interact");
             
@@ -260,7 +265,7 @@ public class Player : MonoBehaviour
         if (move.magnitude > IdleToWalkThreshold)
         {
 
-            if (!IsAttacking() && !IsGettingHit())
+            if (!IsAttacking() && !IsGettingHit() && !mIsDefending)
             {
                 // Move player
                 mController.Move(mSpeed * Time.deltaTime * move);
@@ -279,7 +284,11 @@ public class Player : MonoBehaviour
     {
         AnimationMoveState animationMoveState = AnimationMoveState.Idle;
 
-        if (move.magnitude > IdleToWalkThreshold)
+        if (mIsDefending)
+        {
+            animationMoveState = AnimationMoveState.Defend;
+        }
+        else if (move.magnitude > IdleToWalkThreshold)
         {
             if (mIsCrouched || Mathf.Abs(move.x) + Mathf.Abs(move.z) < WalkToRunThreshold)
                 animationMoveState = AnimationMoveState.Walk;
@@ -292,6 +301,8 @@ public class Player : MonoBehaviour
 
     void CrouchToggle()
     {
+        if (mIsDefending) return;
+
         mIsCrouched = !mIsCrouched;
         mSpeed = mIsCrouched ? SpeedCrouched : SpeedStanding;
 
@@ -304,17 +315,25 @@ public class Player : MonoBehaviour
 
     void Attack1()
     {
+        if (mIsDefending) return;
         mAnimator.SetTrigger("Attack1");
     }
 
     void Attack2()
     {
+        if (mIsDefending) return;
         mAnimator.SetTrigger("Attack2");
     }
 
     void Attack3()
     {
+        if (mIsDefending) return;
         mAnimator.SetTrigger("Attack3");
+    }
+
+    void Defend()
+    {
+        mIsDefending = true;
     }
 
     bool IsAttacking()

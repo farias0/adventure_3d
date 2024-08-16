@@ -1,3 +1,8 @@
+- escudo
+	- gerar hitbox
+	- golpe no escudo gerar knockback no inimigo
+
+
 - IA do inimigo
 	- agaixar diminui raio do cone de visão
 	- inimigo responde ao som dos passos
@@ -6,8 +11,6 @@
 - item de cura consumivel
 
 - criar labirinto sem arma, envolvendo stealth, culminando na luta com o evil skeleton
-
-- escudo
 
 - adicionar novos equipamentos
 - soltar itens
