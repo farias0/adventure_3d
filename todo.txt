@@ -1,5 +1,11 @@
 - parry (se levantou o escudo instantes antes da colisão)
 
+- efeitos sonoros
+	- defender hit com escudo
+	- ataque da espada
+	- ataque do inimigo
+	- dano no inimigo
+
 - procurar uma animação própria pro inimigo ao ser defendido, ou pelo menos usar um Countdown diferente
 
 - sistema de stamina?
@@ -50,7 +56,6 @@
 - npc com escudo
 - arco e flecha
 - arremessar bomba
-- sons
 - armaduras
 - fogo  <<-- talvez deixar quieto
 - nadar

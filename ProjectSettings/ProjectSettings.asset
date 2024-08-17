@@ -680,11 +680,11 @@ PlayerSettings:
   m_MobileRenderingPath: 1
   metroPackageName: adventure_3d
   metroPackageVersion: 
-  metroCertificatePath: 
+  metroCertificatePath: Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
-  metroCertificateSubject: 
-  metroCertificateIssuer: 
-  metroCertificateNotAfter: 0000000000000000
+  metroCertificateSubject: DefaultCompany
+  metroCertificateIssuer: DefaultCompany
+  metroCertificateNotAfter: 802f25a9c60fdc01
   metroApplicationDescription: adventure_3d
   wsaImages: {}
   metroTileShortName: 
