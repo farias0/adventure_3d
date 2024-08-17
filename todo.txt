@@ -1,3 +1,8 @@
+- diminuir cilindro de colisão do player / aumentar do escudo quando defendendo
+	- checar se, ao fazer isso, ao segurar o analógico em direção ao inimigo enquanto defende o player para de tomar hit !!!!!
+
+- renomear funções de animação do jogador (colocar "Animation" no nome)
+
 - parry (se levantou o escudo instantes antes da colisão)
 
 - efeitos sonoros

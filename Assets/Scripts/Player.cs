@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
     float mCharacterRadiusCrouched; // So the player doesn't float when its squished
     int mHealth;
     private float mRespawnCountdown = -1;
-    private bool mIsDefending = false;
+    private bool mIsHoldingDefend = false;
     private float mParryAttackWindowCountdown = -1; // Allows attacking after blocking a hit
 
 
@@ -67,8 +67,7 @@ public class Player : MonoBehaviour
 
         mInvincibleCountdown = InvincibleTime;
 
-        if (mIsDefending) mAnimator.SetTrigger("DefendGetHit");
-        else mAnimator.SetTrigger("GetHit");
+        mAnimator.SetTrigger("GetHit");
     }
 
     public void HitShield()
@@ -166,7 +165,7 @@ public class Player : MonoBehaviour
         else SetWeaponActive(false);
 
         // Activates shield during defend
-        if (mIsDefending) SetShieldActive(true);
+        if (mIsHoldingDefend) SetShieldActive(true);
         else SetShieldActive(false);
     }
 
@@ -225,7 +224,7 @@ public class Player : MonoBehaviour
 
         if (!InventoryController.Instance.IsOpen()) {
 
-            mIsDefending = Input.GetButton("Defend") && mParryAttackWindowCountdown <= 0;
+            mIsHoldingDefend = Input.GetButton("Defend");
             if (Input.GetButtonDown("Attack1")) Attack1();
             if (Input.GetButtonDown("Attack2")) Attack2();
             if (Input.GetButtonDown("Crouch")) CrouchToggle();
@@ -280,7 +279,7 @@ public class Player : MonoBehaviour
         if (move.magnitude > IdleToWalkThreshold)
         {
 
-            if (!IsAttacking() && !IsGettingHit() && !mIsDefending)
+            if (!IsAttacking() && !IsGettingHit() && !mIsHoldingDefend)
             {
                 // Move player
                 mController.Move(mSpeed * Time.deltaTime * move);
@@ -299,16 +298,21 @@ public class Player : MonoBehaviour
     {
         AnimationMoveState animationMoveState = AnimationMoveState.Idle;
 
-        if (mIsDefending)
+        // Not firing the defend animation during the parry attack window
+        // allows for counter attacks (the animation state doesn't have an Exit Time)
+        if (mParryAttackWindowCountdown <= 0)
         {
-            animationMoveState = AnimationMoveState.Defend;
-        }
-        else if (move.magnitude > IdleToWalkThreshold)
-        {
-            if (mIsCrouched || Mathf.Abs(move.x) + Mathf.Abs(move.z) < WalkToRunThreshold)
-                animationMoveState = AnimationMoveState.Walk;
-            else
-                animationMoveState = AnimationMoveState.Run;
+            if (mIsHoldingDefend)
+            {
+                animationMoveState = AnimationMoveState.Defend;
+            }
+            else if (move.magnitude > IdleToWalkThreshold)
+            {
+                if (mIsCrouched || Mathf.Abs(move.x) + Mathf.Abs(move.z) < WalkToRunThreshold)
+                    animationMoveState = AnimationMoveState.Walk;
+                else
+                    animationMoveState = AnimationMoveState.Run;
+            }
         }
 
         mAnimator.SetInteger("MovementState", animationMoveState.GetHashCode());
@@ -316,7 +320,7 @@ public class Player : MonoBehaviour
 
     void CrouchToggle()
     {
-        if (mIsDefending) return;
+        if (mIsHoldingDefend) return;
 
         mIsCrouched = !mIsCrouched;
         mSpeed = mIsCrouched ? SpeedCrouched : SpeedStanding;
@@ -330,20 +334,20 @@ public class Player : MonoBehaviour
 
     void Attack1()
     {
-        if (mIsDefending && mParryAttackWindowCountdown <= 0) return;
+        if (mIsHoldingDefend && mParryAttackWindowCountdown <= 0) return;
         Debug.Log("Attack1");
         mAnimator.SetTrigger("Attack1");
     }
 
     void Attack2()
     {
-        if (mIsDefending && mParryAttackWindowCountdown <= 0) return;
+        if (mIsHoldingDefend && mParryAttackWindowCountdown <= 0) return;
         mAnimator.SetTrigger("Attack2");
     }
 
     void Attack3()
     {
-        if (mIsDefending && mParryAttackWindowCountdown <= 0) return;
+        if (mIsHoldingDefend && mParryAttackWindowCountdown <= 0) return;
         mAnimator.SetTrigger("Attack3");
     }
 
