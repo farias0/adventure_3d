@@ -159,6 +159,10 @@ public class Player : MonoBehaviour
         // Activates weapon during attack
         if (IsAttacking()) SetWeaponActive(true);
         else SetWeaponActive(false);
+
+        // Activates shield during defend
+        if (mIsDefending) SetShieldActive(true);
+        else SetShieldActive(false);
     }
 
     private void InventoryController_OnPlayerWeaponChanged(string itemGuid, InventoryChangeType change)
@@ -321,19 +325,19 @@ public class Player : MonoBehaviour
 
     void Attack1()
     {
-        if (mIsDefending) return;
+        if (mIsDefending && !IsDefendingHit()) return;
         mAnimator.SetTrigger("Attack1");
     }
 
     void Attack2()
     {
-        if (mIsDefending) return;
+        if (mIsDefending && !IsDefendingHit()) return;
         mAnimator.SetTrigger("Attack2");
     }
 
     void Attack3()
     {
-        if (mIsDefending) return;
+        if (mIsDefending && !IsDefendingHit()) return;
         mAnimator.SetTrigger("Attack3");
     }
 
@@ -345,6 +349,11 @@ public class Player : MonoBehaviour
     bool IsGettingHit()
     {
         return mAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "GetHit";
+    }
+
+    bool IsDefendingHit()
+    {
+        return mAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "DefendGetHit";
     }
 
     void BlinkThisFrame()
@@ -390,6 +399,21 @@ public class Player : MonoBehaviour
         if (!weapon.activeSelf) return;
         
         if (!weapon.TryGetComponent<Collider>(out var collider)) return;
+
+        collider.enabled = isActive;
+    }
+
+    void SetShieldActive(bool isActive)
+    {
+        Transform container = GetShieldContainer().transform;
+        
+        if (container.childCount == 0) return;
+
+        GameObject shield = container.GetChild(0).gameObject;
+
+        if (!shield.activeSelf) return;
+        
+        if (!shield.TryGetComponent<Collider>(out var collider)) return;
 
         collider.enabled = isActive;
     }
