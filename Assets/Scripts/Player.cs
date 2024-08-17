@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
     public float InvincibleTime;
     public float InteractionRadius;
     public int AttackDamage = 20;
+    public float ParryAttackWindowLength = 1.0f;
 
     public static Player Instance;
 
@@ -49,6 +50,7 @@ public class Player : MonoBehaviour
     int mHealth;
     private float mRespawnCountdown = -1;
     private bool mIsDefending = false;
+    private float mParryAttackWindowCountdown = -1; // Allows attacking after blocking a hit
 
 
     public void GetHit(int damage)
@@ -73,6 +75,7 @@ public class Player : MonoBehaviour
     {
         if (mInvincibleCountdown > 0 || mHealth <= 0) return;
 
+        mParryAttackWindowCountdown = ParryAttackWindowLength;
         mAnimator.SetTrigger("DefendGetHit");
     }
 
@@ -134,6 +137,8 @@ public class Player : MonoBehaviour
                 return; // Without this, movement input overrides the teleport to the spawn point
             }
         }
+
+        if (mParryAttackWindowCountdown > 0) mParryAttackWindowCountdown -= Time.deltaTime;        
 
         // Apply gravity
         if (!mController.isGrounded)
@@ -220,7 +225,7 @@ public class Player : MonoBehaviour
 
         if (!InventoryController.Instance.IsOpen()) {
 
-            mIsDefending = Input.GetButton("Defend");
+            mIsDefending = Input.GetButton("Defend") && mParryAttackWindowCountdown <= 0;
             if (Input.GetButtonDown("Attack1")) Attack1();
             if (Input.GetButtonDown("Attack2")) Attack2();
             if (Input.GetButtonDown("Crouch")) CrouchToggle();
@@ -325,19 +330,20 @@ public class Player : MonoBehaviour
 
     void Attack1()
     {
-        if (mIsDefending && !IsDefendingHit()) return;
+        if (mIsDefending && mParryAttackWindowCountdown <= 0) return;
+        Debug.Log("Attack1");
         mAnimator.SetTrigger("Attack1");
     }
 
     void Attack2()
     {
-        if (mIsDefending && !IsDefendingHit()) return;
+        if (mIsDefending && mParryAttackWindowCountdown <= 0) return;
         mAnimator.SetTrigger("Attack2");
     }
 
     void Attack3()
     {
-        if (mIsDefending && !IsDefendingHit()) return;
+        if (mIsDefending && mParryAttackWindowCountdown <= 0) return;
         mAnimator.SetTrigger("Attack3");
     }
 

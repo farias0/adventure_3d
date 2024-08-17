@@ -1,4 +1,4 @@
-- por que ao atacar no estado DefendGetHit o jogador não consegue transitar pro Attack?
+- parry (se levantou o escudo instantes antes da colisão)
 
 - procurar uma animação própria pro inimigo ao ser defendido, ou pelo menos usar um Countdown diferente
 
