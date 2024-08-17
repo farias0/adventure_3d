@@ -48,19 +48,19 @@ public class Enemy : MonoBehaviour
     private bool mSeesPlayer = false;
 
 
-    public bool IsDead()
+    public bool IsAnimationDead()
     {
         return mAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Dead");
     }
 
-    public bool IsAttacking()
+    public bool IsAnimationAttack()
     {
         return mAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Attack");
     }
 
     public void GetHit(int damage)
     {
-        if (IsDead()) return;
+        if (IsAnimationDead()) return;
 
         if (mInvincibleCountdown > 0) return;
         
@@ -83,7 +83,7 @@ public class Enemy : MonoBehaviour
 
     public void HitPlayer(int damage)
     {
-        if (IsDead()) return;
+        if (IsAnimationDead()) return;
         Player.GetComponent<Player>().GetHit(damage);
     }
 
@@ -122,10 +122,10 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (IsDead()) return;
+        if (IsAnimationDead()) return;
 
 
-        mIsAttacking = IsAttacking();
+        mIsAttacking = IsAnimationAttack();
         mSeesPlayer = SeesPlayer();
 
 
@@ -167,7 +167,7 @@ public class Enemy : MonoBehaviour
         if (mInvincibleCountdown > 0) return;
 
         if (other.CompareTag("Player")) HitPlayer(AttackDamage);
-        if (other.CompareTag("Shield") && IsAttacking()) HitShield();
+        if (other.CompareTag("Shield") && IsAnimationAttack()) HitShield();
     }
 
     private void Attack()

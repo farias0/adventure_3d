@@ -161,7 +161,7 @@ public class Player : MonoBehaviour
         ProcessInput();
 
         // Activates weapon during attack
-        if (IsAttacking()) SetWeaponActive(true);
+        if (IsAnimationAttack()) SetWeaponActive(true);
         else SetWeaponActive(false);
 
         // Activates shield during defend
@@ -279,7 +279,7 @@ public class Player : MonoBehaviour
         if (move.magnitude > IdleToWalkThreshold)
         {
 
-            if (!IsAttacking() && !IsGettingHit() && !mIsHoldingDefend)
+            if (!IsAnimationAttack() && !IsAnimationGetHIt() && !mIsHoldingDefend)
             {
                 // Move player
                 mController.Move(mSpeed * Time.deltaTime * move);
@@ -351,19 +351,14 @@ public class Player : MonoBehaviour
         mAnimator.SetTrigger("Attack3");
     }
 
-    bool IsAttacking()
+    bool IsAnimationAttack()
     {
         return mAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Attack");
     }
 
-    bool IsGettingHit()
+    bool IsAnimationGetHIt()
     {
         return mAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "GetHit";
-    }
-
-    bool IsDefendingHit()
-    {
-        return mAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "DefendGetHit";
     }
 
     void BlinkThisFrame()

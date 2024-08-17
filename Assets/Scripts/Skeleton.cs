@@ -31,7 +31,7 @@ public class Skeleton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (mEnemyComponent.IsAttacking()) SetAttackColliderActive(true);
+        if (mEnemyComponent.IsAnimationAttack()) SetAttackColliderActive(true);
         else SetAttackColliderActive(false);
     }
 
