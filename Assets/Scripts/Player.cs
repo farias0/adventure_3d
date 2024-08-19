@@ -37,9 +37,12 @@ public class Player : MonoBehaviour
 
     private const int MaxHealth = 30;
     private const float RespawnTime = 4;
+    private const float DefendColliderOffset = 0.10f; // How far the player's collider offsets to its back when defending.
+                                                        // A strategy to remedy problems with the enemy-shield collision
 
     Animator mAnimator;
     CharacterController mController;
+    private CapsuleCollider mCollider;
     float mHeightStanding = 0; // WARNING! Should be const. Defined at Start().
     float mSpeed = 0;
     bool mIsCrouched = false;
@@ -51,6 +54,7 @@ public class Player : MonoBehaviour
     private float mRespawnCountdown = -1;
     private bool mIsHoldingDefend = false;
     private float mParryAttackWindowCountdown = -1; // Allows attacking after blocking a hit
+    private Vector3 mColliderCenterDefault;
 
 
     public void GetHit(int damage)
@@ -88,6 +92,30 @@ public class Player : MonoBehaviour
         return mHealth <= 0;
     }
 
+
+    /// <summary>
+    /// Emits a Raycast from the player to the target object.
+    /// </summary>
+    /// <param name="target"></param>
+    /// <returns>If the Raycast hit the target uninterrupted</returns>
+    public bool Raycast(GameObject target)
+    {
+        /*
+            ATTENTION: It's possible that at some point the shield starts
+            blocking raycasts, removing this function's usefulness for estabilishing
+            lines of sight. If this happens, consider throwing two raycasts,
+            one of them from the shield.        
+        */
+
+        Vector3 direction = target.transform.position - transform.position;
+        if (Physics.Raycast(transform.position, direction, out RaycastHit hit))
+        {
+            return hit.collider.gameObject == target;
+        }
+
+        return false;
+    }
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -99,12 +127,15 @@ public class Player : MonoBehaviour
     {
         mAnimator = GetComponent<Animator>();
         mController = GetComponent<CharacterController>();
+        mCollider = GetComponent<CapsuleCollider>();
 
         mHeightStanding = transform.localScale.y;
         mSpeed = SpeedStanding;
         
         mCharacterRadiusDefault = mController.radius;
         mCharacterRadiusCrouched = mCharacterRadiusDefault * (HeightCrouched / mHeightStanding);
+
+        mColliderCenterDefault = mController.center;
 
         InventoryController.OnPlayerWeaponChanged += InventoryController_OnPlayerWeaponChanged;
         InventoryController.OnPlayerShieldChanged += InventoryController_OnPlayerShieldChanged;
@@ -165,8 +196,16 @@ public class Player : MonoBehaviour
         else SetWeaponActive(false);
 
         // Activates shield during defend
-        if (mIsHoldingDefend) SetShieldActive(true);
-        else SetShieldActive(false);
+        if (mIsHoldingDefend)
+        {
+            SetShieldActive(true);
+            mCollider.center = mColliderCenterDefault - new Vector3(0, 0, 1) * DefendColliderOffset;
+        }
+        else
+        {
+            SetShieldActive(false);
+            mCollider.center = mColliderCenterDefault;
+        }
     }
 
     private void InventoryController_OnPlayerWeaponChanged(string itemGuid, InventoryChangeType change)
