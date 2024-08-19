@@ -23,7 +23,6 @@ public class Player : MonoBehaviour
     public ItemData StartingShield;
     public float SpeedStanding;
     public float SpeedCrouched;
-    public float HeightCrouched;
     public float IdleToWalkThreshold;
     public float WalkToRunThreshold;
     public float RotationSpeed;
@@ -37,6 +36,7 @@ public class Player : MonoBehaviour
 
     private const int MaxHealth = 30;
     private const float RespawnTime = 4;
+    private const float HeightCrouched = 0.70f;
     private const float DefendColliderOffset = 0.10f; // How far the player's collider offsets to its back when defending.
                                                         // A strategy to remedy problems with the enemy-shield collision
 

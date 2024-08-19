@@ -1,3 +1,13 @@
+- IA do inimigo
+	- agaixar diminui raio do cone de visão
+	- inimigo responde ao som dos passos
+		- player oferecer método para o inimigo checar se ouve ele esse frame
+	- visibilidade diferente durante a noite?
+
+- novos inimigos
+	- inimigos mais fracos que o esqueleto
+	- magos
+
 - parry (se levantou o escudo instantes antes da colisão)
 
 - efeitos sonoros
@@ -11,16 +21,6 @@
 - sistema de stamina?
 
 - tirar atributo Player da classe Enemy (ou fazer ele ser uma cópia de Instance)
-
-- escudo
-	- gerar hitbox
-	- golpe no escudo gerar knockback no inimigo
-
-
-- IA do inimigo
-	- agaixar diminui raio do cone de visão
-	- inimigo responde ao som dos passos
-		- player oferecer método para o inimigo checar se ouve ele esse frame
 
 - item de cura consumivel
 
@@ -37,8 +37,6 @@
 - às vezes inimigo fica com 0 de vida e não morre
 
 - slots do inventário não estão escalando com a resolução
-
-- criar novos inimigos
 
 - escadas
 
