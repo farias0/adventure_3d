@@ -46,6 +46,7 @@ public class Enemy : MonoBehaviour
     private float mCurrentPhaseCountdown = -1;
     private float mAlertToSearchingCountdown = -1;
     private bool mSeesPlayer = false;
+    private bool mIsTouchingPlayerShield = false; // Helps avoiding having the enemy hit through the player's shield
 
 
     public bool IsAnimationDead()
@@ -84,6 +85,13 @@ public class Enemy : MonoBehaviour
     public void HitPlayer(int damage)
     {
         if (IsAnimationDead()) return;
+
+        if (mIsTouchingPlayerShield)
+        {
+            HitShield();
+            return;
+        }
+
         Player.GetComponent<Player>().GetHit(damage);
     }
 
@@ -167,7 +175,17 @@ public class Enemy : MonoBehaviour
         if (mInvincibleCountdown > 0) return;
 
         if (other.CompareTag("Player")) HitPlayer(AttackDamage);
-        if (other.CompareTag("Shield") && IsAnimationAttack()) HitShield();
+        if (other.CompareTag("Shield"))
+        {
+            mIsTouchingPlayerShield = true;
+            if (IsAnimationAttack()) HitShield();
+        }
+
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Shield")) mIsTouchingPlayerShield = false;
     }
 
     private void Attack()

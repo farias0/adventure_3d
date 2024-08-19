@@ -579,7 +579,7 @@ MonoBehaviour:
   - {fileID: 5010649966797548770}
   - {fileID: 2209461978516558267}
   - {fileID: 6100113984754764723}
-  AttackRange: 1.15
+  AttackRange: 1.25
   ConfirmedSightDistance: 9
   AlertPhaseDuration: 3.5
   SearchPhaseDuration: 3
