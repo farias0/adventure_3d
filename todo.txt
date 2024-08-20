@@ -1,7 +1,7 @@
 - IA do inimigo
+	- HearPlayerCountdown
+	- colocar ícones p/ alerta e procurando sobre a cabeça do inimigo
 	- agaixar diminui raio do cone de visão
-	- inimigo responde ao som dos passos
-		- player oferecer método para o inimigo checar se ouve ele esse frame
 	- visibilidade diferente durante a noite?
 
 - novos inimigos

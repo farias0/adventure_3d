@@ -42,10 +42,10 @@ public class Enemy : MonoBehaviour
     private float mInvincibleCountdown = 0;
     private int mCurrentPatrolPoint = 0;
     private bool mIsAttacking;
-    private Vector3 mPlayerLastSeenPosition;
+    private Vector3 mPlayerKnownPosition;
     private float mCurrentPhaseCountdown = -1;
     private float mAlertToSearchingCountdown = -1;
-    private bool mSeesPlayer = false;
+    private bool mAwareOfPlayer = false;
     private bool mIsTouchingPlayerShield = false; // Helps avoiding having the enemy hit through the player's shield
 
 
@@ -134,10 +134,12 @@ public class Enemy : MonoBehaviour
 
 
         mIsAttacking = IsAnimationAttack();
-        mSeesPlayer = SeesPlayer();
+        
 
 
-        if (mSeesPlayer) mPlayerLastSeenPosition = Player.transform.position;
+        mAwareOfPlayer = SeesPlayer() ||
+                            Player.GetComponent<Player>().CanHearPlayer(transform.position);
+        if (mAwareOfPlayer) mPlayerKnownPosition = Player.transform.position;
 
 
         // Enemy hit recently
@@ -321,7 +323,7 @@ public class Enemy : MonoBehaviour
 
     private void AIRoutinePatrol()
     {
-        if (mSeesPlayer)
+        if (mAwareOfPlayer)
         {   
             // Alert
             AIStartAlert();
@@ -345,7 +347,7 @@ public class Enemy : MonoBehaviour
         mState = State.Alert;
         AnimationSetAlert();
         StopInPlace();
-        FacePosition(mPlayerLastSeenPosition);
+        FacePosition(mPlayerKnownPosition);
         mCurrentPhaseCountdown = AlertPhaseDuration;
         mAlertToSearchingCountdown = AlertToSearchingDuration;
     }
@@ -358,9 +360,9 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        if (mSeesPlayer)
+        if (mAwareOfPlayer)
         {
-            FacePosition(mPlayerLastSeenPosition);
+            FacePosition(mPlayerKnownPosition);
 
             if (Vector3.Distance(Player.transform.position, transform.position) < ConfirmedSightDistance)
             {
@@ -401,7 +403,7 @@ public class Enemy : MonoBehaviour
     private void AIStartSearch()
     {
         mState = State.Search;
-        MoveTowards(mPlayerLastSeenPosition, WalkSpeed);
+        MoveTowards(mPlayerKnownPosition, WalkSpeed);
         mCurrentPhaseCountdown = SearchPhaseDuration;
     }
 
@@ -415,7 +417,7 @@ public class Enemy : MonoBehaviour
 
         UpdateRotationWhileWalking();
 
-        if (mSeesPlayer)
+        if (mAwareOfPlayer)
         {
             if (Vector3.Distance(Player.transform.position, transform.position) < ConfirmedSightDistance)
             {
@@ -427,10 +429,10 @@ public class Enemy : MonoBehaviour
             mCurrentPhaseCountdown = SearchPhaseDuration;
 
             // Update route
-            if (mPlayerLastSeenPosition != mNavMeshAgent.destination) MoveTowards(mPlayerLastSeenPosition, WalkSpeed);
+            if (mPlayerKnownPosition != mNavMeshAgent.destination) MoveTowards(mPlayerKnownPosition, WalkSpeed);
 
         }
-        else if (Vector3.Distance(mPlayerLastSeenPosition, transform.position) < 0.5f)
+        else if (Vector3.Distance(mPlayerKnownPosition, transform.position) < 0.5f)
         {
             
             mCurrentPhaseCountdown -= Time.deltaTime;
@@ -475,7 +477,7 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        if (mSeesPlayer)
+        if (mAwareOfPlayer)
         {
             mCurrentPhaseCountdown = ChasePhaseDuration;
         }

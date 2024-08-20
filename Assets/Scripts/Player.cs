@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
     public float InteractionRadius;
     public int AttackDamage = 20;
     public float ParryAttackWindowLength = 1.0f;
+    public float HearingDistanceStandingMax = 8;
 
     public static Player Instance;
 
@@ -114,6 +115,22 @@ public class Player : MonoBehaviour
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// If a creature in the given position can hear the player
+    /// this frame.
+    /// </summary>
+    public bool CanHearPlayer(Vector3 position)
+    {
+        if (mIsCrouched) return false;
+
+        float hearingDistance;
+        Vector3 playerMovement = mController.velocity;
+        playerMovement.z = 0;
+        hearingDistance = (playerMovement.magnitude * HearingDistanceStandingMax) / SpeedStanding;
+
+        return Vector3.Distance(position, transform.position) < hearingDistance;
     }
 
     private void Awake()
@@ -374,7 +391,6 @@ public class Player : MonoBehaviour
     void Attack1()
     {
         if (mIsHoldingDefend && mParryAttackWindowCountdown <= 0) return;
-        Debug.Log("Attack1");
         mAnimator.SetTrigger("Attack1");
     }
 
