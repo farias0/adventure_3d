@@ -34,6 +34,8 @@ public class Enemy : MonoBehaviour
     public int AttackDamage = 10;
     public int MaxHealth = 40;
 
+    private const float EnemyHearPlayerDuration = 0.3f; // For how long the enemy has to hear the player for it to register
+
     private Animator mAnimator;
     private NavMeshAgent mNavMeshAgent;
     private Rigidbody mRigidbody;
@@ -47,6 +49,8 @@ public class Enemy : MonoBehaviour
     private float mAlertToSearchingCountdown = -1;
     private bool mAwareOfPlayer = false;
     private bool mIsTouchingPlayerShield = false; // Helps avoiding having the enemy hit through the player's shield
+    private float mEnemyHearPlayerCountdown = -1; // Controls for how long the enemy has to hear the player for it to register
+    private bool mHeardPlayerLastFrame = false; // To be used with HearsPlayer()
 
 
     public bool IsAnimationDead()
@@ -135,10 +139,7 @@ public class Enemy : MonoBehaviour
 
         mIsAttacking = IsAnimationAttack();
         
-
-
-        mAwareOfPlayer = SeesPlayer() ||
-                            Player.GetComponent<Player>().CanHearPlayer(transform.position);
+        mAwareOfPlayer = SeesPlayer() || HearsPlayer();
         if (mAwareOfPlayer) mPlayerKnownPosition = Player.transform.position;
 
 
@@ -313,6 +314,24 @@ public class Enemy : MonoBehaviour
 
 
         return true;
+    }
+
+    // ATTENTION: To be called every frame
+    private bool HearsPlayer()
+    {
+        bool hearingConfirmed = false;
+        bool hearsSomething = Player.GetComponent<Player>().CanHearPlayer(transform.position);
+
+        if (!hearsSomething) mEnemyHearPlayerCountdown = -1;
+        else if (!mHeardPlayerLastFrame) mEnemyHearPlayerCountdown = EnemyHearPlayerDuration; // Starts counting
+        else {
+            mEnemyHearPlayerCountdown -= Time.deltaTime;
+            if (mEnemyHearPlayerCountdown <= 0) hearingConfirmed = true;
+        }
+
+        mHeardPlayerLastFrame = hearsSomething;
+
+        return hearingConfirmed;
     }
 
     private void AIStartPatrol()

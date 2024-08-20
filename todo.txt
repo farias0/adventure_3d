@@ -1,5 +1,4 @@
 - IA do inimigo
-	- HearPlayerCountdown
 	- colocar ícones p/ alerta e procurando sobre a cabeça do inimigo
 	- agaixar diminui raio do cone de visão
 	- visibilidade diferente durante a noite?
