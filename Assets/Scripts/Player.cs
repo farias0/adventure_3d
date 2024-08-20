@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
     Animator mAnimator;
     CharacterController mController;
     private CapsuleCollider mCollider;
+    private PlayerAudioController mAudioController;
     float mHeightStanding = 0; // WARNING! Should be const. Defined at Start().
     float mSpeed = 0;
     bool mIsCrouched = false;
@@ -145,6 +146,7 @@ public class Player : MonoBehaviour
         mAnimator = GetComponent<Animator>();
         mController = GetComponent<CharacterController>();
         mCollider = GetComponent<CapsuleCollider>();
+        mAudioController = GetComponent<PlayerAudioController>();
 
         mHeightStanding = transform.localScale.y;
         mSpeed = SpeedStanding;
@@ -392,12 +394,14 @@ public class Player : MonoBehaviour
     {
         if (mIsHoldingDefend && mParryAttackWindowCountdown <= 0) return;
         mAnimator.SetTrigger("Attack1");
+        mAudioController.PlaySoundAttack1();
     }
 
     void Attack2()
     {
         if (mIsHoldingDefend && mParryAttackWindowCountdown <= 0) return;
         mAnimator.SetTrigger("Attack2");
+        mAudioController.PlaySoundAttack2();
     }
 
     void Attack3()

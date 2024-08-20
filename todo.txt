@@ -1,3 +1,16 @@
+- efeitos sonoros
+	- defender hit com escudo
+	- ataque do inimigo
+	- dano no inimigo
+	- dano no jogador
+	- jogador andando
+	- jogador andando agachado (talvez som de piano)
+	- inimigo alerta
+	- inimigo caçando
+	- NPC coruja
+	- jogador morrer
+	- jogador renascer
+
 - IA do inimigo
 	- colocar ícones p/ alerta e procurando sobre a cabeça do inimigo
 	- agaixar diminui raio do cone de visão
@@ -8,12 +21,6 @@
 	- magos
 
 - parry (se levantou o escudo instantes antes da colisão)
-
-- efeitos sonoros
-	- defender hit com escudo
-	- ataque da espada
-	- ataque do inimigo
-	- dano no inimigo
 
 - procurar uma animação própria pro inimigo ao ser defendido, ou pelo menos usar um Countdown diferente
 
