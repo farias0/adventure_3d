@@ -4131,6 +4131,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Attack1: {fileID: 8300000, guid: 960d11df56c230c46b087450b852ea01, type: 3}
   Attack2: {fileID: 8300000, guid: 214400ff6bfc7424f8534f3e29f20a6b, type: 3}
+  Parry: {fileID: 8300000, guid: b93309f541236e243b94e600f4f36a97, type: 3}
+  ParryAttack: {fileID: 8300000, guid: cb66cfe1b82b674429a6e6bf81102d32, type: 3}
 --- !u!82 &1578291727
 AudioSource:
   m_ObjectHideFlags: 0

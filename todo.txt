@@ -1,5 +1,4 @@
 - efeitos sonoros
-	- defender hit com escudo
 	- ataque do inimigo
 	- dano no inimigo
 	- dano no jogador
@@ -10,6 +9,11 @@
 	- NPC coruja
 	- jogador morrer
 	- jogador renascer
+
+- fazer os sons só tocarem com a animação
+
+- ver como fazer mixagem
+	- parâmetro no PlayerAudioControlScript?
 
 - IA do inimigo
 	- colocar ícones p/ alerta e procurando sobre a cabeça do inimigo

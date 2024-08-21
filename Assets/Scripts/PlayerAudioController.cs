@@ -6,6 +6,8 @@ public class PlayerAudioController : MonoBehaviour
 {
     public AudioClip Attack1;
     public AudioClip Attack2;
+    public AudioClip Parry;
+    public AudioClip ParryAttack;
 
     private AudioSource mAudioSource;
 
@@ -22,5 +24,15 @@ public class PlayerAudioController : MonoBehaviour
     public void PlaySoundAttack2()
     {
         mAudioSource.PlayOneShot(Attack2);
+    }
+
+    public void PlaySoundParry()
+    {
+        mAudioSource.PlayOneShot(Parry);
+    }
+
+    public void PlaySoundParryAttack()
+    {
+        mAudioSource.PlayOneShot(ParryAttack);
     }
 }

@@ -82,6 +82,7 @@ public class Player : MonoBehaviour
 
         mParryAttackWindowCountdown = ParryAttackWindowLength;
         mAnimator.SetTrigger("DefendGetHit");
+        mAudioController.PlaySoundParry();
     }
 
     public bool InteractedWithMeThisFrame(Vector3 position)
@@ -394,6 +395,7 @@ public class Player : MonoBehaviour
     {
         if (mIsHoldingDefend && mParryAttackWindowCountdown <= 0) return;
         mAnimator.SetTrigger("Attack1");
+        if (mParryAttackWindowCountdown > 0) mAudioController.PlaySoundParryAttack();
         mAudioController.PlaySoundAttack1();
     }
 
@@ -401,6 +403,7 @@ public class Player : MonoBehaviour
     {
         if (mIsHoldingDefend && mParryAttackWindowCountdown <= 0) return;
         mAnimator.SetTrigger("Attack2");
+        if (mParryAttackWindowCountdown > 0) mAudioController.PlaySoundParryAttack();
         mAudioController.PlaySoundAttack2();
     }
 
