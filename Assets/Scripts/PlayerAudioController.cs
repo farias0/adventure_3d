@@ -33,6 +33,6 @@ public class PlayerAudioController : MonoBehaviour
 
     public void PlaySoundParryAttack()
     {
-        mAudioSource.PlayOneShot(ParryAttack);
+        //mAudioSource.PlayOneShot(ParryAttack);
     }
 }

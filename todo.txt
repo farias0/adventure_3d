@@ -1,3 +1,10 @@
+- adicionar timer p/ stamina começar a carregar
+
+- contra ataque nao precisar de stamina?
+
+- às vezes o inimigo continua colidindo com o escudo mesmo ele desativado
+	- da pra ver desativado no inspetor
+
 - efeitos sonoros
 	- ataque do inimigo
 	- dano no inimigo
@@ -10,10 +17,13 @@
 	- jogador morrer
 	- jogador renascer
 
+
 - fazer os sons só tocarem com a animação
 
 - ver como fazer mixagem
 	- parâmetro no PlayerAudioControlScript?
+
+- dodge com i-frame 
 
 - IA do inimigo
 	- colocar ícones p/ alerta e procurando sobre a cabeça do inimigo
@@ -27,8 +37,6 @@
 - parry (se levantou o escudo instantes antes da colisão)
 
 - procurar uma animação própria pro inimigo ao ser defendido, ou pelo menos usar um Countdown diferente
-
-- sistema de stamina?
 
 - tirar atributo Player da classe Enemy (ou fazer ele ser uma cópia de Instance)
 
@@ -49,8 +57,6 @@
 - slots do inventário não estão escalando com a resolução
 
 - escadas
-
-- dodge
 
 - pulo?
 

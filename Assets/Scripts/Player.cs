@@ -30,12 +30,16 @@ public class Player : MonoBehaviour
     public float InvincibleTime;
     public float InteractionRadius;
     public int AttackDamage = 20;
+    public float AttackStaminaCost = 30;
+    public float StaminaRecoveryRate = 30; // Stamina per second
     public float ParryAttackWindowLength = 1.0f;
     public float HearingDistanceStandingMax = 8;
+    public float DefendStaminaCost = 12.0f;
 
     public static Player Instance;
 
     private const int MaxHealth = 30;
+    private const float MaxStamina = 45;
     private const float RespawnTime = 4;
     private const float HeightCrouched = 0.70f;
     private const float DefendColliderOffset = 0.10f; // How far the player's collider offsets to its back when defending.
@@ -53,6 +57,7 @@ public class Player : MonoBehaviour
     float mCharacterRadiusDefault;
     float mCharacterRadiusCrouched; // So the player doesn't float when its squished
     int mHealth;
+    float mStamina;
     private float mRespawnCountdown = -1;
     private bool mIsHoldingDefend = false;
     private float mParryAttackWindowCountdown = -1; // Allows attacking after blocking a hit
@@ -80,7 +85,10 @@ public class Player : MonoBehaviour
     {
         if (mInvincibleCountdown > 0 || mHealth <= 0) return;
 
+        SetStamina(mStamina - DefendStaminaCost);
+
         mParryAttackWindowCountdown = ParryAttackWindowLength;
+
         mAnimator.SetTrigger("DefendGetHit");
         mAudioController.PlaySoundParry();
     }
@@ -161,6 +169,7 @@ public class Player : MonoBehaviour
         InventoryController.OnPlayerShieldChanged += InventoryController_OnPlayerShieldChanged;
 
         HUDController.Instance.PlayerSetMaxHealth(MaxHealth);
+        HUDController.Instance.PlayerSetMaxStamina(MaxStamina);
 
         if (!InventoryController.Instance.EquipWeapon(StartingWeapon.GUID))
         {
@@ -172,6 +181,7 @@ public class Player : MonoBehaviour
         }
 
         SetHealth(MaxHealth);
+        SetStamina(MaxStamina);
     }
 
     // Update is called once per frame
@@ -207,6 +217,10 @@ public class Player : MonoBehaviour
 
 
         if (IsDead()) return;
+
+
+        if (!mIsHoldingDefend && !IsAnimationAttack())
+            SetStamina(mStamina + StaminaRecoveryRate * Time.deltaTime);
 
 
         ProcessInput();
@@ -283,7 +297,7 @@ public class Player : MonoBehaviour
 
         if (!InventoryController.Instance.IsOpen()) {
 
-            mIsHoldingDefend = Input.GetButton("Defend");
+            mIsHoldingDefend = Input.GetButton("Defend") && mStamina >= DefendStaminaCost;
             if (Input.GetButtonDown("Attack1")) Attack1();
             if (Input.GetButtonDown("Attack2")) Attack2();
             if (Input.GetButtonDown("Crouch")) CrouchToggle();
@@ -311,6 +325,13 @@ public class Player : MonoBehaviour
     {
         mHealth = health;
         HUDController.Instance.PlayerSetHealth(health);
+    }
+
+    private void SetStamina(float stamina)
+    {
+        mStamina = Math.Max(stamina, 0);
+        mStamina = Math.Min(mStamina, MaxStamina);
+        HUDController.Instance.PlayerSetStamina(stamina);
     }
 
     private void Die()
@@ -394,7 +415,12 @@ public class Player : MonoBehaviour
     void Attack1()
     {
         if (mIsHoldingDefend && mParryAttackWindowCountdown <= 0) return;
+        if (mStamina < AttackStaminaCost) return;
+
         mAnimator.SetTrigger("Attack1");
+
+        SetStamina(mStamina - AttackStaminaCost);
+
         if (mParryAttackWindowCountdown > 0) mAudioController.PlaySoundParryAttack();
         mAudioController.PlaySoundAttack1();
     }
@@ -402,7 +428,12 @@ public class Player : MonoBehaviour
     void Attack2()
     {
         if (mIsHoldingDefend && mParryAttackWindowCountdown <= 0) return;
+        if (mStamina < AttackStaminaCost) return;
+
         mAnimator.SetTrigger("Attack2");
+
+        SetStamina(mStamina - AttackStaminaCost);
+
         if (mParryAttackWindowCountdown > 0) mAudioController.PlaySoundParryAttack();
         mAudioController.PlaySoundAttack2();
     }

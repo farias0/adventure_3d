@@ -4043,6 +4043,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1826751621}
     - target: {fileID: 1426381783355051311, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
+      propertyPath: DefendStaminaCost
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1426381783355051311, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
       propertyPath: ParryAttackWindowLength
       value: 1.4
       objectReference: {fileID: 0}

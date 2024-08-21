@@ -5,6 +5,9 @@
             <ui:VisualElement name="HealthBarContainer" class="health-bar-container" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-left-color: rgba(0, 0, 0, 0.5); border-right-color: rgba(0, 0, 0, 0.5); border-top-color: rgba(0, 0, 0, 0.5); border-bottom-color: rgba(0, 0, 0, 0.5);">
                 <ui:VisualElement name="HealthBarFill" class="health-bar-fill" style="background-color: rgb(188, 35, 35);" />
             </ui:VisualElement>
+            <ui:VisualElement name="StaminaBarContainer" class="stamina-bar-container" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; border-left-color: rgba(0, 0, 0, 0.5); border-right-color: rgba(0, 0, 0, 0.5); border-top-color: rgba(0, 0, 0, 0.5); border-bottom-color: rgba(0, 0, 0, 0.5);">
+                <ui:VisualElement name="StaminaBarFill" class="stamina-bar-fill" style="background-color: rgb(52, 192, 44);" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
