@@ -47,6 +47,12 @@ public class HUDController : MonoBehaviour
         UpdateStaminaBarMax();
     }
 
+    public void SetActive(bool active)
+    {
+        gameObject.SetActive(active);
+        if (active) SyncWithState();
+    }
+
     private void Awake()
     {
         if (Instance != null)
@@ -93,5 +99,13 @@ public class HUDController : MonoBehaviour
     {
         var staminaBarContainer = mRoot.Q<VisualElement>("StaminaBarContainer");
         staminaBarContainer.style.width = Length.Percent(mMaxStamina / 4.0f);
+    }
+
+    private void SyncWithState()
+    {
+        UpdateHealthBarMax();
+        UpdateStaminaBarMax();
+        UpdateHealthBar();
+        UpdateStaminaBar();
     }
 }

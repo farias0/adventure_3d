@@ -259,12 +259,12 @@ public class InventoryController : MonoBehaviour
         {
             FadeIn(mRoot, 250);
             SetSelectedSlot(EquipmentSlotsCount);
-            if (HUDController.Instance) HUDController.Instance.gameObject.SetActive(false);
+            if (HUDController.Instance) HUDController.Instance.SetActive(false);
         }
         else
         {
             mSelectedSlotAnimation?.ResetAnimation();
-            if (HUDController.Instance) HUDController.Instance.gameObject.SetActive(true);
+            if (HUDController.Instance) HUDController.Instance.SetActive(true);
         }
 
         // Lock or unlock the cursor
