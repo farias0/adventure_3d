@@ -4044,7 +4044,7 @@ PrefabInstance:
       objectReference: {fileID: 1826751621}
     - target: {fileID: 1426381783355051311, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
       propertyPath: DefendStaminaCost
-      value: 30
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 1426381783355051311, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
       propertyPath: ParryAttackWindowLength
@@ -4052,7 +4052,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1426381783355051311, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
       propertyPath: StaminaRecoveryCooldown
-      value: 1.4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2670275071614443411, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
       propertyPath: m_LocalPosition.x

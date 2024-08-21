@@ -1,5 +1,3 @@
-- contra ataque nao precisar de stamina
-
 - efeitos sonoros
 	- ataque do inimigo
 	- dano no inimigo

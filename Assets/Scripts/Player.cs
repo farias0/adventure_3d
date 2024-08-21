@@ -434,12 +434,14 @@ public class Player : MonoBehaviour
 
     void Attack1()
     {
-        if (mIsHoldingDefend && mParryAttackWindowCountdown <= 0) return;
-        if (mStamina < AttackStaminaCost) return;
+        bool isInParryWindow = mParryAttackWindowCountdown > 0;
+
+        if (mIsHoldingDefend && !isInParryWindow) return;
+        if (mStamina < AttackStaminaCost && !isInParryWindow) return;
 
         mAnimator.SetTrigger("Attack1");
 
-        ConsumeStamina(AttackStaminaCost);
+        if (!isInParryWindow) ConsumeStamina(AttackStaminaCost);
 
         if (mParryAttackWindowCountdown > 0) mAudioController.PlaySoundParryAttack();
         mAudioController.PlaySoundAttack1();
@@ -447,12 +449,14 @@ public class Player : MonoBehaviour
 
     void Attack2()
     {
-        if (mIsHoldingDefend && mParryAttackWindowCountdown <= 0) return;
-        if (mStamina < AttackStaminaCost) return;
+        bool isInParryWindow = mParryAttackWindowCountdown > 0;
+
+        if (mIsHoldingDefend && !isInParryWindow) return;
+        if (mStamina < AttackStaminaCost && !isInParryWindow) return;
 
         mAnimator.SetTrigger("Attack2");
 
-        ConsumeStamina(AttackStaminaCost);
+        if (!isInParryWindow) ConsumeStamina(AttackStaminaCost);
 
         if (mParryAttackWindowCountdown > 0) mAudioController.PlaySoundParryAttack();
         mAudioController.PlaySoundAttack2();
