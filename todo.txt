@@ -13,11 +13,6 @@
 
 - fazer os sons só tocarem com a animação
 
-- ver como fazer mixagem
-	- parâmetro no PlayerAudioControlScript?
-
-- dodge com i-frame 
-
 - IA do inimigo
 	- colocar ícones p/ alerta e procurando sobre a cabeça do inimigo
 	- agaixar diminui raio do cone de visão
@@ -27,7 +22,16 @@
 	- inimigos mais fracos que o esqueleto
 	- magos
 
-- parry (se levantou o escudo instantes antes da colisão)
+- colocar um game juice no combate
+	- tremer tela ao golpear
+	- tremer tela ao levar golpe
+	- parry "congelar" o frame
+	- VFX
+
+- ver como fazer mixagem
+	- parâmetro no PlayerAudioControlScript?
+
+- dodge com i-frame 
 
 - procurar uma animação própria pro inimigo ao ser defendido, ou pelo menos usar um Countdown diferente
 
@@ -50,10 +54,6 @@
 - slots do inventário não estão escalando com a resolução
 
 - escadas
-
-- pulo?
-
-- colocar um game juice no combate
 
 - câmera parar de tremer quando abaixa
 	- talvez colocar uma tolerância no movimento y

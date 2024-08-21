@@ -194,6 +194,11 @@ public class Enemy : MonoBehaviour
 
     }
 
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Shield")) mIsTouchingPlayerShield = false;
+    }
+
     private void Attack()
     {
         mAnimator.SetTrigger("Attack");
