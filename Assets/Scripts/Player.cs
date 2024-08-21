@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     public int AttackDamage = 20;
     public float AttackStaminaCost = 30;
     public float StaminaRecoveryRate = 30; // Stamina per second
+    public float StaminaRecoveryCooldown = 1.4f; // In seconds
     public float ParryAttackWindowLength = 1.0f;
     public float HearingDistanceStandingMax = 8;
     public float DefendStaminaCost = 12.0f;
@@ -62,6 +63,7 @@ public class Player : MonoBehaviour
     private bool mIsHoldingDefend = false;
     private float mParryAttackWindowCountdown = -1; // Allows attacking after blocking a hit
     private Vector3 mColliderCenterDefault;
+    private float mStaminaRecoveryCooldownCountdown = -1;
 
 
     public void GetHit(int damage)
@@ -85,7 +87,7 @@ public class Player : MonoBehaviour
     {
         if (mInvincibleCountdown > 0 || mHealth <= 0) return;
 
-        SetStamina(mStamina - DefendStaminaCost);
+        ConsumeStamina(DefendStaminaCost);
 
         mParryAttackWindowCountdown = ParryAttackWindowLength;
 
@@ -101,6 +103,11 @@ public class Player : MonoBehaviour
     public bool IsDead()
     {
         return mHealth <= 0;
+    }
+
+    public bool IsHoldingDefend()
+    {
+        return mIsHoldingDefend;
     }
 
 
@@ -219,8 +226,15 @@ public class Player : MonoBehaviour
         if (IsDead()) return;
 
 
-        if (!mIsHoldingDefend && !IsAnimationAttack())
+        // Stamina
+        if (mStaminaRecoveryCooldownCountdown > 0)
+            mStaminaRecoveryCooldownCountdown -= Time.deltaTime;
+
+        if (mStaminaRecoveryCooldownCountdown <= 0 &&
+            !mIsHoldingDefend && !IsAnimationAttack())
+        {
             SetStamina(mStamina + StaminaRecoveryRate * Time.deltaTime);
+        }
 
 
         ProcessInput();
@@ -334,6 +348,12 @@ public class Player : MonoBehaviour
         HUDController.Instance.PlayerSetStamina(stamina);
     }
 
+    private void ConsumeStamina(float amount)
+    {
+        SetStamina(mStamina - amount);
+        mStaminaRecoveryCooldownCountdown = StaminaRecoveryCooldown;
+    }
+
     private void Die()
     {
         SetHealth(0);
@@ -419,7 +439,7 @@ public class Player : MonoBehaviour
 
         mAnimator.SetTrigger("Attack1");
 
-        SetStamina(mStamina - AttackStaminaCost);
+        ConsumeStamina(AttackStaminaCost);
 
         if (mParryAttackWindowCountdown > 0) mAudioController.PlaySoundParryAttack();
         mAudioController.PlaySoundAttack1();
@@ -432,7 +452,7 @@ public class Player : MonoBehaviour
 
         mAnimator.SetTrigger("Attack2");
 
-        SetStamina(mStamina - AttackStaminaCost);
+        ConsumeStamina(AttackStaminaCost);
 
         if (mParryAttackWindowCountdown > 0) mAudioController.PlaySoundParryAttack();
         mAudioController.PlaySoundAttack2();

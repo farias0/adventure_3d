@@ -1,9 +1,4 @@
-- adicionar timer p/ stamina começar a carregar
-
-- contra ataque nao precisar de stamina?
-
-- às vezes o inimigo continua colidindo com o escudo mesmo ele desativado
-	- da pra ver desativado no inspetor
+- contra ataque nao precisar de stamina
 
 - efeitos sonoros
 	- ataque do inimigo

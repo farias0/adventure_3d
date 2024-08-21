@@ -143,6 +143,14 @@ public class Enemy : MonoBehaviour
         if (mAwareOfPlayer) mPlayerKnownPosition = Player.transform.position;
 
 
+        /*
+            OnTriggerExit() isn't called when the player's shield is disabled,
+            so we have to check for this manually.
+        */
+        if (mIsTouchingPlayerShield && !Player.GetComponent<Player>().IsHoldingDefend())
+            mIsTouchingPlayerShield = false;
+
+
         // Enemy hit recently
         if (mInvincibleCountdown > 0) {
             mInvincibleCountdown -= Time.deltaTime;
@@ -184,11 +192,6 @@ public class Enemy : MonoBehaviour
             if (IsAnimationAttack()) HitShield();
         }
 
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Shield")) mIsTouchingPlayerShield = false;
     }
 
     private void Attack()
