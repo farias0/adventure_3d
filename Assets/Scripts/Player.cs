@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
     public float InteractionRadius;
     public int AttackDamage = 20;
     public float AttackStaminaCost = 30;
+    public float ParryAtackStaminaCost = 18;
     public float StaminaRecoveryRate = 30; // Stamina per second
     public float StaminaRecoveryCooldown = 1.4f; // In seconds
     public float ParryAttackWindowLength = 1.0f;
@@ -441,7 +442,7 @@ public class Player : MonoBehaviour
 
         mAnimator.SetTrigger("Attack1");
 
-        if (!isInParryWindow) ConsumeStamina(AttackStaminaCost);
+        ConsumeStamina(isInParryWindow ? ParryAtackStaminaCost : AttackStaminaCost);
 
         if (mParryAttackWindowCountdown > 0) mAudioController.PlaySoundParryAttack();
         mAudioController.PlaySoundAttack1();
@@ -456,7 +457,7 @@ public class Player : MonoBehaviour
 
         mAnimator.SetTrigger("Attack2");
 
-        if (!isInParryWindow) ConsumeStamina(AttackStaminaCost);
+        ConsumeStamina(isInParryWindow ? ParryAtackStaminaCost : AttackStaminaCost);
 
         if (mParryAttackWindowCountdown > 0) mAudioController.PlaySoundParryAttack();
         mAudioController.PlaySoundAttack2();
