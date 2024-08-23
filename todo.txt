@@ -3,6 +3,7 @@
 	- quebrar
 		- ícone (hud? inventário?)
 		- comportamento
+			- desequipar a arma? ou mover sem colidir com inimigo?		<<<<<
 			- galho: desaparecer do inventário
 	- resetar estado ao renascer
 
@@ -20,6 +21,7 @@
 	- NPC coruja
 	- jogador morrer
 	- jogador renascer
+	- arma quebrada
 
 
 - fazer os sons só tocarem com a animação

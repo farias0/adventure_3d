@@ -63,11 +63,12 @@ public class Enemy : MonoBehaviour
         return mAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Attack");
     }
 
-    public void GetHit(int damage)
+    /// <returns>Did it get hit?</returns>
+    public bool GetHit(int damage)
     {
-        if (IsAnimationDead()) return;
+        if (IsAnimationDead()) return false;
 
-        if (mInvincibleCountdown > 0) return;
+        if (mInvincibleCountdown > 0) return false;
         
         mHealth -= damage;
         mInvincibleCountdown = InvincibleTime;
@@ -84,6 +85,8 @@ public class Enemy : MonoBehaviour
         {
             mAnimator.SetTrigger("GetHit");
         }
+
+        return true;
     }
 
     public void HitPlayer(int damage)

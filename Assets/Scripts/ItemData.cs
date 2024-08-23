@@ -10,4 +10,7 @@ public class ItemData : ScriptableObject
     public Sprite Icon;
     public GameObject Prefab;
     public bool CanDrop;
+    public bool Degrades;
+    [Range(1, 100)]
+    public int Durability; // If Degrades
 }
