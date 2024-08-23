@@ -17,7 +17,6 @@ public class Enemy : MonoBehaviour
     }
 
 
-    public GameObject Player;
     public float InvincibleTime;
     public float VisionConeRadius;
     [Range(0,360)]
@@ -40,6 +39,7 @@ public class Enemy : MonoBehaviour
     private NavMeshAgent mNavMeshAgent;
     private Rigidbody mRigidbody;
     private State mState;
+    private Player mPlayer;
     private int mHealth;
     private float mInvincibleCountdown = 0;
     private int mCurrentPatrolPoint = 0;
@@ -71,7 +71,7 @@ public class Enemy : MonoBehaviour
         
         mHealth -= damage;
         mInvincibleCountdown = InvincibleTime;
-        FacePosition(Player.transform.position);
+        FacePosition(mPlayer.transform.position);
 
         if (damage > 0) Debug.Log("Enemy hit! Health: " + mHealth);
         else Debug.Log("Enemy hit shield");
@@ -96,7 +96,7 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        Player.GetComponent<Player>().GetHit(damage);
+        mPlayer.GetHit(damage);
     }
 
 
@@ -104,8 +104,9 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         mAnimator = GetComponent<Animator>();
-        mNavMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        mNavMeshAgent = GetComponent<NavMeshAgent>();
         mRigidbody = GetComponent<Rigidbody>();
+        mPlayer = Player.Instance;
 
 
         if (MaxHealth <= 0)
@@ -119,7 +120,7 @@ public class Enemy : MonoBehaviour
         }
 
         // We don't want the player pushing the enemy around
-        Physics.IgnoreCollision(GetComponent<Collider>(), Player.GetComponent<Collider>());
+        Physics.IgnoreCollision(GetComponent<Collider>(), mPlayer.GetComponent<Collider>());
 
         // Disabling auto-braking allows for continuous movement
         // between points (ie, the agent doesn't slow down as it
@@ -140,14 +141,14 @@ public class Enemy : MonoBehaviour
         mIsAttacking = IsAnimationAttack();
         
         mAwareOfPlayer = SeesPlayer() || HearsPlayer();
-        if (mAwareOfPlayer) mPlayerKnownPosition = Player.transform.position;
+        if (mAwareOfPlayer) mPlayerKnownPosition = mPlayer.transform.position;
 
 
         /*
             OnTriggerExit() isn't called when the player's shield is disabled,
             so we have to check for this manually.
         */
-        if (mIsTouchingPlayerShield && !Player.GetComponent<Player>().IsHoldingDefend())
+        if (mIsTouchingPlayerShield && !mPlayer.IsHoldingDefend())
             mIsTouchingPlayerShield = false;
 
 
@@ -206,7 +207,7 @@ public class Enemy : MonoBehaviour
 
     public void HitShield()
     {
-        Player.GetComponent<Player>().HitShield();
+        mPlayer.HitShield();
         GetHit(0); // TODO use another animation for getting parried, and replace the "!IsGettingHit()" check in OnTriggerStay
     }
 
@@ -305,10 +306,10 @@ public class Enemy : MonoBehaviour
 
     private bool SeesPlayer()
     {
-        if (Player.GetComponent<Player>().IsDead()) return false;
+        if (mPlayer.IsDead()) return false;
 
 
-        Vector3 direction = Player.transform.position - transform.position;
+        Vector3 direction = mPlayer.transform.position - transform.position;
         
 
         float distance = direction.magnitude;
@@ -318,7 +319,7 @@ public class Enemy : MonoBehaviour
         if (angle > VisionConeAngle) return false;
 
 
-        if (!Player.GetComponent<Player>().Raycast(gameObject)) return false;
+        if (!mPlayer.Raycast(gameObject)) return false;
 
 
         return true;
@@ -328,7 +329,7 @@ public class Enemy : MonoBehaviour
     private bool HearsPlayer()
     {
         bool hearingConfirmed = false;
-        bool hearsSomething = Player.GetComponent<Player>().CanHearPlayer(transform.position);
+        bool hearsSomething = mPlayer.CanHearPlayer(transform.position);
 
         if (!hearsSomething) mEnemyHearPlayerCountdown = -1;
         else if (!mHeardPlayerLastFrame) mEnemyHearPlayerCountdown = EnemyHearPlayerDuration; // Starts counting
@@ -381,7 +382,7 @@ public class Enemy : MonoBehaviour
 
     private void AIRoutineAlert()
     {
-        if (Player.GetComponent<Player>().IsDead())
+        if (mPlayer.IsDead())
         {
             AIStartPatrol();
             return;
@@ -391,7 +392,7 @@ public class Enemy : MonoBehaviour
         {
             FacePosition(mPlayerKnownPosition);
 
-            if (Vector3.Distance(Player.transform.position, transform.position) < ConfirmedSightDistance)
+            if (Vector3.Distance(mPlayer.transform.position, transform.position) < ConfirmedSightDistance)
             {
                 // Saw player clearly
                 AIStartChase();
@@ -436,7 +437,7 @@ public class Enemy : MonoBehaviour
 
     private void AIRoutineSearch()
     {
-        if (Player.GetComponent<Player>().IsDead())
+        if (mPlayer.IsDead())
         {
             AIStartPatrol();
             return;
@@ -446,7 +447,7 @@ public class Enemy : MonoBehaviour
 
         if (mAwareOfPlayer)
         {
-            if (Vector3.Distance(Player.transform.position, transform.position) < ConfirmedSightDistance)
+            if (Vector3.Distance(mPlayer.transform.position, transform.position) < ConfirmedSightDistance)
             {
                 // Found player
                 AIStartChase();
@@ -482,7 +483,7 @@ public class Enemy : MonoBehaviour
 
     private void AIRoutineChase()
     {
-        if (Player.GetComponent<Player>().IsDead())
+        if (mPlayer.IsDead())
         {
             AIStartPatrol();
             return;
@@ -490,7 +491,7 @@ public class Enemy : MonoBehaviour
 
         if (!mIsAttacking)
         {
-            float distanceToPlayer = (Player.transform.position - transform.position).magnitude;
+            float distanceToPlayer = (mPlayer.transform.position - transform.position).magnitude;
             if (distanceToPlayer < AttackRange)
             {
                 // Attack player
@@ -500,7 +501,7 @@ public class Enemy : MonoBehaviour
             else
             {
                 // Chase player
-                MoveTowards(Player.transform.position, RunSpeed);
+                MoveTowards(mPlayer.transform.position, RunSpeed);
             }
         }
 
