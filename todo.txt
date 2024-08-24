@@ -1,9 +1,12 @@
+- só é definida o max corretamente da barra de durabilidade ao abrir e fechar o inventario
+
+- garantir que espadas estão degradando corretamente
+
 - durabilidade da arma
-	- medidor de desgaste
 	- quebrar
 		- ícone (hud? inventário?)
 		- comportamento
-			- desequipar a arma? ou mover sem colidir com inimigo?		<<<<<
+			- desequipar a arma? ou mover sem colidir com inimigo?
 			- galho: desaparecer do inventário
 	- resetar estado ao renascer
 

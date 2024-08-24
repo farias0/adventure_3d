@@ -35,3 +35,18 @@
     height: 100%;
     border-radius: 5px;
 }
+
+.wdurability-bar-container {
+    align-self: flex-start;
+    justify-content: flex-end;
+    width: 20%;
+    height: 1.5%;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    margin-top: auto;
+}
+
+.wdurability-bar-fill {
+    height: 100%;
+    border-radius: 5px;
+}

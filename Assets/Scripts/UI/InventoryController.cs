@@ -150,9 +150,15 @@ public class InventoryController : MonoBehaviour
     {
         // TODO make InventorySlots a dictionary
         InventorySlot itemSlot = InventorySlots.FirstOrDefault(slot => slot.ItemGuid == itemGuid);
+        
         if (itemSlot == null) return false;
 
         MoveItemToSlot(itemSlot, InventorySlots[0]);
+        
+        float durability = GameController.GetItemByGuid(itemGuid).Durability;
+        HUDController.Instance.PlayerSetMaxWeaponDurability(durability);
+        HUDController.Instance.PlayerSetWeaponDurability(durability);
+
         return true;
     }
 
