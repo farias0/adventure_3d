@@ -156,9 +156,7 @@ public class InventoryController : MonoBehaviour
         
         if (itemSlot == null) return false;
 
-        MoveItemToSlot(itemSlot, InventorySlots[0]);
-        
-        return true;
+        return MoveItemToSlot(itemSlot, InventorySlots[0]);
     }
 
     /// <summary>
@@ -171,8 +169,7 @@ public class InventoryController : MonoBehaviour
         InventorySlot itemSlot = InventorySlots.FirstOrDefault(slot => slot.ItemGuid == itemGuid);
         if (itemSlot == null) return false;
 
-        MoveItemToSlot(itemSlot, InventorySlots[1]);
-        return true;
+        return MoveItemToSlot(itemSlot, InventorySlots[1]);
     }
 
     public void UpdateDateTime(GameTime time)
@@ -189,7 +186,8 @@ public class InventoryController : MonoBehaviour
             mWeaponSlot.DisplayBrokenOverlay(true);
             InventorySlot? toSlot = GetEmptySlot();
             if (toSlot == null) Debug.LogError("No empty slot to move the weapon to"); // TODO separate equipment from inventory slots
-            else MoveItemToSlot(mWeaponSlot, toSlot);
+            else if (!MoveItemToSlot(mWeaponSlot, toSlot))
+                Debug.LogError("Couldn't move broken weapon to an empty slot");
         }
     }
 
@@ -405,9 +403,11 @@ public class InventoryController : MonoBehaviour
 
     private void FinishMovingItem(InventorySlot toSlot)
     {
-        MoveItemToSlot(mOriginalSlot, toSlot);
-        mOriginalSlot = null;
-        DisableGhostIcon();
+        if (MoveItemToSlot(mOriginalSlot, toSlot))
+        {
+            mOriginalSlot = null;
+            DisableGhostIcon();
+        }
     }
 
     private void AssignItem(InventorySlot slot, ItemData item)
@@ -434,10 +434,19 @@ public class InventoryController : MonoBehaviour
         slot.DropItem();
     }
 
-    private void MoveItemToSlot(InventorySlot from, InventorySlot to)
+    /// <returns>If was able to move</returns>
+    private bool MoveItemToSlot(InventorySlot from, InventorySlot to)
     {
         string movedItemGuid = from.ItemGuid;
         string presentItemGuid = to.ItemGuid;
+
+        ItemData movedItem = GameController.GetItemByGuid(movedItemGuid);
+        ItemData presentItem = GameController.GetItemByGuid(presentItemGuid);
+
+
+        if (from == mWeaponSlot && presentItem && presentItem.GetDurability() <= 0) return false;
+        if (to == mWeaponSlot && movedItem.GetDurability() <= 0) return false;
+
 
         if (string.IsNullOrEmpty(presentItemGuid)) UnassignItem(from);
         else AssignItem(from, GameController.GetItemByGuid(presentItemGuid));
@@ -445,10 +454,6 @@ public class InventoryController : MonoBehaviour
         AssignItem(to, GameController.GetItemByGuid(movedItemGuid));
 
         SetSelectedSlot(InventorySlots.IndexOf(to));
-
-
-        ItemData movedItem = GameController.GetItemByGuid(movedItemGuid);
-        ItemData presentItem = GameController.GetItemByGuid(presentItemGuid);
 
 
         if (from == mWeaponSlot)
@@ -464,6 +469,8 @@ public class InventoryController : MonoBehaviour
 
         to.DisplayBrokenOverlay(movedItem.GetDurability() <= 0);
         from.DisplayBrokenOverlay(presentItem && presentItem.GetDurability() <= 0);
+
+        return true;
     }
 
     private InventorySlot? GetEmptySlot()

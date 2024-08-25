@@ -1,5 +1,8 @@
+- Fechar inventário limpa movimentos em progresso
+
+- Usar GetEmptySlot() no InventoryController para fazer população inicial do inventário
+
 - durabilidade da arma
-	- impedir de equipar arma qubrada
 	- resetar estado ao renascer
 
 - itens não-únicos -- implementar com galhos
