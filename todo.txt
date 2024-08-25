@@ -1,7 +1,8 @@
+- abrir e fechar inventário incorretamente enche o medidor de vida do HUD
+
+
 - itens não-únicos -- implementar com galhos
-	- criar sistema de instâncias de itens
 	- pegar itens do mundo pro inventário
-	- galho quebrado desaparece do inventário
 
 
 - efeitos sonoros

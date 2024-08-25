@@ -21,11 +21,7 @@ public class GameController : MonoBehaviour
     private static readonly List<OnWorldResetDelegate> OnWorldResetList = new();
     private static readonly Dictionary<string, ItemEntity> mItemDatabase = new();
 
-    /// <summary>
-    /// Retrieve item details based on the GUID
-    /// </summary>
-    /// <param name="guid">ID to look up</param>
-    /// <returns>Item details</returns>
+
     public static ItemEntity GetItemByGuid(string guid)
     {
         if (mItemDatabase.ContainsKey(guid))
@@ -34,6 +30,12 @@ public class GameController : MonoBehaviour
         }
 
         return null;
+    }
+
+    /// <returns>If could find and destroy item</returns>
+    public static bool DestroyItemByGuid(string guid)
+    {
+        return mItemDatabase.Remove(guid);
     }
 
     public static void AddWorldResetListener(OnWorldResetDelegate listener)

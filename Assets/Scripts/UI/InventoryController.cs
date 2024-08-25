@@ -193,11 +193,27 @@ public class InventoryController : MonoBehaviour
         HUDController.Instance.PlayerSetWeaponDurability(durability);
         
         if (durability <= 0) {
-            mWeaponSlot!.DisplayBrokenOverlay(true);
-            InventorySlot? toSlot = GetEmptySlot();
-            if (toSlot == null) Debug.LogError("No empty slot to move the weapon to"); // TODO separate equipment from inventory slots
-            else if (!MoveItemToSlot(mWeaponSlot, toSlot))
-                Debug.LogError("Couldn't move broken weapon to an empty slot");
+
+            ItemEntity weapon = GetEquippedWeapon();
+
+            if (weapon.Type.IsUnique)
+            {
+                mWeaponSlot!.DisplayBrokenOverlay(true);
+
+                InventorySlot? toSlot = GetEmptySlot();
+
+                if (toSlot == null)
+                    Debug.LogError("No empty slot to move the weapon to"); // TODO separate equipment from inventory slots
+                else
+                    if (!MoveItemToSlot(mWeaponSlot, toSlot))
+                        Debug.LogError("Couldn't move broken weapon to an empty slot");
+            }
+            else
+            {
+                UnassignItem(mWeaponSlot!);
+                GameController.DestroyItemByGuid(weapon.GUID);
+            }
+
         }
     }
 
@@ -447,8 +463,15 @@ public class InventoryController : MonoBehaviour
         }
     }
 
-    private void AssignItem(InventorySlot slot, ItemEntity item)
+    private void AssignItem(InventorySlot slot, ItemEntity? item)
     {
+        if (item == null)
+        {
+            UnassignItem(slot);
+            return;
+        }
+
+
         int index = InventorySlots.IndexOf(slot);
 
         if (index == 0)
@@ -484,10 +507,8 @@ public class InventoryController : MonoBehaviour
         if (to == mWeaponSlot && movedItem.Durability <= 0) return false;
 
 
-        if (string.IsNullOrEmpty(presentItemGuid)) UnassignItem(from);
-        else AssignItem(from, GameController.GetItemByGuid(presentItemGuid));
-
-        AssignItem(to, GameController.GetItemByGuid(movedItemGuid));
+        AssignItem(to, movedItem);
+        AssignItem(from, presentItem!);
 
         SetSelectedSlot(InventorySlots.IndexOf(to));
 
@@ -505,6 +526,7 @@ public class InventoryController : MonoBehaviour
 
         to.DisplayBrokenOverlay(movedItem.Durability <= 0);
         from.DisplayBrokenOverlay((presentItem?.Durability ?? 1) <= 0);
+
 
         return true;
     }
