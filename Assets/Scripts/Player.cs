@@ -179,11 +179,11 @@ public class Player : MonoBehaviour
         HUDController.Instance.PlayerSetMaxHealth(MaxHealth);
         HUDController.Instance.PlayerSetMaxStamina(MaxStamina);
 
-        if (!InventoryController.Instance.EquipWeapon(StartingWeapon.GUID))
+        if (!InventoryController.Instance.EquipWeaponOfType(StartingWeapon))
         {
             Debug.LogError("Failed to equip weapon on player start.");
         }
-        if (!InventoryController.Instance.EquipShield(StartingShield.GUID))
+        if (!InventoryController.Instance.EquipShieldOfType(StartingShield))
         {
             Debug.LogError("Failed to equip shield on player start.");
         }

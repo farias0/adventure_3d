@@ -145,31 +145,41 @@ public class InventoryController : MonoBehaviour
     }
 
     /// <summary>
-    /// Tries to equip a weapon from the inventory
+    /// Tries to equip a weapon of the specified type from the inventory
     /// </summary>
     /// <param name="itemGuid"></param>
     /// <returns>If it was able to equip it</returns>
-    public bool EquipWeapon(string itemGuid)
+    public bool EquipWeaponOfType(ItemType type)
     {
-        // TODO make InventorySlots a dictionary
-        InventorySlot itemSlot = InventorySlots.FirstOrDefault(slot => slot.ItemGuid == itemGuid);
-        
-        if (itemSlot == null) return false;
+        foreach (InventorySlot slot in InventorySlots)
+        {
+            ItemEntity item = GameController.GetItemByGuid(slot.ItemGuid);
+            if (item?.Type == type)
+            {
+                return MoveItemToSlot(slot, InventorySlots[0]);
+            }
+        }
 
-        return MoveItemToSlot(itemSlot, InventorySlots[0]);
+        return false;
     }
 
     /// <summary>
-    /// Tries to equip a shield from the inventory
+    /// Tries to equip a shield of the specified type from the inventory
     /// </summary>
     /// <param name="itemGuid"></param>
     /// <returns>If it was able to equip it</returns>
-    public bool EquipShield(string itemGuid)
+    public bool EquipShieldOfType(ItemType type)
     {
-        InventorySlot itemSlot = InventorySlots.FirstOrDefault(slot => slot.ItemGuid == itemGuid);
-        if (itemSlot == null) return false;
+        foreach (InventorySlot slot in InventorySlots)
+        {
+            ItemEntity item = GameController.GetItemByGuid(slot.ItemGuid);
+            if (item?.Type == type)
+            {
+                return MoveItemToSlot(slot, InventorySlots[1]);
+            }
+        }
 
-        return MoveItemToSlot(itemSlot, InventorySlots[1]);
+        return false;
     }
 
     public void UpdateDateTime(GameTime time)

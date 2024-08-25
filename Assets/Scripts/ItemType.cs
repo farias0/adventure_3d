@@ -15,8 +15,13 @@ public class ItemType : ScriptableObject
     [Range(1, 100)]
     public int MaxDurability; // If Degrades
 
-    private bool mIsInstantiated = false;
+    private bool mIsInstantiated;
 
+
+    public void OnEnable()
+    {
+        mIsInstantiated = false;
+    }
 
     public ItemEntity CreateEntity()
     {

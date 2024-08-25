@@ -1,4 +1,3 @@
-- consertar falha em equipar itens ao iniciar o jogo
 - resolver warnings
 
 
