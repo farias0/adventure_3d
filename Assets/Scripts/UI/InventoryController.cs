@@ -395,23 +395,30 @@ public class InventoryController : MonoBehaviour
         }
 
 
-        //Check to see if they are dropping the ghost icon over any inventory slots.
-        IEnumerable<InventorySlot> slots = InventorySlots.Where(x => x.worldBound.Overlaps(mGhostIcon.worldBound));
+        bool successful = false;
 
-        //Found at least one
-        if (slots.Count() != 0)
+
+        IEnumerable<InventorySlot> slotsOverlap = InventorySlots.Where(
+                                            x => x.worldBound.Overlaps(mGhostIcon.worldBound));
+
+        if (slotsOverlap.Count() > 0)
         {
-            InventorySlot closestSlot = slots.OrderBy(x =>
-                            Vector2.Distance(x.worldBound.position, mGhostIcon.worldBound.position))
-                        .First();
-            
-            MoveItemToSlot(mOriginalSlot, closestSlot);
+            InventorySlot closestSlot = slotsOverlap.OrderBy(x =>
+                                        Vector2.Distance(x.worldBound.position, mGhostIcon.worldBound.position))
+                                    .First();
+
+            successful = MoveItemToSlot(mOriginalSlot, closestSlot);
         }
-        //Didn't find any (dragged off the window)
-        else
+
+
+        if (!successful)
         {
-            mOriginalSlot.Icon.image = GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Type.Icon.texture;
+            if (!MoveItemToSlot(mOriginalSlot, mOriginalSlot))
+            {
+                Debug.LogError("Couldn't move item back to its original slot");
+            }
         }
+
 
         //Clear dragging related visuals and data
         mIsDragging = false;
