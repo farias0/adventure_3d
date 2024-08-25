@@ -1,13 +1,14 @@
 - durabilidade da arma
-	- quebrar
-		- ícone (hud? inventário?)
-		- comportamento
-			- desequipar a arma? ou mover sem colidir com inimigo?
-			- galho: desaparecer do inventário
+	- indicação de arma quebrada no inventário
+	- desequipar arma quebrada
+	- impedir de equipar arma qubrada
 	- resetar estado ao renascer
 
-- encontrar galhos pelo mundo
+- itens não-únicos -- implementar com galhos
+	- criar sistema de instâncias de itens
 	- pegar itens do mundo pro inventário
+	- galho quebrado desaparece do inventário
+
 
 - efeitos sonoros
 	- ataque do inimigo

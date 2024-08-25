@@ -6,6 +6,14 @@ using UnityEngine.UIElements;
 
 public class InventorySlot : VisualElement
 {
+    private class BrokenOverlay : VisualElement
+    {
+        public BrokenOverlay()
+        {
+            AddToClassList("slotContainerBrokenOverlay");
+        }
+    }
+
     
     public Image Icon;
     public string ItemGuid = "";
@@ -32,6 +40,10 @@ public class InventorySlot : VisualElement
         //Add USS style properties to the elements
         AddToClassList("slotContainer");
         Icon.AddToClassList("slotIcon");
+
+        // TODO create interface to enable and disable it
+        BrokenOverlay brokenOverlay = new();
+        Add(brokenOverlay);
 
         RegisterCallback<PointerDownEvent>(OnPointerDown);
     }

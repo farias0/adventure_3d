@@ -60,6 +60,18 @@
     border-bottom-left-radius: 3px;
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
+    position: relative;
+}
+
+.slotContainerBrokenOverlay {
+    position: absolute;
+    left: 60%;
+    top: 60%;
+    width: 30%;
+    height: 30%;
+    background-image: url("project://database/Assets/UI/Icons/ItemSlotBroken.png?fileID=2800000&guid=dc6e2ab3c5d264e4bb4c6ddc8506de6c&type=3#ItemSlotBroken");
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.28);
+    background-size: cover;
 }
 
 .slotIcon {
