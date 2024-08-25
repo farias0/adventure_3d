@@ -13,4 +13,11 @@ public class ItemData : ScriptableObject
     public bool Degrades;
     [Range(1, 100)]
     public int Durability; // If Degrades
+
+    public ItemData Copy()
+    {
+        ItemData copy = CreateInstance<ItemData>();
+        JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(this), copy);
+        return copy;
+    }
 }

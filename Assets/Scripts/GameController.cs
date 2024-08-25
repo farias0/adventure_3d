@@ -53,7 +53,7 @@ public class GameController : MonoBehaviour
     {
         foreach (ItemData item in Items)
         {
-            mItemDatabase.Add(item.GUID, item);
+            mItemDatabase.Add(item.GUID, item.Copy());
         }
     }
 
