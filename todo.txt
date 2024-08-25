@@ -1,6 +1,3 @@
-- resolver warnings
-
-
 - itens não-únicos -- implementar com galhos
 	- criar sistema de instâncias de itens
 	- pegar itens do mundo pro inventário

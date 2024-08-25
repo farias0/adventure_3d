@@ -87,28 +87,28 @@ class SelectedSlotManager
 
 public class InventoryController : MonoBehaviour
 {
-    public List<Sprite> SelectedSlotAnimFrames;
+    public List<Sprite> SelectedSlotAnimFrames = new();
 
 
     /// <summary>
     /// There should only be a single instance per scene
     /// </summary>
-    public static InventoryController Instance { get; private set; }
+    public static InventoryController? Instance { get; private set; }
 
     public static event OnPlayerEquippedItemChangedDelegate OnPlayerWeaponChanged = delegate { };
     public static event OnPlayerEquippedItemChangedDelegate OnPlayerShieldChanged = delegate { };
 
 
-    private VisualElement mRoot;
-    private VisualElement mEquipmentSlotContainer;
-    private VisualElement mInventorySlotContainer;
+    private VisualElement? mRoot;
+    private VisualElement? mEquipmentSlotContainer;
+    private VisualElement? mInventorySlotContainer;
     private readonly List<InventorySlot> InventorySlots = new();
     private StyleBackground mSlotDefaultBG;
-    private VisualElement mGhostIcon;
-    private SelectedSlotManager mSelectedSlotManager;
-    private AnimationSelectedItemSlot mSelectedSlotAnimation;
-    private InventorySlot mWeaponSlot;
-    private InventorySlot mShieldSlot;
+    private VisualElement? mGhostIcon;
+    private SelectedSlotManager? mSelectedSlotManager;
+    private AnimationSelectedItemSlot? mSelectedSlotAnimation;
+    private InventorySlot? mWeaponSlot;
+    private InventorySlot? mShieldSlot;
     private bool mIsInventoryOpen;
     private bool mIsDragging;
     private InventorySlot? mOriginalSlot; // Used when moving an item between slots
@@ -193,7 +193,7 @@ public class InventoryController : MonoBehaviour
         HUDController.Instance.PlayerSetWeaponDurability(durability);
         
         if (durability <= 0) {
-            mWeaponSlot.DisplayBrokenOverlay(true);
+            mWeaponSlot!.DisplayBrokenOverlay(true);
             InventorySlot? toSlot = GetEmptySlot();
             if (toSlot == null) Debug.LogError("No empty slot to move the weapon to"); // TODO separate equipment from inventory slots
             else if (!MoveItemToSlot(mWeaponSlot, toSlot))
@@ -218,7 +218,7 @@ public class InventoryController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mSelectedSlotManager = new SelectedSlotManager(mEquipmentSlotContainer.childCount + mInventorySlotContainer.childCount);
+        mSelectedSlotManager = new SelectedSlotManager(mEquipmentSlotContainer!.childCount + mInventorySlotContainer!.childCount);
         mSelectedSlotAnimation = new AnimationSelectedItemSlot(SelectedSlotAnimFrames);
         mSlotDefaultBG = mInventorySlotContainer[0].style.backgroundImage;
     }
@@ -230,8 +230,8 @@ public class InventoryController : MonoBehaviour
 
         if (!mIsInventoryOpen) return;
 
-        int selectedSlotIndex = mSelectedSlotManager.GetSelectedSlotIndex();
-        GetSlotElementByIndex(selectedSlotIndex).style.backgroundImage = mSelectedSlotAnimation.TickAnimation().texture;
+        int selectedSlotIndex = mSelectedSlotManager!.GetSelectedSlotIndex();
+        GetSlotElementByIndex(selectedSlotIndex).style.backgroundImage = mSelectedSlotAnimation!.TickAnimation().texture;
     }
 
     private void Awake()
@@ -293,7 +293,7 @@ public class InventoryController : MonoBehaviour
     {
         // Toggle visibility of the inventory
         mIsInventoryOpen = !mIsInventoryOpen;
-        mRoot.style.display = mIsInventoryOpen ? DisplayStyle.Flex : DisplayStyle.None;
+        mRoot!.style.display = mIsInventoryOpen ? DisplayStyle.Flex : DisplayStyle.None;
 
         if (mIsInventoryOpen)
         {
@@ -317,13 +317,13 @@ public class InventoryController : MonoBehaviour
 
     private VisualElement GetSlotElementByIndex(int index)
     {
-        if (index < EquipmentSlotsCount) return mEquipmentSlotContainer[index];
-        else return mInventorySlotContainer[index - EquipmentSlotsCount];
+        if (index < EquipmentSlotsCount) return mEquipmentSlotContainer![index];
+        else return mInventorySlotContainer![index - EquipmentSlotsCount];
     }
 
     private void SetSelectedSlot(int index)
     {
-        StopAnimatingSlot(mSelectedSlotManager.GetSelectedSlotIndex());
+        StopAnimatingSlot(mSelectedSlotManager!.GetSelectedSlotIndex());
         mSelectedSlotManager.SetSelectedSlot(index);
     }
 
@@ -359,7 +359,7 @@ public class InventoryController : MonoBehaviour
         // Disables hold to keep moving cursor
         if (cursorDirection != null && cursorDirection != mLastCursorDirection)
         {
-            StopAnimatingSlot(mSelectedSlotManager.GetSelectedSlotIndex());
+            StopAnimatingSlot(mSelectedSlotManager!.GetSelectedSlotIndex());
             mSelectedSlotManager.MoveCursor(cursorDirection.Value);
             
             if (mOriginalSlot != null)
@@ -371,7 +371,7 @@ public class InventoryController : MonoBehaviour
 
         if (Input.GetButtonDown("Submit"))
         {
-            InventorySlot selectedSlot = InventorySlots[mSelectedSlotManager.GetSelectedSlotIndex()];
+            InventorySlot selectedSlot = InventorySlots[mSelectedSlotManager!.GetSelectedSlotIndex()];
             if (mOriginalSlot == null) StartMovingItem(selectedSlot);
             else FinishMovingItem(selectedSlot);
         }
@@ -388,32 +388,26 @@ public class InventoryController : MonoBehaviour
     {
         if (!mIsDragging) return;
 
-        if (mOriginalSlot == null)
-        {
-            Debug.LogError("OnPointerUp with mOriginalSlot == null");
-            return;
-        }
-
 
         bool successful = false;
 
 
         IEnumerable<InventorySlot> slotsOverlap = InventorySlots.Where(
-                                            x => x.worldBound.Overlaps(mGhostIcon.worldBound));
+                                            x => x.worldBound.Overlaps(mGhostIcon!.worldBound));
 
         if (slotsOverlap.Count() > 0)
         {
             InventorySlot closestSlot = slotsOverlap.OrderBy(x =>
-                                        Vector2.Distance(x.worldBound.position, mGhostIcon.worldBound.position))
+                                        Vector2.Distance(x.worldBound.position, mGhostIcon!.worldBound.position))
                                     .First();
 
-            successful = MoveItemToSlot(mOriginalSlot, closestSlot);
+            successful = MoveItemToSlot(mOriginalSlot!, closestSlot);
         }
 
 
         if (!successful)
         {
-            if (!MoveItemToSlot(mOriginalSlot, mOriginalSlot))
+            if (!MoveItemToSlot(mOriginalSlot!, mOriginalSlot!))
             {
                 Debug.LogError("Couldn't move item back to its original slot");
             }
@@ -423,7 +417,7 @@ public class InventoryController : MonoBehaviour
         //Clear dragging related visuals and data
         mIsDragging = false;
         mOriginalSlot = null;
-        mGhostIcon.style.visibility = Visibility.Hidden;
+        mGhostIcon!.style.visibility = Visibility.Hidden;
 
     }
 
@@ -522,25 +516,25 @@ public class InventoryController : MonoBehaviour
 
     private void EnableGhostIcon(Sprite icon)
     {
-        mGhostIcon.style.backgroundImage = icon.texture;
-        mGhostIcon.style.visibility = Visibility.Visible;
+        mGhostIcon!.style.backgroundImage = icon.texture;
+        mGhostIcon!.style.visibility = Visibility.Visible;
     }
     
     private void DisableGhostIcon()
     {
-        mGhostIcon.style.visibility = Visibility.Hidden;
+        mGhostIcon!.style.visibility = Visibility.Hidden;
     }
 
     private void SyncGhostIconWithPosition(Vector2 position)
     {
-        mGhostIcon.style.top = position.y - mGhostIcon.layout.height / 2;
-        mGhostIcon.style.left = position.x - mGhostIcon.layout.width / 2;
+        mGhostIcon!.style.top = position.y - mGhostIcon!.layout.height / 2;
+        mGhostIcon!.style.left = position.x - mGhostIcon!.layout.width / 2;
     }
 
     private void SyncGhostIconWithSelectedSlot()
     {
         SyncGhostIconWithPosition(
-            GetSlotElementByIndex(mSelectedSlotManager.GetSelectedSlotIndex()).worldBound.position);
+            GetSlotElementByIndex(mSelectedSlotManager!.GetSelectedSlotIndex()).worldBound.position);
     }
 
     private void FadeIn(VisualElement element, int duration)
@@ -556,6 +550,6 @@ public class InventoryController : MonoBehaviour
     private void StopAnimatingSlot(int index)
     {
         GetSlotElementByIndex(index).style.backgroundImage = mSlotDefaultBG;
-        mSelectedSlotAnimation.ResetAnimation();
+        mSelectedSlotAnimation!.ResetAnimation();
     }
 }
