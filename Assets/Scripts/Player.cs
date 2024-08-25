@@ -19,8 +19,8 @@ enum AnimationMoveState
 public class Player : MonoBehaviour
 {
     public Checkpoint CurrentCheckpoint;
-    public ItemData StartingWeapon;
-    public ItemData StartingShield;
+    public ItemType StartingWeapon;
+    public ItemType StartingShield;
     public float SpeedStanding;
     public float SpeedCrouched;
     public float IdleToWalkThreshold;
@@ -276,8 +276,8 @@ public class Player : MonoBehaviour
         if (change == InventoryChangeType.Pickup)
         {
 
-            ItemData newWeapon = GameController.GetItemByGuid(itemGuid);
-            Instantiate(newWeapon.Prefab, container);
+            ItemEntity newWeapon = GameController.GetItemByGuid(itemGuid);
+            Instantiate(newWeapon.Type.Prefab, container);
         }
     }
 
@@ -299,8 +299,8 @@ public class Player : MonoBehaviour
 
         if (change == InventoryChangeType.Pickup)
         {
-            ItemData newShield = GameController.GetItemByGuid(itemGuid);
-            Instantiate(newShield.Prefab, container);
+            ItemEntity newShield = GameController.GetItemByGuid(itemGuid);
+            Instantiate(newShield.Type.Prefab, container);
         }
     }
 
@@ -440,8 +440,8 @@ public class Player : MonoBehaviour
 
         if (mIsHoldingDefend && !isInParryWindow) return;
         if (mStamina < AttackStaminaCost && !isInParryWindow) return;
-        if (GetEquippedWeaponDetails() &&
-            GetEquippedWeaponDetails().GetDurability() <= 0) return;
+        if (EquippedWeapon() != null &&
+            EquippedWeapon().Durability <= 0) return;
 
         mAnimator.SetTrigger("Attack1");
 
@@ -457,8 +457,8 @@ public class Player : MonoBehaviour
 
         if (mIsHoldingDefend && !isInParryWindow) return;
         if (mStamina < AttackStaminaCost && !isInParryWindow) return;
-        if (GetEquippedWeaponDetails() &&
-            GetEquippedWeaponDetails().GetDurability() <= 0) return;
+        if (EquippedWeapon() != null &&
+            EquippedWeapon().Durability <= 0) return;
 
         mAnimator.SetTrigger("Attack2");
 
@@ -495,12 +495,12 @@ public class Player : MonoBehaviour
         rend.enabled = visible;
     }
 
-    private ItemData GetEquippedWeaponDetails()
+    private ItemEntity EquippedWeapon()
     {
         return InventoryController.Instance.GetEquippedWeapon();
     }
 
-    private ItemData GetEquippedShieldDetails()
+    private ItemEntity EquippedShield()
     {
         return InventoryController.Instance.GetEquippedShield();
     }

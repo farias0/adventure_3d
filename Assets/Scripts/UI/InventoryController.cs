@@ -111,7 +111,7 @@ public class InventoryController : MonoBehaviour
     private InventorySlot mShieldSlot;
     private bool mIsInventoryOpen;
     private bool mIsDragging;
-    private InventorySlot mOriginalSlot; // Used when moving an item between slots
+    private InventorySlot? mOriginalSlot; // Used when moving an item between slots
     private SelectedSlotManager.CursorDirection? mLastCursorDirection = null; // The last directional input from the player
     private const float GamepadDeadzone = 0.25f; 
     private const int EquipmentSlotsCount = 2;
@@ -122,7 +122,7 @@ public class InventoryController : MonoBehaviour
         mIsDragging = true;
         mOriginalSlot = fromSlot;
 
-        EnableGhostIcon(GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Icon);
+        EnableGhostIcon(GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Type.Icon);
         SyncGhostIconWithPosition(cursorPosition);
         mOriginalSlot.DisplayBrokenOverlay(false);
 
@@ -134,12 +134,12 @@ public class InventoryController : MonoBehaviour
         return mIsInventoryOpen;
     }
 
-    public ItemData GetEquippedWeapon()
+    public ItemEntity GetEquippedWeapon()
     {
         return GameController.GetItemByGuid(InventorySlots[0].ItemGuid);
     }
 
-    public ItemData GetEquippedShield()
+    public ItemEntity GetEquippedShield()
     {
         return GameController.GetItemByGuid(InventorySlots[1].ItemGuid);
     }
@@ -179,7 +179,7 @@ public class InventoryController : MonoBehaviour
 
     public void RefreshEquippedWeaponDurability()
     {
-        int durability = GetEquippedWeapon().GetDurability();
+        int durability = GetEquippedWeapon().Durability;
         HUDController.Instance.PlayerSetWeaponDurability(durability);
         
         if (durability <= 0) {
@@ -196,10 +196,10 @@ public class InventoryController : MonoBehaviour
         foreach (InventorySlot slot in InventorySlots)
         {
             if (slot.ItemGuid == "") continue;
-            ItemData item = GameController.GetItemByGuid(slot.ItemGuid);
-            if (item.Degrades)
+            ItemEntity item = GameController.GetItemByGuid(slot.ItemGuid);
+            if (item.Type.Degrades)
             {
-                item.SetDurability(item.MaxDurability);
+                item.ResetDurability();
                 slot.DisplayBrokenOverlay(false);
             }
         }
@@ -378,6 +378,12 @@ public class InventoryController : MonoBehaviour
     {
         if (!mIsDragging) return;
 
+        if (mOriginalSlot == null)
+        {
+            Debug.LogError("OnPointerUp with mOriginalSlot == null");
+            return;
+        }
+
 
         //Check to see if they are dropping the ghost icon over any inventory slots.
         IEnumerable<InventorySlot> slots = InventorySlots.Where(x => x.worldBound.Overlaps(mGhostIcon.worldBound));
@@ -394,7 +400,7 @@ public class InventoryController : MonoBehaviour
         //Didn't find any (dragged off the window)
         else
         {
-            mOriginalSlot.Icon.image = GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Icon.texture;
+            mOriginalSlot.Icon.image = GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Type.Icon.texture;
         }
 
         //Clear dragging related visuals and data
@@ -411,12 +417,18 @@ public class InventoryController : MonoBehaviour
         mOriginalSlot = fromSlot;
         fromSlot.Icon.image = null;
         fromSlot.DisplayBrokenOverlay(false);
-        EnableGhostIcon(GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Icon);
+        EnableGhostIcon(GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Type.Icon);
         SyncGhostIconWithSelectedSlot();
     }
 
     private void FinishMovingItem(InventorySlot toSlot)
     {
+        if (mOriginalSlot == null)
+        {
+            Debug.LogError("FinishMovingItem with mOriginalSlot == null");
+            return;
+        }
+
         if (MoveItemToSlot(mOriginalSlot, toSlot))
         {
             mOriginalSlot = null;
@@ -424,7 +436,7 @@ public class InventoryController : MonoBehaviour
         }
     }
 
-    private void AssignItem(InventorySlot slot, ItemData item)
+    private void AssignItem(InventorySlot slot, ItemEntity item)
     {
         int index = InventorySlots.IndexOf(slot);
 
@@ -454,12 +466,11 @@ public class InventoryController : MonoBehaviour
         string movedItemGuid = from.ItemGuid;
         string presentItemGuid = to.ItemGuid;
 
-        ItemData movedItem = GameController.GetItemByGuid(movedItemGuid);
-        ItemData presentItem = GameController.GetItemByGuid(presentItemGuid);
+        ItemEntity movedItem = GameController.GetItemByGuid(movedItemGuid);
+        ItemEntity presentItem = GameController.GetItemByGuid(presentItemGuid);
 
-
-        if (from == mWeaponSlot && presentItem && presentItem.GetDurability() <= 0) return false;
-        if (to == mWeaponSlot && movedItem.GetDurability() <= 0) return false;
+        if (from == mWeaponSlot && (presentItem?.Durability ?? 1) <= 0) return false;
+        if (to == mWeaponSlot && movedItem.Durability <= 0) return false;
 
 
         if (string.IsNullOrEmpty(presentItemGuid)) UnassignItem(from);
@@ -472,17 +483,17 @@ public class InventoryController : MonoBehaviour
 
         if (from == mWeaponSlot)
         {
-            HUDController.Instance.PlayerSetMaxWeaponDurability(presentItem ? presentItem.MaxDurability : 0);
-            HUDController.Instance.PlayerSetWeaponDurability(presentItem ? presentItem.GetDurability() : 0);
+            HUDController.Instance.PlayerSetMaxWeaponDurability(presentItem?.Type.MaxDurability ?? 0);
+            HUDController.Instance.PlayerSetWeaponDurability(presentItem?.Durability ?? 0);
         }
         else if (to == mWeaponSlot)
         {
-            HUDController.Instance.PlayerSetMaxWeaponDurability(movedItem.MaxDurability);
-            HUDController.Instance.PlayerSetWeaponDurability(movedItem.GetDurability());
+            HUDController.Instance.PlayerSetMaxWeaponDurability(movedItem.Type.MaxDurability);
+            HUDController.Instance.PlayerSetWeaponDurability(movedItem.Durability);
         }
 
-        to.DisplayBrokenOverlay(movedItem.GetDurability() <= 0);
-        from.DisplayBrokenOverlay(presentItem && presentItem.GetDurability() <= 0);
+        to.DisplayBrokenOverlay(movedItem.Durability <= 0);
+        from.DisplayBrokenOverlay((presentItem?.Durability ?? 1) <= 0);
 
         return true;
     }

@@ -35,11 +35,11 @@ public class SwordCollision : MonoBehaviour
         // because it doesn't have a proper mechanism to see its ItemDetail
 
 
-        ItemData weapon = InventoryController.Instance.GetEquippedWeapon();
+        ItemEntity weapon = InventoryController.Instance.GetEquippedWeapon();
 
-        if (!weapon.Degrades) return;
+        if (!weapon.Type.Degrades) return;
 
-        weapon.SetDurability(weapon.GetDurability() - 1);
+        weapon.Durability -= 1;
 
         InventoryController.Instance.RefreshEquippedWeaponDurability();
     }

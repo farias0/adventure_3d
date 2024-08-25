@@ -21,9 +21,9 @@ public class InventorySlot : VisualElement
     private readonly BrokenOverlay mBrokenOverlay = new();
 
 
-    public void HoldItem(ItemData item)
+    public void HoldItem(ItemEntity item)
     {
-        Icon.image = item.Icon.texture;
+        Icon.image = item.Type.Icon.texture;
         ItemGuid = item.GUID;
     }
 

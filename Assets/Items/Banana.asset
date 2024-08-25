@@ -9,15 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb8447acb9237114e84ba0116488f476, type: 3}
+  m_Script: {fileID: 11500000, guid: 22e2869486479b3408097350cbc8bccc, type: 3}
   m_Name: Banana
   m_EditorClassIdentifier: 
-  RuntimeVars:
-    Durability: 0
   Name: Banana
   GUID: 075abf04-9de4-4a43-838b-9bbbe5cd756a
   Icon: {fileID: 21300000, guid: 892c1b8d0fdbc594fbb655f28e189eca, type: 3}
   Prefab: {fileID: 5250486546118830772, guid: cba9f5b044bddef46973389909e429c0, type: 3}
-  CanDrop: 0
+  CanDrop: 1
+  IsUnique: 0
   Degrades: 0
   MaxDurability: 1

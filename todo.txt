@@ -1,3 +1,7 @@
+- consertar falha em equipar itens ao iniciar o jogo
+- resolver warnings
+
+
 - itens não-únicos -- implementar com galhos
 	- criar sistema de instâncias de itens
 	- pegar itens do mundo pro inventário

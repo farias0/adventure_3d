@@ -9,15 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb8447acb9237114e84ba0116488f476, type: 3}
+  m_Script: {fileID: 11500000, guid: 22e2869486479b3408097350cbc8bccc, type: 3}
   m_Name: SwordDefault
   m_EditorClassIdentifier: 
-  RuntimeVars:
-    Durability: 5
   Name: SwordDefault
   GUID: 8B0EF21A-F2D9-4E6F-8B79-031CA9E202BA
   Icon: {fileID: 21300000, guid: d4cb3742577bd454486e60e15da9234b, type: 3}
   Prefab: {fileID: 8279438534831650436, guid: 3aa8f381736855d4c95085f74f82af5e, type: 3}
   CanDrop: 0
+  IsUnique: 1
   Degrades: 1
   MaxDurability: 40

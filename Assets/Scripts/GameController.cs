@@ -5,6 +5,7 @@ using System.Linq;
 
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 
 public delegate void OnWorldResetDelegate();
@@ -14,18 +15,18 @@ public delegate void OnWorldResetDelegate();
 /// </summary>
 public class GameController : MonoBehaviour
 {
-    public List<ItemData> Items;
+    public List<ItemType> ItemTypes;
     public static event OnInventoryChangedDelegate OnInventoryChanged = delegate { };
 
     private static readonly List<OnWorldResetDelegate> OnWorldResetList = new();
-    private static readonly Dictionary<string, ItemData> mItemDatabase = new();
+    private static readonly Dictionary<string, ItemEntity> mItemDatabase = new();
 
     /// <summary>
     /// Retrieve item details based on the GUID
     /// </summary>
     /// <param name="guid">ID to look up</param>
     /// <returns>Item details</returns>
-    public static ItemData GetItemByGuid(string guid)
+    public static ItemEntity GetItemByGuid(string guid)
     {
         if (mItemDatabase.ContainsKey(guid))
         {
@@ -51,15 +52,16 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        foreach (ItemData item in Items)
+        foreach (ItemType type in ItemTypes)
         {
-            mItemDatabase.Add(item.GUID, item.Copy());
+            ItemEntity item = type.CreateEntity();
+            mItemDatabase.Add(item.GUID, item);
         }
     }
 
     private void Start()
     {
-        List<ItemData> mStartingInventory = new();
+        List<ItemEntity> mStartingInventory = new();
         mStartingInventory.AddRange(mItemDatabase.Values);
         OnInventoryChanged.Invoke(mStartingInventory.Select(x=> x.GUID).ToArray(), InventoryChangeType.Pickup);
     }

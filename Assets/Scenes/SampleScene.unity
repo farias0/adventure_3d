@@ -2656,11 +2656,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7d510ad57f1d0a43b72d106f2329473, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Items:
-  - {fileID: 11400000, guid: a3046ff5748005c4ebba8cbad9523a70, type: 2}
-  - {fileID: 11400000, guid: 2ac5d29903d4542439655f707b24ba29, type: 2}
-  - {fileID: 11400000, guid: e97c37f737fdcce4e8c37fbfa46c9a0b, type: 2}
-  - {fileID: 11400000, guid: 5e139217868132c41b2186bab754367f, type: 2}
+  ItemTypes:
+  - {fileID: 11400000, guid: bc09cb0678fe6e142abebb8901f41f21, type: 2}
+  - {fileID: 11400000, guid: 5f3b18cb173ef8a4ba26e6e0dbadb5ef, type: 2}
+  - {fileID: 11400000, guid: c57f776f3a2609e478038175cc654d1c, type: 2}
+  - {fileID: 11400000, guid: e01bcf714a1830a4eb1a8a563d4d8d51, type: 2}
 --- !u!1001 &1024133946
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4038,6 +4038,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1426381783355051311, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
+      propertyPath: StartingShield
+      value: 
+      objectReference: {fileID: 11400000, guid: 5f3b18cb173ef8a4ba26e6e0dbadb5ef, type: 2}
+    - target: {fileID: 1426381783355051311, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
+      propertyPath: StartingWeapon
+      value: 
+      objectReference: {fileID: 11400000, guid: c57f776f3a2609e478038175cc654d1c, type: 2}
     - target: {fileID: 1426381783355051311, guid: a6c0b59c6142abc489b612c871a1ed15, type: 3}
       propertyPath: CurrentCheckpoint
       value: 
