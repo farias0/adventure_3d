@@ -189,12 +189,19 @@ public class InventoryController : MonoBehaviour
 
     public void RefreshEquippedWeaponDurability()
     {
-        int durability = GetEquippedWeapon().Durability;
-        HUDController.Instance.PlayerSetWeaponDurability(durability);
-        
-        if (durability <= 0) {
+        ItemEntity weapon = GetEquippedWeapon();
 
-            ItemEntity weapon = GetEquippedWeapon();
+        if (weapon == null)
+        {
+            HUDController.Instance.PlayerSetMaxWeaponDurability(0);
+            HUDController.Instance.PlayerSetWeaponDurability(0);
+            return;
+        }
+
+        HUDController.Instance.PlayerSetMaxWeaponDurability(weapon.Type.MaxDurability);
+        HUDController.Instance.PlayerSetWeaponDurability(weapon.Durability);
+        
+        if (weapon.Durability <= 0) {
 
             if (weapon.Type.IsUnique)
             {
@@ -212,6 +219,7 @@ public class InventoryController : MonoBehaviour
             {
                 UnassignItem(mWeaponSlot!);
                 GameController.DestroyItemByGuid(weapon.GUID);
+                RefreshEquippedWeaponDurability();
             }
 
         }
@@ -222,13 +230,17 @@ public class InventoryController : MonoBehaviour
         foreach (InventorySlot slot in InventorySlots)
         {
             if (slot.ItemGuid == "") continue;
+            
             ItemEntity item = GameController.GetItemByGuid(slot.ItemGuid);
+            
             if (item.Type.Degrades)
             {
                 item.ResetDurability();
                 slot.DisplayBrokenOverlay(false);
             }
         }
+
+        RefreshEquippedWeaponDurability();
     }
 
     // Start is called before the first frame update
@@ -503,6 +515,7 @@ public class InventoryController : MonoBehaviour
         ItemEntity movedItem = GameController.GetItemByGuid(movedItemGuid);
         ItemEntity presentItem = GameController.GetItemByGuid(presentItemGuid);
 
+
         if (from == mWeaponSlot && (presentItem?.Durability ?? 1) <= 0) return false;
         if (to == mWeaponSlot && movedItem.Durability <= 0) return false;
 
@@ -512,21 +525,7 @@ public class InventoryController : MonoBehaviour
 
         SetSelectedSlot(InventorySlots.IndexOf(to));
 
-
-        if (from == mWeaponSlot)
-        {
-            HUDController.Instance.PlayerSetMaxWeaponDurability(presentItem?.Type.MaxDurability ?? 0);
-            HUDController.Instance.PlayerSetWeaponDurability(presentItem?.Durability ?? 0);
-        }
-        else if (to == mWeaponSlot)
-        {
-            HUDController.Instance.PlayerSetMaxWeaponDurability(movedItem.Type.MaxDurability);
-            HUDController.Instance.PlayerSetWeaponDurability(movedItem.Durability);
-        }
-
-        to.DisplayBrokenOverlay(movedItem.Durability <= 0);
-        from.DisplayBrokenOverlay((presentItem?.Durability ?? 1) <= 0);
-
+        RefreshEquippedWeaponDurability();
 
         return true;
     }
