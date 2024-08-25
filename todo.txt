@@ -1,8 +1,10 @@
-- abrir e fechar inventário incorretamente enche o medidor de vida do HUD
-
-
-- itens não-únicos -- implementar com galhos
-	- pegar itens do mundo pro inventário
+- pegar itens do mundo pro inventário
+	- entidade no mundo
+		- prefab se autoregistra a lista de itens e ao inventário
+			- como lidar com itens únicos?		<<<<<
+		- apertar A em proximidade puxa pro inventário
+- soltar itens do inventário pro mundo
+	- apertar X no inventário dropa item
 
 
 - efeitos sonoros
@@ -51,7 +53,7 @@
 - criar labirinto sem arma, envolvendo stealth, culminando na luta com o evil skeleton
 
 - adicionar novos equipamentos
-- soltar itens
+
 - baús
 
 - dinheiro

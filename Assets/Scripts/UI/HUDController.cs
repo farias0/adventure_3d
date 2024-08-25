@@ -67,7 +67,6 @@ public class HUDController : MonoBehaviour
     public void SetActive(bool active)
     {
         gameObject.SetActive(active);
-        if (active) SyncWithState();
     }
 
     private void Awake()
@@ -80,19 +79,15 @@ public class HUDController : MonoBehaviour
 
         Instance = this;
     }
-    
+
     private void OnEnable()
     {
         mRoot = GetComponent<UIDocument>().rootVisualElement;
         mHealthBarFill = mRoot.Q<VisualElement>("HealthBarFill");
         mStaminaBarFill = mRoot.Q<VisualElement>("StaminaBarFill");
         mWeaponDurabilityBarFill = mRoot.Q<VisualElement>("WeaponDurabilityBarFill");
-        
-        mCurrentHealth = mMaxHealth;
-        UpdateHealthBar();
 
-        mCurrentStamina = mMaxStamina;
-        UpdateStaminaBar();
+        SyncWithState();
     }
 
     private void UpdateHealthBar()
