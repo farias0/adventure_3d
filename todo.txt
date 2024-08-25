@@ -1,5 +1,4 @@
 - durabilidade da arma
-	- desequipar arma quebrada
 	- impedir de equipar arma qubrada
 	- resetar estado ao renascer
 
@@ -21,6 +20,7 @@
 	- jogador morrer
 	- jogador renascer
 	- arma quebrada
+	- erro ao tentar equipar arma quebrada
 
 
 - fazer os sons só tocarem com a animação
@@ -29,6 +29,8 @@
 	- colocar ícones p/ alerta e procurando sobre a cabeça do inimigo
 	- agaixar diminui raio do cone de visão
 	- visibilidade diferente durante a noite?
+
+- bombas
 
 - novos inimigos
 	- inimigos mais fracos que o esqueleto
@@ -71,7 +73,6 @@
 - inventário ser grade de blocos
 - npc com escudo
 - arco e flecha
-- arremessar bomba
 - armaduras
 - fogo  <<-- talvez deixar quieto
 - nadar

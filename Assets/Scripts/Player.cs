@@ -439,7 +439,8 @@ public class Player : MonoBehaviour
 
         if (mIsHoldingDefend && !isInParryWindow) return;
         if (mStamina < AttackStaminaCost && !isInParryWindow) return;
-        if (GetEquippedWeaponDetails().GetDurability() <= 0) return; // TODO rethink broken weapon behavior
+        if (GetEquippedWeaponDetails() &&
+            GetEquippedWeaponDetails().GetDurability() <= 0) return;
 
         mAnimator.SetTrigger("Attack1");
 
@@ -455,7 +456,8 @@ public class Player : MonoBehaviour
 
         if (mIsHoldingDefend && !isInParryWindow) return;
         if (mStamina < AttackStaminaCost && !isInParryWindow) return;
-        if (GetEquippedWeaponDetails().GetDurability() <= 0) return;
+        if (GetEquippedWeaponDetails() &&
+            GetEquippedWeaponDetails().GetDurability() <= 0) return;
 
         mAnimator.SetTrigger("Attack2");
 

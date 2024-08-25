@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.CodeDom.Compiler;
 using System.Collections;
@@ -182,7 +184,13 @@ public class InventoryController : MonoBehaviour
     {
         int durability = GetEquippedWeapon().GetDurability();
         HUDController.Instance.PlayerSetWeaponDurability(durability);
-        if (durability <= 0) mWeaponSlot.DisplayBrokenOverlay(true);
+        
+        if (durability <= 0) {
+            mWeaponSlot.DisplayBrokenOverlay(true);
+            InventorySlot? toSlot = GetEmptySlot();
+            if (toSlot == null) Debug.LogError("No empty slot to move the weapon to"); // TODO separate equipment from inventory slots
+            else MoveItemToSlot(mWeaponSlot, toSlot);
+        }
     }
 
     // Start is called before the first frame update
@@ -443,7 +451,12 @@ public class InventoryController : MonoBehaviour
         ItemData presentItem = GameController.GetItemByGuid(presentItemGuid);
 
 
-        if (to == mWeaponSlot)
+        if (from == mWeaponSlot)
+        {
+            HUDController.Instance.PlayerSetMaxWeaponDurability(presentItem ? presentItem.MaxDurability : 0);
+            HUDController.Instance.PlayerSetWeaponDurability(presentItem ? presentItem.GetDurability() : 0);
+        }
+        else if (to == mWeaponSlot)
         {
             HUDController.Instance.PlayerSetMaxWeaponDurability(movedItem.MaxDurability);
             HUDController.Instance.PlayerSetWeaponDurability(movedItem.GetDurability());
@@ -451,6 +464,11 @@ public class InventoryController : MonoBehaviour
 
         to.DisplayBrokenOverlay(movedItem.GetDurability() <= 0);
         from.DisplayBrokenOverlay(presentItem && presentItem.GetDurability() <= 0);
+    }
+
+    private InventorySlot? GetEmptySlot()
+    {
+        return InventorySlots.FirstOrDefault(x => x.ItemGuid.Equals(""));
     }
 
     private void EnableGhostIcon(Sprite icon)
