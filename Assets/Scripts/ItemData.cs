@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -12,7 +13,26 @@ public class ItemData : ScriptableObject
     public bool CanDrop;
     public bool Degrades;
     [Range(1, 100)]
-    public int Durability; // If Degrades
+    public int MaxDurability; // If Degrades
+    
+    [SerializeField]
+    private int mDurability;
+    
+
+    private void OnEnable()
+    {
+        mDurability = MaxDurability;
+    }
+
+    public int GetDurability()
+    {
+        return mDurability;
+    }
+
+    public void SetDurability(int value)
+    {
+        mDurability = value;
+    }
 
     public ItemData Copy()
     {

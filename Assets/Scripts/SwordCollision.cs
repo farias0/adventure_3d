@@ -42,11 +42,11 @@ public class SwordCollision : MonoBehaviour
 
         if (!weapon.Degrades) return;
 
-        weapon.Durability -= 1;
-        HUDController.Instance.PlayerSetWeaponDurability(weapon.Durability);
-        Debug.Log("Weapon durability: " + weapon.Durability);
+        weapon.SetDurability(weapon.GetDurability() - 1);
+        HUDController.Instance.PlayerSetWeaponDurability(weapon.GetDurability());
+        Debug.Log("Weapon durability: " + weapon.GetDurability());
 
-        if (weapon.Durability <= 0)
+        if (weapon.GetDurability() <= 0)
         {
             Debug.Log("Weapon broke!");
         }

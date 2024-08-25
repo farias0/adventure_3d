@@ -432,9 +432,9 @@ public class InventoryController : MonoBehaviour
 
         if (to == mWeaponSlot)
         {
-            float durability = GameController.GetItemByGuid(movedItemGuid).Durability;
-            HUDController.Instance.PlayerSetMaxWeaponDurability(durability);
-            HUDController.Instance.PlayerSetWeaponDurability(durability);
+            ItemData weapon = GameController.GetItemByGuid(movedItemGuid);
+            HUDController.Instance.PlayerSetMaxWeaponDurability(weapon.MaxDurability);
+            HUDController.Instance.PlayerSetWeaponDurability(weapon.GetDurability());
         }
     }
 
