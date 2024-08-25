@@ -6,6 +6,15 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewItem", menuName = "Inventory/Item"), Serializable]
 public class ItemData : ScriptableObject
 {
+    [Serializable]
+    public class ItemDataRuntimeVars
+    {
+        // TODO maybe I should just separate the item asset from the runtime representation
+        public int Durability;
+    }
+
+
+    public ItemDataRuntimeVars RuntimeVars = new();
     public string Name;
     public string GUID;
     public Sprite Icon;
@@ -14,24 +23,21 @@ public class ItemData : ScriptableObject
     public bool Degrades;
     [Range(1, 100)]
     public int MaxDurability; // If Degrades
-    
-    [SerializeField]
-    private int mDurability;
-    
+
 
     private void OnEnable()
     {
-        mDurability = MaxDurability;
+        RuntimeVars.Durability = MaxDurability;
     }
 
     public int GetDurability()
     {
-        return mDurability;
+        return RuntimeVars.Durability;
     }
 
     public void SetDurability(int value)
     {
-        mDurability = value;
+        RuntimeVars.Durability = value;
     }
 
     public ItemData Copy()
