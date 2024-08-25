@@ -1,5 +1,4 @@
 - durabilidade da arma
-	- indicação de arma quebrada no inventário
 	- desequipar arma quebrada
 	- impedir de equipar arma qubrada
 	- resetar estado ao renascer

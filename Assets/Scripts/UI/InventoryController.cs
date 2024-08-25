@@ -122,6 +122,7 @@ public class InventoryController : MonoBehaviour
 
         EnableGhostIcon(GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Icon);
         SyncGhostIconWithPosition(cursorPosition);
+        mOriginalSlot.DisplayBrokenOverlay(false);
 
         SetSelectedSlot(InventorySlots.IndexOf(fromSlot));
     }
@@ -175,6 +176,13 @@ public class InventoryController : MonoBehaviour
     public void UpdateDateTime(GameTime time)
     {
         mRoot.Q<Label>("DateTime").text = $"{time.Hour}:{time.Minute:D2}, dia {time.Day}";
+    }
+
+    public void RefreshEquippedWeaponDurability()
+    {
+        int durability = GetEquippedWeapon().GetDurability();
+        HUDController.Instance.PlayerSetWeaponDurability(durability);
+        if (durability <= 0) mWeaponSlot.DisplayBrokenOverlay(true);
     }
 
     // Start is called before the first frame update
@@ -382,6 +390,7 @@ public class InventoryController : MonoBehaviour
 
         mOriginalSlot = fromSlot;
         fromSlot.Icon.image = null;
+        fromSlot.DisplayBrokenOverlay(false);
         EnableGhostIcon(GameController.GetItemByGuid(mOriginalSlot.ItemGuid).Icon);
         SyncGhostIconWithSelectedSlot();
     }
@@ -430,12 +439,18 @@ public class InventoryController : MonoBehaviour
         SetSelectedSlot(InventorySlots.IndexOf(to));
 
 
+        ItemData movedItem = GameController.GetItemByGuid(movedItemGuid);
+        ItemData presentItem = GameController.GetItemByGuid(presentItemGuid);
+
+
         if (to == mWeaponSlot)
         {
-            ItemData weapon = GameController.GetItemByGuid(movedItemGuid);
-            HUDController.Instance.PlayerSetMaxWeaponDurability(weapon.MaxDurability);
-            HUDController.Instance.PlayerSetWeaponDurability(weapon.GetDurability());
+            HUDController.Instance.PlayerSetMaxWeaponDurability(movedItem.MaxDurability);
+            HUDController.Instance.PlayerSetWeaponDurability(movedItem.GetDurability());
         }
+
+        to.DisplayBrokenOverlay(movedItem.GetDurability() <= 0);
+        from.DisplayBrokenOverlay(presentItem && presentItem.GetDurability() <= 0);
     }
 
     private void EnableGhostIcon(Sprite icon)

@@ -18,6 +18,8 @@ public class InventorySlot : VisualElement
     public Image Icon;
     public string ItemGuid = "";
 
+    private readonly BrokenOverlay mBrokenOverlay = new();
+
 
     public void HoldItem(ItemData item)
     {
@@ -29,6 +31,12 @@ public class InventorySlot : VisualElement
     {
         ItemGuid = "";
         Icon.image = null;
+        DisplayBrokenOverlay(false);
+    }
+
+    public void DisplayBrokenOverlay(bool active)
+    {
+        mBrokenOverlay.style.display = active ? DisplayStyle.Flex : DisplayStyle.None;
     }
 
     public InventorySlot()
@@ -41,9 +49,8 @@ public class InventorySlot : VisualElement
         AddToClassList("slotContainer");
         Icon.AddToClassList("slotIcon");
 
-        // TODO create interface to enable and disable it
-        BrokenOverlay brokenOverlay = new();
-        Add(brokenOverlay);
+        Add(mBrokenOverlay); 
+        DisplayBrokenOverlay(false);
 
         RegisterCallback<PointerDownEvent>(OnPointerDown);
     }

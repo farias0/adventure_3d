@@ -75,7 +75,6 @@ public class Enemy : MonoBehaviour
         FacePosition(mPlayer.transform.position);
 
         if (damage > 0) Debug.Log("Enemy hit! Health: " + mHealth);
-        else Debug.Log("Enemy hit shield");
         
         if (mHealth <= 0)
         {

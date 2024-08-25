@@ -29,26 +29,18 @@ public class SwordCollision : MonoBehaviour
         }
     }
 
-    private ItemData GetItemData()
+    private void DegradeOnHit()
     {
         // Assumes it's the weapon equipped by the player,
         // because it doesn't have a proper mechanism to see its ItemDetail
-        return InventoryController.Instance.GetEquippedWeapon();
-    }
 
-    private void DegradeOnHit()
-    {
-        ItemData weapon = GetItemData();
+
+        ItemData weapon = InventoryController.Instance.GetEquippedWeapon();
 
         if (!weapon.Degrades) return;
 
         weapon.SetDurability(weapon.GetDurability() - 1);
-        HUDController.Instance.PlayerSetWeaponDurability(weapon.GetDurability());
-        Debug.Log("Weapon durability: " + weapon.GetDurability());
 
-        if (weapon.GetDurability() <= 0)
-        {
-            Debug.Log("Weapon broke!");
-        }
+        InventoryController.Instance.RefreshEquippedWeaponDurability();
     }
 }
