@@ -128,14 +128,17 @@ public class HUDController : MonoBehaviour
     private void UpdateWeaponDurabilityBarMax()
     {
         var container = mRoot.Q<VisualElement>("WeaponDurabilityBarContainer");
-        container.style.width = Length.Percent(mMaxWeaponDurability / 4.0f);
+        container.style.width = Length.Percent(mMaxWeaponDurability);
     }
 
     private void SyncWithState()
     {
         UpdateHealthBarMax();
         UpdateStaminaBarMax();
+        UpdateWeaponDurabilityBarMax();
+        
         UpdateHealthBar();
         UpdateStaminaBar();
+        UpdateWeaponDurabilityBar();
     }
 }

@@ -105,12 +105,12 @@ public class InventoryController : MonoBehaviour
     private VisualElement mGhostIcon;
     private SelectedSlotManager mSelectedSlotManager;
     private AnimationSelectedItemSlot mSelectedSlotAnimation;
+    private InventorySlot mWeaponSlot;
+    private InventorySlot mShieldSlot;
     private bool mIsInventoryOpen;
     private bool mIsDragging;
     private InventorySlot mOriginalSlot; // Used when moving an item between slots
     private SelectedSlotManager.CursorDirection? mLastCursorDirection = null; // The last directional input from the player
-
-
     private const float GamepadDeadzone = 0.25f; 
     private const int EquipmentSlotsCount = 2;
 
@@ -155,10 +155,6 @@ public class InventoryController : MonoBehaviour
 
         MoveItemToSlot(itemSlot, InventorySlots[0]);
         
-        float durability = GameController.GetItemByGuid(itemGuid).Durability;
-        HUDController.Instance.PlayerSetMaxWeaponDurability(durability);
-        HUDController.Instance.PlayerSetWeaponDurability(durability);
-
         return true;
     }
 
@@ -212,13 +208,13 @@ public class InventoryController : MonoBehaviour
         mEquipmentSlotContainer = mRoot.Q<VisualElement>("EquipmentSlotContainer");
         mInventorySlotContainer = mRoot.Q<VisualElement>("InventorySlotContainer");
         
-        InventorySlot weapon = new();
-        InventorySlots.Add(weapon);
-        mEquipmentSlotContainer.Add(weapon);
+        mWeaponSlot = new();
+        InventorySlots.Add(mWeaponSlot);
+        mEquipmentSlotContainer.Add(mWeaponSlot);
 
-        InventorySlot shield = new();
-        InventorySlots.Add(shield);
-        mEquipmentSlotContainer.Add(shield);
+        mShieldSlot = new();
+        InventorySlots.Add(mShieldSlot);
+        mEquipmentSlotContainer.Add(mShieldSlot);
 
         for (int i = 0; i < 20; i++)
         {
@@ -432,6 +428,14 @@ public class InventoryController : MonoBehaviour
         AssignItem(to, GameController.GetItemByGuid(movedItemGuid));
 
         SetSelectedSlot(InventorySlots.IndexOf(to));
+
+
+        if (to == mWeaponSlot)
+        {
+            float durability = GameController.GetItemByGuid(movedItemGuid).Durability;
+            HUDController.Instance.PlayerSetMaxWeaponDurability(durability);
+            HUDController.Instance.PlayerSetWeaponDurability(durability);
+        }
     }
 
     private void EnableGhostIcon(Sprite icon)

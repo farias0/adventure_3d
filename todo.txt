@@ -1,4 +1,7 @@
-- só é definida o max corretamente da barra de durabilidade ao abrir e fechar o inventario
+- separar MaxDurability de Durability no ItemData
+
+
+
 
 - garantir que espadas estão degradando corretamente
 

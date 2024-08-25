@@ -44,6 +44,7 @@ public class SwordCollision : MonoBehaviour
 
         weapon.Durability -= 1;
         HUDController.Instance.PlayerSetWeaponDurability(weapon.Durability);
+        Debug.Log("Weapon durability: " + weapon.Durability);
 
         if (weapon.Durability <= 0)
         {
