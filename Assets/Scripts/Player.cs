@@ -371,6 +371,7 @@ public class Player : MonoBehaviour
         mAnimator.SetInteger("MovementState", AnimationMoveState.Idle.GetHashCode());
         mAnimator.SetTrigger("Respawn");
         GameCamera.Instance.ResetCamera();
+        InventoryController.Instance.RestoreAllItems();
         GameController.ResetWorld();
     }
 

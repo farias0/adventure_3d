@@ -191,6 +191,20 @@ public class InventoryController : MonoBehaviour
         }
     }
 
+    public void RestoreAllItems()
+    {
+        foreach (InventorySlot slot in InventorySlots)
+        {
+            if (slot.ItemGuid == "") continue;
+            ItemData item = GameController.GetItemByGuid(slot.ItemGuid);
+            if (item.Degrades)
+            {
+                item.SetDurability(item.MaxDurability);
+                slot.DisplayBrokenOverlay(false);
+            }
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
