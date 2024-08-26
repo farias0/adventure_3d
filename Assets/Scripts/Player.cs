@@ -276,8 +276,9 @@ public class Player : MonoBehaviour
         if (change == InventoryChangeType.Pickup)
         {
 
-            ItemData newWeapon = GameController.GetItemByGuid(itemGuid);
-            Instantiate(newWeapon.Type.SpawnPrefab, container);
+            ItemData item = GameController.GetItemByGuid(itemGuid);
+            ItemEntity entity = Instantiate(item.Type.SpawnPrefab, container).GetComponent<ItemEntity>();
+            if (entity) entity.InstantiatedFromItem(item);
         }
     }
 
@@ -299,8 +300,9 @@ public class Player : MonoBehaviour
 
         if (change == InventoryChangeType.Pickup)
         {
-            ItemData newShield = GameController.GetItemByGuid(itemGuid);
-            Instantiate(newShield.Type.SpawnPrefab, container);
+            ItemData item = GameController.GetItemByGuid(itemGuid);
+            ItemEntity entity = Instantiate(item.Type.SpawnPrefab, container).GetComponent<ItemEntity>();
+            if (entity) entity.InstantiatedFromItem(item);
         }
     }
 

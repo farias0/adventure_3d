@@ -1,11 +1,9 @@
 - pegar itens do mundo pro inventário
-	- entidade no mundo
-		- prefab se autoregistra a lista de itens e ao inventário
-			- como lidar com itens únicos?		<<<<<
-		- apertar A em proximidade puxa pro inventário
+	- apertar A em proximidade puxa pro inventário
 - soltar itens do inventário pro mundo
 	- apertar X no inventário dropa item
 
+- passar código de durabilidade para ItemData
 
 - efeitos sonoros
 	- ataque do inimigo

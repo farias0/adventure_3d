@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2177877746950377703}
   - component: {fileID: 6960389513571945983}
   - component: {fileID: 6026148542511918864}
+  - component: {fileID: -7075640210809854584}
   - component: {fileID: 5384286597936371775}
   m_Layer: 0
   m_Name: SwordStick
@@ -97,6 +98,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f81ebffdb3fca604a9b8d3d303fcc497, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-7075640210809854584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424397909865316234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2089c24f24dfc645953c156ed960ecf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: {fileID: 11400000, guid: e01bcf714a1830a4eb1a8a563d4d8d51, type: 2}
 --- !u!65 &5384286597936371775
 BoxCollider:
   m_ObjectHideFlags: 0

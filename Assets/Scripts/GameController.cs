@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour
 
     private static readonly List<OnWorldResetDelegate> OnWorldResetList = new();
     private static readonly Dictionary<string, ItemData> mItemDatabase = new();
+    private List<ItemData> mStartingInventory;
 
 
     public static ItemData GetItemByGuid(string guid)
@@ -32,9 +33,18 @@ public class GameController : MonoBehaviour
         return null;
     }
 
+    public static ItemData CreateItem(ItemType type)
+    {
+        ItemData item = type.CreateItem();
+        mItemDatabase.Add(item.GUID, item);
+        return item;
+    }
+
     /// <returns>If could find and destroy item</returns>
     public static bool DestroyItemByGuid(string guid)
     {
+        ItemData item = GetItemByGuid(guid);
+        item.DestroyEntity();
         return mItemDatabase.Remove(guid);
     }
 
@@ -59,12 +69,13 @@ public class GameController : MonoBehaviour
             ItemData item = type.CreateItem();
             mItemDatabase.Add(item.GUID, item);
         }
+
+        mStartingInventory = new();
+        mStartingInventory.AddRange(mItemDatabase.Values);
     }
 
     private void Start()
     {
-        List<ItemData> mStartingInventory = new();
-        mStartingInventory.AddRange(mItemDatabase.Values);
         OnInventoryChanged.Invoke(mStartingInventory.Select(x=> x.GUID).ToArray(), InventoryChangeType.Pickup);
     }
 }

@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -7,6 +9,7 @@ public class ItemData
     public readonly ItemType Type;
     public readonly string Name;
     public readonly string GUID;
+    public ItemEntity? Entity;
     public int Durability;
 
 
@@ -21,5 +24,14 @@ public class ItemData
     public void ResetDurability()
     {
         Durability = Type.MaxDurability;
+    }
+
+    public void DestroyEntity()
+    {
+        if (Entity != null)
+        {
+            Entity.ClearItem();
+            GameObject.Destroy(Entity.gameObject);
+        }
     }
 }
