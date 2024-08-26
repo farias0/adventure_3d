@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: SwordSitck
   GUID: 622ec4ad-bf0a-45ae-8675-24522f1ed542
   Icon: {fileID: 21300000, guid: e0e228a0d499ada47aceef662d943a38, type: 3}
-  Prefab: {fileID: 424397909865316234, guid: 54d679b08eff68f41a92924244d89f79, type: 3}
+  SpawnPrefab: {fileID: 424397909865316234, guid: 54d679b08eff68f41a92924244d89f79, type: 3}
   CanDrop: 1
   IsUnique: 0
   Degrades: 1

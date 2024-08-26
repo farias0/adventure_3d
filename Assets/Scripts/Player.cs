@@ -276,8 +276,8 @@ public class Player : MonoBehaviour
         if (change == InventoryChangeType.Pickup)
         {
 
-            ItemEntity newWeapon = GameController.GetItemByGuid(itemGuid);
-            Instantiate(newWeapon.Type.Prefab, container);
+            ItemData newWeapon = GameController.GetItemByGuid(itemGuid);
+            Instantiate(newWeapon.Type.SpawnPrefab, container);
         }
     }
 
@@ -299,8 +299,8 @@ public class Player : MonoBehaviour
 
         if (change == InventoryChangeType.Pickup)
         {
-            ItemEntity newShield = GameController.GetItemByGuid(itemGuid);
-            Instantiate(newShield.Type.Prefab, container);
+            ItemData newShield = GameController.GetItemByGuid(itemGuid);
+            Instantiate(newShield.Type.SpawnPrefab, container);
         }
     }
 
@@ -495,12 +495,12 @@ public class Player : MonoBehaviour
         rend.enabled = visible;
     }
 
-    private ItemEntity EquippedWeapon()
+    private ItemData EquippedWeapon()
     {
         return InventoryController.Instance.GetEquippedWeapon();
     }
 
-    private ItemEntity EquippedShield()
+    private ItemData EquippedShield()
     {
         return InventoryController.Instance.GetEquippedShield();
     }

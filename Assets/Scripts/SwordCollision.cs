@@ -35,7 +35,7 @@ public class SwordCollision : MonoBehaviour
         // because it doesn't have a proper mechanism to see its ItemDetail
 
 
-        ItemEntity weapon = InventoryController.Instance.GetEquippedWeapon();
+        ItemData weapon = InventoryController.Instance.GetEquippedWeapon();
 
         if (!weapon.Type.Degrades) return;
 

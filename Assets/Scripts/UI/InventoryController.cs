@@ -134,12 +134,12 @@ public class InventoryController : MonoBehaviour
         return mIsInventoryOpen;
     }
 
-    public ItemEntity GetEquippedWeapon()
+    public ItemData GetEquippedWeapon()
     {
         return GameController.GetItemByGuid(InventorySlots[0].ItemGuid);
     }
 
-    public ItemEntity GetEquippedShield()
+    public ItemData GetEquippedShield()
     {
         return GameController.GetItemByGuid(InventorySlots[1].ItemGuid);
     }
@@ -153,7 +153,7 @@ public class InventoryController : MonoBehaviour
     {
         foreach (InventorySlot slot in InventorySlots)
         {
-            ItemEntity item = GameController.GetItemByGuid(slot.ItemGuid);
+            ItemData item = GameController.GetItemByGuid(slot.ItemGuid);
             if (item?.Type == type)
             {
                 return MoveItemToSlot(slot, InventorySlots[0]);
@@ -172,7 +172,7 @@ public class InventoryController : MonoBehaviour
     {
         foreach (InventorySlot slot in InventorySlots)
         {
-            ItemEntity item = GameController.GetItemByGuid(slot.ItemGuid);
+            ItemData item = GameController.GetItemByGuid(slot.ItemGuid);
             if (item?.Type == type)
             {
                 return MoveItemToSlot(slot, InventorySlots[1]);
@@ -189,7 +189,7 @@ public class InventoryController : MonoBehaviour
 
     public void RefreshEquippedWeaponDurability()
     {
-        ItemEntity weapon = GetEquippedWeapon();
+        ItemData weapon = GetEquippedWeapon();
 
         if (weapon == null)
         {
@@ -231,7 +231,7 @@ public class InventoryController : MonoBehaviour
         {
             if (slot.ItemGuid == "") continue;
             
-            ItemEntity item = GameController.GetItemByGuid(slot.ItemGuid);
+            ItemData item = GameController.GetItemByGuid(slot.ItemGuid);
             
             if (item.Type.Degrades)
             {
@@ -475,7 +475,7 @@ public class InventoryController : MonoBehaviour
         }
     }
 
-    private void AssignItem(InventorySlot slot, ItemEntity? item)
+    private void AssignItem(InventorySlot slot, ItemData? item)
     {
         if (item == null)
         {
@@ -512,8 +512,8 @@ public class InventoryController : MonoBehaviour
         string movedItemGuid = from.ItemGuid;
         string presentItemGuid = to.ItemGuid;
 
-        ItemEntity movedItem = GameController.GetItemByGuid(movedItemGuid);
-        ItemEntity presentItem = GameController.GetItemByGuid(presentItemGuid);
+        ItemData movedItem = GameController.GetItemByGuid(movedItemGuid);
+        ItemData presentItem = GameController.GetItemByGuid(presentItemGuid);
 
 
         if (from == mWeaponSlot && (presentItem?.Durability ?? 1) <= 0) return false;

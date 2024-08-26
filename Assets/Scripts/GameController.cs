@@ -19,10 +19,10 @@ public class GameController : MonoBehaviour
     public static event OnInventoryChangedDelegate OnInventoryChanged = delegate { };
 
     private static readonly List<OnWorldResetDelegate> OnWorldResetList = new();
-    private static readonly Dictionary<string, ItemEntity> mItemDatabase = new();
+    private static readonly Dictionary<string, ItemData> mItemDatabase = new();
 
 
-    public static ItemEntity GetItemByGuid(string guid)
+    public static ItemData GetItemByGuid(string guid)
     {
         if (mItemDatabase.ContainsKey(guid))
         {
@@ -56,14 +56,14 @@ public class GameController : MonoBehaviour
     {
         foreach (ItemType type in ItemTypes)
         {
-            ItemEntity item = type.CreateEntity();
+            ItemData item = type.CreateItem();
             mItemDatabase.Add(item.GUID, item);
         }
     }
 
     private void Start()
     {
-        List<ItemEntity> mStartingInventory = new();
+        List<ItemData> mStartingInventory = new();
         mStartingInventory.AddRange(mItemDatabase.Values);
         OnInventoryChanged.Invoke(mStartingInventory.Select(x=> x.GUID).ToArray(), InventoryChangeType.Pickup);
     }

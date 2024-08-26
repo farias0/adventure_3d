@@ -2,7 +2,7 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class ItemEntity
+public class ItemData
 {
     public readonly ItemType Type;
     public readonly string Name;
@@ -10,7 +10,7 @@ public class ItemEntity
     public int Durability;
 
 
-    public ItemEntity(ItemType type)
+    public ItemData(ItemType type)
     {
         Type = type;
         Name = type.Name;

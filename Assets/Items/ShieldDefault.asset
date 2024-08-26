@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: ShieldDefault
   GUID: 992D3386-B743-4CD3-9BB7-0234A057C265
   Icon: {fileID: 21300000, guid: 03afc69072ca6504a889cf51e8fbbc7c, type: 3}
-  Prefab: {fileID: 561424289882184159, guid: 283722bbf10dd3a41a243644655ccff0, type: 3}
+  SpawnPrefab: {fileID: 561424289882184159, guid: 283722bbf10dd3a41a243644655ccff0, type: 3}
   CanDrop: 0
   IsUnique: 1
   Degrades: 0
