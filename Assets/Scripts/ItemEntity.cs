@@ -16,6 +16,7 @@ public class ItemEntity : MonoBehaviour
 
     private ItemData? mItem;
     private State mState = State.InWorld;
+    private bool mHasBeenPositionedInTheWorld = false;
 
 
     // Start is called before the first frame update
@@ -36,9 +37,17 @@ public class ItemEntity : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (mState == State.InWorld && Player.Instance.InteractedWithMeThisFrame(transform.position))
+        if (mState == State.InWorld)
         {
-            if (MoveToInventory()) return;
+            if (Player.Instance.InteractedWithMeThisFrame(transform.position))
+            {
+                if (MoveToInventory()) return;
+            }
+            else if (!mHasBeenPositionedInTheWorld)
+            {
+                transform.eulerAngles = new Vector3(90, Random.Range(0, 360), 0);
+                mHasBeenPositionedInTheWorld = true;
+            }
         }
     }
 
