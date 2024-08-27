@@ -243,6 +243,17 @@ public class InventoryController : MonoBehaviour
         RefreshEquippedWeaponDurability();
     }
 
+    public bool AddItem(ItemData item)
+    {
+        // TODO check if the item is not in the inventory already.
+        
+        InventorySlot? emptySlot = GetEmptySlot();
+        if (emptySlot == null) return false;
+        
+        emptySlot.HoldItem(item);
+        return true;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -307,14 +318,17 @@ public class InventoryController : MonoBehaviour
         foreach (string item in itemGuid)
         {
             if (change == InventoryChangeType.Pickup)
-            {
-                var emptySlot = InventorySlots
-                                        .Skip(EquipmentSlotsCount)
-                                        .FirstOrDefault(x => x.ItemGuid.Equals(""));
-                            
-                emptySlot?.HoldItem(GameController.GetItemByGuid(item));
+            {                            
+                FirstEmptySlot()?.HoldItem(GameController.GetItemByGuid(item));
             }
         }
+    }
+
+    private InventorySlot? FirstEmptySlot()
+    {
+        return InventorySlots
+                    .Skip(EquipmentSlotsCount)
+                    .FirstOrDefault(x => x.ItemGuid.Equals(""));
     }
 
     private void ToggleInventory()

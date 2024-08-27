@@ -257,52 +257,47 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void InventoryController_OnPlayerWeaponChanged(string itemGuid, InventoryChangeType change)
+    private void InventoryController_OnPlayerWeaponChanged(string newItemGuid, InventoryChangeType change)
     {
         Transform container = GetWeaponContainer().transform;
-
-        if (change == InventoryChangeType.Drop && container.childCount == 0)
-        {
-            Debug.LogError("Inventory asked player to drop weapon, but player has no weapon to drop.");
-            return;
-        }
-
-        if (container.childCount > 0)
-        {
-            GameObject weapon = container.GetChild(0).gameObject;
-            Destroy(weapon);
-        }
-
-        if (change == InventoryChangeType.Pickup)
-        {
-
-            ItemData item = GameController.GetItemByGuid(itemGuid);
-            ItemEntity entity = Instantiate(item.Type.SpawnPrefab, container).GetComponent<ItemEntity>();
-            if (entity) entity.InstantiatedFromItem(item);
-        }
+        OnEquipmentChanged(container, newItemGuid, change);
     }
 
-    private void InventoryController_OnPlayerShieldChanged(string itemGuid, InventoryChangeType change)
+    private void InventoryController_OnPlayerShieldChanged(string newItemGuid, InventoryChangeType change)
     {
         Transform container = GetShieldContainer().transform;
+        OnEquipmentChanged(container, newItemGuid, change);
+    }
 
+    private void OnEquipmentChanged(Transform container, string newItemGuid, InventoryChangeType change)
+    {
         if (change == InventoryChangeType.Drop && container.childCount == 0)
         {
-            Debug.LogError("Inventory asked player to drop shield, but player has no shield to drop.");
+            Debug.LogError("Inventory asked player to drop equip, but player has no equip to drop.");
             return;
         }
 
-        if (container.childCount > 0)
+        for (var i = 0; i < container.childCount; i++)
         {
-            GameObject shield = container.GetChild(0).gameObject;
-            Destroy(shield);
+            GameObject equip = container.GetChild(i).gameObject;
+            if (equip.GetComponent<ItemEntity>())
+                equip.GetComponent<ItemEntity>().PrepareForDestroy();
+            Destroy(equip);
         }
 
         if (change == InventoryChangeType.Pickup)
         {
-            ItemData item = GameController.GetItemByGuid(itemGuid);
+            ItemData item = GameController.GetItemByGuid(newItemGuid);
             ItemEntity entity = Instantiate(item.Type.SpawnPrefab, container).GetComponent<ItemEntity>();
-            if (entity) entity.InstantiatedFromItem(item);
+            if (entity)
+            {
+                entity.InstantiatedFromItem(item);
+                entity.EquippedByPlayer();
+            }
+        }
+        else if (change == InventoryChangeType.Drop && !string.IsNullOrEmpty(newItemGuid))
+        {
+            Debug.LogWarning("Player.OnEquipmentChanged: Passed an item guid to a change of type \"drop\".");
         }
     }
 

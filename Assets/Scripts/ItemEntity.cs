@@ -6,9 +6,16 @@ using UnityEngine;
 
 public class ItemEntity : MonoBehaviour
 {
+    private enum State
+    {
+        InWorld,
+        EquippedByPlayer
+    }
+
     public ItemType? Type;
 
     private ItemData? mItem;
+    private State mState = State.InWorld;
 
 
     // Start is called before the first frame update
@@ -29,12 +36,21 @@ public class ItemEntity : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (mState == State.InWorld && Player.Instance.InteractedWithMeThisFrame(transform.position))
+        {
+            if (MoveToInventory()) return;
+        }
     }
 
-    void OnDestroy()
+    public void PrepareForDestroy() // Since OnDestroy() isn't called immediately...
     {
-        if (mItem != null) DestroyItem();
+        if (mItem?.Entity == this) mItem.Entity = null;
+
+        else if (mItem?.Entity != this)
+        {
+            Debug.Log("ItemEntity.PrepareForDestroy: item.Entity is referencing a different ItemEntity.\n" +
+                           "Make sure an ItemEntity just spawned, otherwise the item will contain an invalid reference.");
+        }
     }
 
     /// <summary>
@@ -47,23 +63,28 @@ public class ItemEntity : MonoBehaviour
     {
         if (item == null)
         {
-            Debug.LogError("ItemEntity.SetItem: provided item is null");
-            return;
-        }
-
-        if (item.Entity != null)
-        {
-            Debug.LogError("ItemEntity.SetItem: item already has an entity");
+            Debug.LogError("ItemEntity.InstantiatedFromItem: provided item is null");
             return;
         }
 
         if (mItem != null)
         {
-            Debug.LogError("ItemEntity.SetItem: entity already has an item");
+            Debug.LogError("ItemEntity.InstantiatedFromItem: entity already has an item");
             return;
+        }
+
+        if (item.Entity != null)
+        {
+            Debug.Log("ItemEntity.InstantiatedFromItem: item already has an ItemEntity reference.\n" +
+                      "Make sure an ItemEntity is being destroyed, because the item's entity reference is going to change.");
         }
         
         SetItem(item);
+    }
+
+    public void EquippedByPlayer()
+    {
+        mState = State.EquippedByPlayer;
     }
 
     // Removes the item reference
@@ -78,12 +99,17 @@ public class ItemEntity : MonoBehaviour
         item.Entity = this;
     }
 
-    private void DestroyItem()
+    private bool MoveToInventory()
     {
-        if (mItem != null)
+        bool success = false;
+
+        if (InventoryController.Instance!.AddItem(mItem!))
         {
-            mItem!.Entity = null;
-            GameController.DestroyItemByGuid(mItem!.GUID);
+            PrepareForDestroy();
+            Destroy(gameObject);
+            success = true;
         }
+
+        return success;
     }
 }

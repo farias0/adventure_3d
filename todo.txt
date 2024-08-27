@@ -1,5 +1,3 @@
-- pegar itens do mundo pro inventário
-	- apertar A em proximidade puxa pro inventário
 - soltar itens do inventário pro mundo
 	- apertar X no inventário dropa item
 
