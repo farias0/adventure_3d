@@ -13,6 +13,12 @@ public class ItemEntity : MonoBehaviour
     }
 
     public ItemType? Type;
+    [Range(0, 360)]
+    public float WorldRotationX = 0;
+    [Range(0, 360)]
+    public float WorldRotationY = 0;
+    [Range(0, 360)]
+    public float WorldRotationZ = 0;
 
     private ItemData? mItem;
     private State mState = State.InWorld;
@@ -45,7 +51,7 @@ public class ItemEntity : MonoBehaviour
             }
             else if (!mHasBeenPositionedInTheWorld)
             {
-                transform.eulerAngles = new Vector3(90, Random.Range(0, 360), 0);
+                transform.eulerAngles = new Vector3(WorldRotationX, WorldRotationY, WorldRotationZ);
                 mHasBeenPositionedInTheWorld = true;
             }
         }

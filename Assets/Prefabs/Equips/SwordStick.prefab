@@ -111,6 +111,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: {fileID: 11400000, guid: e01bcf714a1830a4eb1a8a563d4d8d51, type: 2}
+  WorldRotationX: 90
+  WorldRotationY: 120
+  WorldRotationZ: 180
 --- !u!65 &5384286597936371775
 BoxCollider:
   m_ObjectHideFlags: 0

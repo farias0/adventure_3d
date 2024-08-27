@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1454574053394699166}
   - component: {fileID: 164843094695903687}
   - component: {fileID: 4484257865394190143}
+  - component: {fileID: 330920034403793741}
   m_Layer: 0
   m_Name: Banana
   m_TagString: Untagged
@@ -105,3 +106,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.03776887, y: 0.077711895, z: 0.19450995}
   m_Center: {x: 0.0005739657, y: 0.012489049, z: 0.0012512021}
+--- !u!114 &330920034403793741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5250486546118830772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2089c24f24dfc645953c156ed960ecf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: {fileID: 11400000, guid: bc09cb0678fe6e142abebb8901f41f21, type: 2}
+  WorldRotationX: 0
+  WorldRotationY: 90
+  WorldRotationZ: 0
