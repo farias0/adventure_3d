@@ -20,8 +20,7 @@ public class GameController : MonoBehaviour
 
     private static readonly List<OnWorldResetDelegate> OnWorldResetList = new();
     private static readonly Dictionary<string, ItemData> mItemDatabase = new();
-    private List<ItemData> mStartingInventory;
-
+    
 
     public static ItemData GetItemByGuid(string guid)
     {
@@ -59,23 +58,5 @@ public class GameController : MonoBehaviour
         {
             listener.Invoke();
         }
-    }
-
-
-    private void Awake()
-    {
-        foreach (ItemType type in ItemTypes)
-        {
-            ItemData item = type.CreateItem();
-            mItemDatabase.Add(item.GUID, item);
-        }
-
-        mStartingInventory = new();
-        mStartingInventory.AddRange(mItemDatabase.Values);
-    }
-
-    private void Start()
-    {
-        OnInventoryChanged.Invoke(mStartingInventory.Select(x=> x.GUID).ToArray(), InventoryChangeType.Pickup);
     }
 }

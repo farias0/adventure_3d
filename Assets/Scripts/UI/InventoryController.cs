@@ -147,41 +147,23 @@ public class InventoryController : MonoBehaviour
     }
 
     /// <summary>
-    /// Tries to equip a weapon of the specified type from the inventory
+    /// Tries to equip a weapon out of the inventory itens
     /// </summary>
     /// <param name="itemGuid"></param>
     /// <returns>If it was able to equip it</returns>
-    public bool EquipWeaponOfType(ItemType type)
+    public bool EquipWeapon(string itemGuid)
     {
-        foreach (InventorySlot slot in InventorySlots)
-        {
-            ItemData item = GameController.GetItemByGuid(slot.ItemGuid);
-            if (item?.Type == type)
-            {
-                return MoveItemToSlot(slot, InventorySlots[0]);
-            }
-        }
-
-        return false;
+        return MoveItemToSlot(InventorySlots[0], itemGuid);
     }
 
     /// <summary>
-    /// Tries to equip a shield of the specified type from the inventory
+    /// Tries to equip a shield out of the inventory itens
     /// </summary>
     /// <param name="itemGuid"></param>
     /// <returns>If it was able to equip it</returns>
-    public bool EquipShieldOfType(ItemType type)
+    public bool EquipShield(string itemGuid)
     {
-        foreach (InventorySlot slot in InventorySlots)
-        {
-            ItemData item = GameController.GetItemByGuid(slot.ItemGuid);
-            if (item?.Type == type)
-            {
-                return MoveItemToSlot(slot, InventorySlots[1]);
-            }
-        }
-
-        return false;
+        return MoveItemToSlot(InventorySlots[1], itemGuid);
     }
 
     public void UpdateDateTime(GameTime time)
@@ -551,6 +533,21 @@ public class InventoryController : MonoBehaviour
         RefreshEquippedWeaponDurability();
 
         return true;
+    }
+
+    /// <returns>If was able to move</returns>
+    private bool MoveItemToSlot(InventorySlot slot, string itemGuid)
+    {
+        foreach (InventorySlot s in InventorySlots)
+        {
+            ItemData item = GameController.GetItemByGuid(s.ItemGuid);
+            if (item?.GUID == itemGuid)
+            {
+                return MoveItemToSlot(s, slot);
+            }
+        }
+
+        return false;
     }
 
     private InventorySlot? GetEmptySlot()
