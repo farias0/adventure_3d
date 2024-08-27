@@ -5,7 +5,9 @@ using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using UnityEngine.UIElements.Experimental;
 
@@ -417,6 +419,11 @@ public class InventoryController : MonoBehaviour
             if (mOriginalSlot == null) StartMovingItem(selectedSlot);
             else FinishMovingItem(selectedSlot);
         }
+        if (Input.GetButtonDown("ItemOptions"))
+        {
+            InventorySlot selectedSlot = InventorySlots[mSelectedSlotManager!.GetSelectedSlotIndex()];
+            DropItem(selectedSlot);
+        }
     }
 
     private void OnPointerMove(PointerMoveEvent evt)
@@ -518,6 +525,8 @@ public class InventoryController : MonoBehaviour
             OnPlayerShieldChanged("", InventoryChangeType.Drop);
 
         slot.DropItem();
+
+        RefreshEquippedWeaponDurability();
     }
 
     /// <returns>If was able to move</returns>
@@ -546,7 +555,27 @@ public class InventoryController : MonoBehaviour
 
     private InventorySlot? GetEmptySlot()
     {
-        return InventorySlots.FirstOrDefault(x => x.ItemGuid.Equals(""));
+        return InventorySlots
+                .Skip(EquipmentSlotsCount)
+                .FirstOrDefault(x => x.ItemGuid.Equals(""));
+    }
+
+    private void DropItem(InventorySlot slot)
+    {
+        if (slot.ItemGuid == "") return;
+
+        ItemData item = GameController.GetItemByGuid(slot.ItemGuid);
+
+        if (item == null || !item.Type.CanDrop) return;
+
+        UnassignItem(slot);
+
+        ItemEntity entity = Instantiate(item.Type.SpawnPrefab, SceneManager.GetActiveScene()).GetComponent<ItemEntity>();
+        entity.transform.position = Player.Instance.transform.position + Player.Instance.transform.forward;
+        if (entity)
+        {
+            entity.InstantiatedFromItem(item);
+        }
     }
 
     private void EnableGhostIcon(Sprite icon)

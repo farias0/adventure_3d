@@ -1,6 +1,3 @@
-- soltar itens do inventário pro mundo
-	- apertar X no inventário dropa item
-
 - passar código de durabilidade para ItemData
 
 - efeitos sonoros

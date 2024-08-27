@@ -770,8 +770,8 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: adventure_3d
-  metroPackageVersion: 
+  metroPackageName: adventure3d
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: DefaultCompany
@@ -779,7 +779,7 @@ PlayerSettings:
   metroCertificateNotAfter: 802f25a9c60fdc01
   metroApplicationDescription: adventure_3d
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: adventure_3d
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
